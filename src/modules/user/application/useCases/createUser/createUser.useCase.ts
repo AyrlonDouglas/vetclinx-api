@@ -1,11 +1,13 @@
-import { UseCase } from 'src/shared/core/UseCase';
-import { UserRepository } from '../../repositories/UserRepository';
-import { CreateUserDTO } from './CreateUserDTO';
-import User from '../../../domain/entities/User';
-import Email, { EmailError } from '../../../domain/valueObjects/Email';
-import CreateUserErrors from './CreateUserErrors';
+import { UseCase } from '@shared/core/useCase';
+import { UserRepository } from '../../repositories/user.repository';
+import { CreateUserDTO } from './createUser.dto';
+import User from '../../../domain/entities/user.entity';
+import Email, {
+  EmailError,
+} from '../../../domain/valueObjects/email.valueObject';
+import CreateUserErrors from './createUser.errors';
 import { Either, left, right } from '@shared/core/either';
-import { InspetorError } from '@shared/core/Inspetor';
+import { InspetorError } from '@shared/core/inspetor';
 
 type Response = Either<
   | InspetorError
@@ -14,7 +16,6 @@ type Response = Either<
   | InstanceType<(typeof CreateUserErrors)['usernameTakenError']>,
   void
 >;
-
 export default class CreateUserUseCase
   implements UseCase<CreateUserDTO, Response>
 {

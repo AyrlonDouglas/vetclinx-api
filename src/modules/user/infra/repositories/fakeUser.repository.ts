@@ -1,8 +1,24 @@
-import User from '../../domain/entities/User';
-import { UserRepository } from '../../application/repositories/UserRepository';
+import User from '../../domain/entities/user.entity';
+import { UserRepository } from '../../application/repositories/user.repository';
+import Email from '@modules/user/domain/valueObjects/email.valueObject';
 
 export default class FakeUserRepository implements UserRepository {
-  constructor(private readonly userList: User[] = []) {}
+  private readonly userList: User[] = [
+    User.create({
+      name: 'Ayrlon',
+      email: {} as Email,
+      password: '123',
+      username: 'ayrlon',
+    }).value as User,
+  ];
+
+  constructor(userList: User[] = []) {
+    userList.forEach((user) => this.userList.push(user));
+  }
+
+  async findAll(): Promise<User[]> {
+    return this.userList;
+  }
 
   async findByEmail(email: string): Promise<User> {
     return this.userList.find(

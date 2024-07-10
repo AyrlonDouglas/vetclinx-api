@@ -1,4 +1,4 @@
-import Email, { EmailError } from './Email';
+import Email, { EmailError } from './email.valueObject';
 
 describe('Email', () => {
   describe('Email.create()', () => {

@@ -1,6 +1,6 @@
 import { Either, left, right } from '@shared/core/either';
-import Inspetor, { InspetorError } from '@shared/core/Inspetor';
-import Email from '../valueObjects/Email';
+import Inspetor, { InspetorError } from '@shared/core/inspetor';
+import Email from '../valueObjects/email.valueObject';
 
 export default class User {
   private constructor(

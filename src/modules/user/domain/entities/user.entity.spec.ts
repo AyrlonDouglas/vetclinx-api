@@ -1,6 +1,6 @@
-import { InspetorError } from '@shared/core/Inspetor';
-import Email from '../valueObjects/Email';
-import User from './User';
+import { InspetorError } from '@shared/core/inspetor';
+import Email from '../valueObjects/email.valueObject';
+import User from './user.entity';
 
 describe('User', () => {
   describe('User.create()', () => {

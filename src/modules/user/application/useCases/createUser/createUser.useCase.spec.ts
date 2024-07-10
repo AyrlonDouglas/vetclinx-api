@@ -1,9 +1,11 @@
-import User from '../../../domain/entities/User';
-import FakeUserRepository from '../../../infra/repositories/FakeUserRepository';
-import Email, { EmailError } from '../../../domain/valueObjects/Email';
-import CreateUserErrors from './CreateUserErrors';
+import User from '../../../domain/entities/user.entity';
+import FakeUserRepository from '../../../infra/repositories/fakeUser.repository';
+import Email, {
+  EmailError,
+} from '../../../domain/valueObjects/email.valueObject';
+import CreateUserErrors from './createUser.errors';
 
-import CreateUserUseCase from './CreateUserUseCase';
+import CreateUserUseCase from './createUser.useCase';
 
 describe('CreateUserUseCase', () => {
   const makeSut = () => {

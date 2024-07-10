@@ -1,8 +1,8 @@
-import { InspetorError } from '@shared/core/Inspetor';
-import GetUserUseCase from './GetUserUseCase';
-import Email from '../../../domain/valueObjects/Email';
-import User from '../../../domain/entities/User';
-import FakeUserRepository from '../../../infra/repositories/FakeUserRepository';
+import { InspetorError } from '@shared/core/inspetor';
+import GetUserUseCase from './getUser.useCase';
+import Email from '../../../domain/valueObjects/email.valueObject';
+import User from '../../../domain/entities/user.entity';
+import FakeUserRepository from '../../../infra/repositories/fakeUser.repository';
 
 describe('GetUserUseCase', () => {
   const makeSut = () => {
