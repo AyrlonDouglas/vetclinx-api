@@ -1,4 +1,6 @@
+import BaseError from '@shared/errors/baseError.error';
 import { Either, left, right } from './either';
+import { HttpStatusCode } from '@shared/http/httpStatusCode';
 
 export type InspetorResponse = string;
 
@@ -11,9 +13,12 @@ export type InspectorArgumentCollection = IInspectorArgument[];
 
 const INSPETOR_RIGHT_VALUE = 'ok';
 
-export class InspetorError extends Error {
-  constructor(message: string) {
-    super(message);
+export class InspetorError extends BaseError {
+  constructor(message: string | string[]) {
+    super(
+      [...(Array.isArray(message) ? message : [message])],
+      HttpStatusCode.NOT_ACCEPTABLE,
+    );
     this.name = 'InspetorError';
   }
 }

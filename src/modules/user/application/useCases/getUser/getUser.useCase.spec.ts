@@ -31,12 +31,13 @@ describe('GetUserUseCase', () => {
     }
   });
 
-  test('Should get error when not found user', async () => {
+  test('Should dont get error when not found user', async () => {
     const { sut } = makeSut();
 
     const result = await sut.perform({ username: 'ayrlon123' });
-    expect(result.isLeft()).toBe(true);
+    expect(result.isRight()).toBe(true);
     expect(result.value).not.toBeInstanceOf(User);
+    expect(result.value).toBe(null);
   });
 
   test('Should get error when username is empty', async () => {

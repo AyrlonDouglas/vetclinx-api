@@ -21,17 +21,21 @@ export default class FakeUserRepository implements UserRepository {
   }
 
   async findByEmail(email: string): Promise<User> {
-    return this.userList.find(
-      (user) => user.props.email === email.toLowerCase().trim(),
+    return (
+      this.userList.find(
+        (user) => user.props.email === email.toLowerCase().trim(),
+      ) ?? null
     );
   }
 
   async findByUsername(username: string): Promise<User> {
-    return this.userList.find((user) => user.props.username === username);
+    return (
+      this.userList.find((user) => user.props.username === username) ?? null
+    );
   }
 
   async findById(id: number): Promise<User> {
-    return this.userList.find((user) => user.props.id === id);
+    return this.userList.find((user) => user.props.id === id) ?? null;
   }
 
   async save(user: User): Promise<number> {
