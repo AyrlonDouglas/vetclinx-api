@@ -38,7 +38,7 @@ export default class User {
       input.username,
       input.email,
       input.password,
-      input.id,
+      input.id ?? Math.round(Math.random() * 10000), // ate implementar um banco real,
     );
 
     return right(user);

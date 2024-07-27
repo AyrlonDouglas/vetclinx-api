@@ -1,10 +1,10 @@
 import { InspetorError } from '@shared/core/inspetor';
-import GetUserUseCase from './getUser.useCase';
-import Email from '../../../domain/valueObjects/email.valueObject';
-import User from '../../../domain/entities/user.entity';
-import FakeUserRepository from '../../../infra/repositories/fakeUser.repository';
+import GetUserByUsernameUseCase from './getUserByUsername.useCase';
+import Email from '@modules/user/domain/valueObjects/email.valueObject';
+import User from '@modules/user/domain/entities/user.entity';
+import FakeUserRepository from '@modules/user/infra/repositories/fakeUser.repository';
 
-describe('GetUserUseCase', () => {
+describe('GetUserByUsernameUseCase', () => {
   const makeSut = () => {
     const emailMock = Email.create('teste@teste.com');
 
@@ -16,7 +16,7 @@ describe('GetUserUseCase', () => {
     });
 
     const userRepository = new FakeUserRepository([userMock.value as User]);
-    const sut = new GetUserUseCase(userRepository);
+    const sut = new GetUserByUsernameUseCase(userRepository);
     return { sut, userMock };
   };
 

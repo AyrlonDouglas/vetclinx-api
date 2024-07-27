@@ -1,10 +1,10 @@
 import { UseCase } from '@shared/core/useCase';
-import { UserRepository } from '../../repositories/user.repository';
+import { UserRepository } from '@modules/user/application/repositories/user.repository';
 import { CreateUserDTO } from './createUser.dto';
-import User from '../../../domain/entities/user.entity';
+import User from '@modules/user/domain/entities/user.entity';
 import Email, {
   EmailError,
-} from '../../../domain/valueObjects/email.valueObject';
+} from '@modules/user/domain/valueObjects/email.valueObject';
 import CreateUserErrors from './createUser.errors';
 import { Either, left, right } from '@shared/core/either';
 import { InspetorError } from '@shared/core/inspetor';
@@ -14,7 +14,7 @@ type Response = Either<
   | EmailError
   | InstanceType<(typeof CreateUserErrors)['emailAlreadyExistsError']>
   | InstanceType<(typeof CreateUserErrors)['usernameTakenError']>,
-  void
+  { id: number }
 >;
 export default class CreateUserUseCase
   implements UseCase<CreateUserDTO, Response>
@@ -47,8 +47,8 @@ export default class CreateUserUseCase
       return left(user.value);
     }
 
-    await this.userRepository.save(user.value);
+    const userId = await this.userRepository.save(user.value);
 
-    return right();
+    return right({ id: userId });
   }
 }

@@ -1,8 +1,8 @@
-import User from '../../../domain/entities/user.entity';
-import FakeUserRepository from '../../../infra/repositories/fakeUser.repository';
+import User from '@modules/user/domain/entities/user.entity';
+import FakeUserRepository from '@modules/user/infra/repositories/fakeUser.repository';
 import Email, {
   EmailError,
-} from '../../../domain/valueObjects/email.valueObject';
+} from '@modules/user/domain/valueObjects/email.valueObject';
 import CreateUserErrors from './createUser.errors';
 
 import CreateUserUseCase from './createUser.useCase';
@@ -42,9 +42,10 @@ describe('CreateUserUseCase', () => {
     expect(result).toBeTruthy();
     expect(result.isRight()).toBe(true);
     if (result.isRight()) {
-      expect(result.value).toBe(undefined);
+      expect(result.value).toBeDefined();
+      expect(result.value).toHaveProperty('id', expect.any(Number));
 
-      const userCreated = await userRepository.findByUsername(input.username);
+      const userCreated = await userRepository.findById(result.value.id);
       expect(userCreated.props.username).toEqual(input.username);
       expect(userCreated.props.email).toEqual(input.email);
       expect(userCreated.props.name).toEqual(input.name);

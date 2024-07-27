@@ -1,17 +1,23 @@
 import CreateUserUseCase from './createUser/createUser.useCase';
-import GetUserUseCase from './getUser/getUser.useCase';
+import GetUserByIdUseCase from './getUserById/getUserById.useCase';
+import GetUserByUsernameUseCase from './getUserByUsername/getUserByUsername.useCase';
 
 export default class UserUseCases {
   constructor(
-    private readonly getUserUseCase: GetUserUseCase,
+    private readonly getUserByUsernameUseCase: GetUserByUsernameUseCase,
     private readonly createUserUseCase: CreateUserUseCase,
+    private readonly getUserByIdUserCase: GetUserByIdUseCase,
   ) {}
 
   get createUser() {
     return this.createUserUseCase;
   }
 
-  get getUser() {
-    return this.getUserUseCase;
+  get getUserByUsername() {
+    return this.getUserByUsernameUseCase;
+  }
+
+  get getUserById() {
+    return this.getUserByIdUserCase;
   }
 }

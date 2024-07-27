@@ -9,6 +9,7 @@ export default class FakeUserRepository implements UserRepository {
       email: {} as Email,
       password: '123',
       username: 'ayrlon',
+      id: 1,
     }).value as User,
   ];
 
@@ -39,7 +40,6 @@ export default class FakeUserRepository implements UserRepository {
   }
 
   async save(user: User): Promise<number> {
-    user.props.id = Math.random();
     this.userList.push(user);
     return user.props.id;
   }

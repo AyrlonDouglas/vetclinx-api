@@ -1,6 +1,13 @@
 import { CreateUserDTO } from '@modules/user/application/useCases/createUser/createUser.dto';
 import UserUseCases from '@modules/user/application/useCases/user.useCases';
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 
 @Controller('user')
 export class UserController {
@@ -12,7 +19,7 @@ export class UserController {
     if (user.isLeft()) {
       throw user.value;
     }
-
+    console.log(user.value);
     return user.value;
   }
 
@@ -21,9 +28,15 @@ export class UserController {
   //   return this.testeService.findAll();
   // }
 
-  @Get(':username')
-  async findOne(@Param('username') username: string) {
-    return (await this.userUseCases.getUser.perform({ username })).value;
+  @Get('by-username/:username')
+  async findOneByUsername(@Param('username') username: string) {
+    return (await this.userUseCases.getUserByUsername.perform({ username }))
+      .value;
+  }
+
+  @Get('/:id')
+  async findOneById(@Param('id', ParseIntPipe) id: number) {
+    return (await this.userUseCases.getUserById.perform({ id })).value;
   }
 
   // @Get()
