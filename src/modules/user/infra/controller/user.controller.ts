@@ -15,12 +15,7 @@ export class UserController {
 
   @Post()
   async create(@Body() createUserDTO: CreateUserDTO) {
-    const user = await this.userUseCases.createUser.perform(createUserDTO);
-    if (user.isLeft()) {
-      throw user.value;
-    }
-    console.log(user.value);
-    return user.value;
+    return (await this.userUseCases.createUser.perform(createUserDTO)).value;
   }
 
   // @Get()
