@@ -2,13 +2,19 @@ import { Module } from '@nestjs/common';
 import { UserModule } from './modules/user/infra/user.module';
 import { ConfigsModule } from './config/config.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigService } from '@nestjs/config';
+import { ConfigKey, DatabaseConfig } from './config/config.interface';
 @Module({
   imports: [
     ConfigsModule,
     UserModule,
-    MongooseModule.forRoot(
-      'mongodb+srv://ayrlon:Ayrlon42@cluster0.hr63a.mongodb.net/VetCaseHub?retryWrites=true&w=majority&appName=Cluster0',
-    ),
+    MongooseModule.forRootAsync({
+      imports: [ConfigsModule],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<DatabaseConfig>(ConfigKey.db).mongoDB.uri,
+      }),
+      inject: [ConfigService],
+    }),
   ],
   controllers: [],
   providers: [],

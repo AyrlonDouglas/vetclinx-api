@@ -60,10 +60,10 @@ export default class FakeUserRepository implements UserRepository {
     return userData.value.props.id;
   }
 
-  async remove(id: string): Promise<void> {
+  async removeById(id: string): Promise<string | null> {
     const indexFound = this.userList.findIndex((user) => user.props.id === id);
-    if (indexFound === -1) return;
-
+    if (indexFound === -1) return null;
     this.userList.splice(indexFound, 1);
+    return id;
   }
 }

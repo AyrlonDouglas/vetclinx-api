@@ -1,6 +1,6 @@
 import { CreateUserDTO } from '@modules/user/application/useCases/createUser/createUser.dto';
 import UserUseCases from '@modules/user/application/useCases/user.useCases';
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 
 @Controller('user')
 export class UserController {
@@ -42,8 +42,8 @@ export class UserController {
   //   return this.testeService.update(+id, updateTesteDto);
   // }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.testeService.remove(+id);
-  // }
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    return (await this.userUseCases.removeUserById.perform({ id })).value;
+  }
 }

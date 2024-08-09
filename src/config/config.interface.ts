@@ -5,11 +5,7 @@ export interface AppConfig {
 }
 
 export interface DatabaseConfig {
-  host: string;
-  port: number;
-  username: string;
-  password: string;
-  database: string;
+  mongoDB: { uri: string };
 }
 
 export const ConfigKey = {

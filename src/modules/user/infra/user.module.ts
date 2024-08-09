@@ -8,6 +8,7 @@ import UserUseCases from '@modules/user/application/useCases/user.useCases';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModel, UserSchema } from './schemas/user.schema';
 import UserMongooseRepository from './repositories/UserMongoose.repository';
+import RemoveUserByIdUseCase from '../application/useCases/removeUserById/removeUserById.userCase';
 
 @Module({
   controllers: [UserController],
@@ -38,14 +39,32 @@ import UserMongooseRepository from './repositories/UserMongoose.repository';
       inject: [UserRepository],
     },
     {
+      provide: RemoveUserByIdUseCase,
+      useFactory: (userRepository: UserRepository) => {
+        return new RemoveUserByIdUseCase(userRepository);
+      },
+      inject: [UserRepository],
+    },
+    {
       provide: UserUseCases,
       useFactory: (
         getUserUseCase: GetUserByUsernameUseCase,
         createUserUseCase: CreateUserUseCase,
         getUserByIdUseCase: GetUserByIdUseCase,
+        removeUserByIdUseCase: RemoveUserByIdUseCase,
       ) =>
-        new UserUseCases(getUserUseCase, createUserUseCase, getUserByIdUseCase),
-      inject: [GetUserByUsernameUseCase, CreateUserUseCase, GetUserByIdUseCase],
+        new UserUseCases(
+          getUserUseCase,
+          createUserUseCase,
+          getUserByIdUseCase,
+          removeUserByIdUseCase,
+        ),
+      inject: [
+        GetUserByUsernameUseCase,
+        CreateUserUseCase,
+        GetUserByIdUseCase,
+        RemoveUserByIdUseCase,
+      ],
     },
   ],
   exports: [],

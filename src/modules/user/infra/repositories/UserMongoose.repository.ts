@@ -18,7 +18,6 @@ export default class UserMongooseRepository implements UserRepository {
 
   async findById(id: string): Promise<User | null> {
     const user = await this.userModel.findById(id);
-
     return this.mapper.toDomain(user);
   }
 
@@ -30,9 +29,7 @@ export default class UserMongooseRepository implements UserRepository {
 
   async findByEmail(email: string): Promise<User | null> {
     const user = await this.userModel.findOne({ email });
-
     if (!user) return null;
-
     return this.mapper.toDomain(user);
   }
 
@@ -43,12 +40,13 @@ export default class UserMongooseRepository implements UserRepository {
     return savedUser._id.toString();
   }
 
-  remove(id: string): Promise<void> {
-    id;
-    throw new Error('Method not implemented.');
+  async removeById(id: string): Promise<string | null> {
+    const removedUser = await this.userModel.findByIdAndDelete(id);
+    if (!removedUser) return null;
+    return removedUser.id;
   }
 
-  findAll(): Promise<User[]> {
+  async findAll(): Promise<User[]> {
     throw new Error('Method not implemented.');
   }
 }
