@@ -1,13 +1,6 @@
 import { CreateUserDTO } from '@modules/user/application/useCases/createUser/createUser.dto';
 import UserUseCases from '@modules/user/application/useCases/user.useCases';
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  ParseIntPipe,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 
 @Controller('user')
 export class UserController {
@@ -30,7 +23,7 @@ export class UserController {
   }
 
   @Get('/:id')
-  async findOneById(@Param('id', ParseIntPipe) id: number) {
+  async findOneById(@Param('id') id: string) {
     return (await this.userUseCases.getUserById.perform({ id })).value;
   }
 

@@ -14,7 +14,7 @@ type Response = Either<
   | EmailError
   | InstanceType<(typeof CreateUserErrors)['emailAlreadyExistsError']>
   | InstanceType<(typeof CreateUserErrors)['usernameTakenError']>,
-  { id: number }
+  { id: string }
 >;
 export default class CreateUserUseCase
   implements UseCase<CreateUserDTO, Response>

@@ -43,7 +43,7 @@ describe('CreateUserUseCase', () => {
     expect(result.isRight()).toBe(true);
     if (result.isRight()) {
       expect(result.value).toBeDefined();
-      expect(result.value).toHaveProperty('id', expect.any(Number));
+      expect(result.value).toHaveProperty('id', expect.any(String));
 
       const userCreated = await userRepository.findById(result.value.id);
       expect(userCreated.props.username).toEqual(input.username);

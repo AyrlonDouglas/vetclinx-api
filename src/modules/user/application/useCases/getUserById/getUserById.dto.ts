@@ -1,3 +1,3 @@
 export interface GetUserByIdDTO {
-  id: number;
+  id: string;
 }

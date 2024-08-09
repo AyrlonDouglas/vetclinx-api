@@ -8,7 +8,7 @@ export default class User {
     private username: string,
     private email: Email,
     private password: string,
-    private id?: number,
+    private id?: string,
   ) {}
 
   get props() {
@@ -38,7 +38,7 @@ export default class User {
       input.username,
       input.email,
       input.password,
-      input.id ?? Math.round(Math.random() * 10000), // ate implementar um banco real,
+      input.id,
     );
 
     return right(user);
@@ -50,7 +50,7 @@ interface UserProps {
   username: string;
   email: Email;
   password: string;
-  id?: number;
+  id?: string;
 }
 
 interface UserCreateInput extends UserProps {}

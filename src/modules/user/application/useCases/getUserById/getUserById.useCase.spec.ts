@@ -13,7 +13,7 @@ describe('GetUserByIdUseCase', () => {
       email: emailMock.value as Email,
       password: '123',
       username: 'ayrlon',
-      id: 3,
+      id: '3',
     });
 
     const userRepository = new FakeUserRepository([userMock.value as User]);
@@ -24,18 +24,18 @@ describe('GetUserByIdUseCase', () => {
   test('Should get one user', async () => {
     const { sut } = makeSut();
 
-    const result = await sut.perform({ id: 3 });
+    const result = await sut.perform({ id: '3' });
     expect(result.isRight()).toBe(true);
     expect(result.value).toBeInstanceOf(User);
     if (result.isRight()) {
-      expect(result.value.props.id).toEqual(3);
+      expect(result.value.props.id).toEqual('3');
     }
   });
 
   test('Should dont get error when not found user', async () => {
     const { sut } = makeSut();
 
-    const result = await sut.perform({ id: 698 });
+    const result = await sut.perform({ id: '698' });
     expect(result.isRight()).toBe(true);
     expect(result.value).not.toBeInstanceOf(User);
     expect(result.value).toBe(null);
