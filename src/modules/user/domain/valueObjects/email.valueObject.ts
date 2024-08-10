@@ -19,7 +19,7 @@ export default class Email {
 
   public static create(email: string): Either<EmailError, Email> {
     const emailFormated = Email.format(email);
-    if (!Email.isValidEmail(emailFormated)) {
+    if (!Email.isValid(emailFormated)) {
       return left(new EmailError(`Email ${email} not is valid!`));
     }
 
@@ -27,7 +27,7 @@ export default class Email {
     return right(newEmail);
   }
 
-  private static isValidEmail(email: string) {
+  private static isValid(email: string) {
     return emailRegex.test(email);
   }
 
