@@ -1,14 +1,15 @@
 import User from '../../domain/entities/user.entity';
 import { UserRepository } from '../../application/repositories/user.repository';
-import Email from '@modules/user/domain/valueObjects/email.valueObject';
+import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
 import { randomUUID } from 'crypto';
+import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
 
 export default class FakeUserRepository implements UserRepository {
   private readonly userList: User[] = [
     User.create({
       name: 'Ayrlon',
-      email: {} as Email,
-      password: '123',
+      email: Email.create('testeteste@testeteste.com.br').value as Email,
+      password: Password.create('SenhaForte12@!').value as Password,
       username: 'ayrlon',
       id: randomUUID().toString(),
     }).value as User,
@@ -25,7 +26,7 @@ export default class FakeUserRepository implements UserRepository {
   async findByEmail(email: string): Promise<User> {
     return (
       this.userList.find(
-        (user) => user.props.email === email.toLowerCase().trim(),
+        (user) => user.props.email.value === email.toLowerCase().trim(),
       ) ?? null
     );
   }
@@ -41,7 +42,7 @@ export default class FakeUserRepository implements UserRepository {
   }
 
   async save(user: User): Promise<string> {
-    const emailData = Email.create(user.props.email);
+    const emailData = Email.create(user.props.email.value);
     if (emailData.isLeft()) return '0';
 
     const userData = User.create({

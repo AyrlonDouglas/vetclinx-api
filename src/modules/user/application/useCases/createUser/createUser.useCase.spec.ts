@@ -2,19 +2,21 @@ import User from '@modules/user/domain/entities/user.entity';
 import FakeUserRepository from '@modules/user/infra/repositories/fakeUser.repository';
 import Email, {
   EmailError,
-} from '@modules/user/domain/valueObjects/email.valueObject';
+} from '@modules/user/domain/valueObjects/email/email.valueObject';
 import CreateUserErrors from './createUser.errors';
 
 import CreateUserUseCase from './createUser.useCase';
+import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
 
 describe('CreateUserUseCase', () => {
   const makeSut = () => {
     const emailMock = Email.create('teste@teste.com');
+    const passwordMock = Password.create('SenhaForte54!');
 
     const userMock = User.create({
       name: 'Ayrlon',
       email: emailMock.value as Email,
-      password: '123',
+      password: passwordMock.value as Password,
       username: 'ayrlon',
     });
 
@@ -25,7 +27,7 @@ describe('CreateUserUseCase', () => {
       name: 'Ayrlon',
       username: 'ayrlon.vilarim',
       email: 'ayrlon.teste@test.com',
-      password: '123123',
+      password: 'SenhaForte12@',
     };
     return {
       sut,
@@ -47,9 +49,9 @@ describe('CreateUserUseCase', () => {
 
       const userCreated = await userRepository.findById(result.value.id);
       expect(userCreated.props.username).toEqual(input.username);
-      expect(userCreated.props.email).toEqual(input.email);
+      expect(userCreated.props.email.value).toEqual(input.email);
       expect(userCreated.props.name).toEqual(input.name);
-      expect(userCreated.props.password).toEqual(input.password);
+      expect(userCreated.props.password.value).toEqual(input.password);
     }
   });
 

@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { UserModule } from './modules/user/infra/user.module';
-import { ConfigsModule } from './config/config.module';
+import { ConfigsModule } from './modules/config/infra/config.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
-import { ConfigKey, DatabaseConfig } from './config/config.interface';
+import { ConfigKey, DatabaseConfig } from './modules/config/config.interface';
 @Module({
   imports: [
     ConfigsModule,

@@ -1,17 +1,19 @@
 import User from '@modules/user/domain/entities/user.entity';
-import Email from '@modules/user/domain/valueObjects/email.valueObject';
+import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
 import FakeUserRepository from '@modules/user/infra/repositories/fakeUser.repository';
 import RemoveUserByIdUseCase from './removeUserById.userCase';
 import { InspetorError } from '@shared/core/inspetor';
+import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
 
 describe('RemoveUserByUsernameUseCase', () => {
   const makeSut = () => {
     const emailMock = Email.create('teste@teste.com');
+    const passwordMock = Password.create('SenhaForte54!');
 
     const userMock = User.create({
       name: 'Ayrlon',
       email: emailMock.value as Email,
-      password: '123',
+      password: passwordMock.value as Password,
       username: 'ayrlon',
       id: '156',
     }).value as User;

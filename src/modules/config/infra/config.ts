@@ -1,10 +1,11 @@
 import { registerAs } from '@nestjs/config';
 import {
   AppConfig,
+  AuthConfig,
   ConfigKey,
   DatabaseConfig,
   Environment,
-} from './config.interface';
+} from '../config.interface';
 
 const AppConfig = registerAs(
   ConfigKey.app,
@@ -22,4 +23,12 @@ const DatabaseConfig = registerAs(
   }),
 );
 
-export const configurations = [AppConfig, DatabaseConfig];
+const AuthConfig = registerAs(
+  ConfigKey.auth,
+  (): AuthConfig => ({
+    expiresIn: process.env.AUTH_EXPIRES_IN,
+    secretKey: process.env.AUTH_SECRET_KEY,
+  }),
+);
+
+export const configurations = [AppConfig, DatabaseConfig, AuthConfig];

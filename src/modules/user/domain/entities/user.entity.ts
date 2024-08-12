@@ -1,21 +1,22 @@
 import { Either, left, right } from '@shared/core/either';
 import Inspetor, { InspetorError } from '@shared/core/inspetor';
-import Email from '../valueObjects/email.valueObject';
+import Email from '../valueObjects/email/email.valueObject';
+import Password from '../valueObjects/password/password.valueObject';
 
 export default class User {
   private constructor(
     private name: string,
     private username: string,
     private email: Email,
-    private password: string,
+    private password: Password,
     private id?: string,
   ) {}
 
-  get props() {
+  get props(): UserProps {
     return {
       name: this.name,
       username: this.username,
-      email: this.email.value,
+      email: this.email,
       password: this.password,
       id: this.id,
     };
@@ -49,7 +50,7 @@ interface UserProps {
   name: string;
   username: string;
   email: Email;
-  password: string;
+  password: Password;
   id?: string;
 }
 

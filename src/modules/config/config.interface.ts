@@ -8,9 +8,15 @@ export interface DatabaseConfig {
   mongoDB: { uri: string };
 }
 
+export interface AuthConfig {
+  secretKey: string;
+  expiresIn: string;
+}
+
 export const ConfigKey = {
   app: 'app',
   db: 'db',
+  auth: 'auth',
 } as const;
 
 export const Environment = {
@@ -21,4 +27,5 @@ export const Environment = {
 export type BaseConfig = {
   APP: AppConfig;
   DB: DatabaseConfig;
+  AUTH: AuthConfig;
 };

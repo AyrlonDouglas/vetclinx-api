@@ -1,6 +1,7 @@
 import { InspetorError } from '@shared/core/inspetor';
-import Email from '../valueObjects/email.valueObject';
+import Email from '../valueObjects/email/email.valueObject';
 import User from './user.entity';
+import Password from '../valueObjects/password/password.valueObject';
 
 describe('User', () => {
   describe('User.create()', () => {
@@ -9,11 +10,13 @@ describe('User', () => {
       if (emailOrFail.isLeft()) {
         throw new Error('Email invalid');
       }
+      const password = Password.create('SenhaValida12#$').value as Password;
+
       const email = emailOrFail.value;
       const inputCreate = {
         email,
         name: 'a',
-        password: 'a',
+        password,
         username: 'aa',
       };
 
@@ -30,7 +33,7 @@ describe('User', () => {
       expect(result).toBeTruthy();
       expect(result.isRight()).toBe(true);
       if (result.isRight()) {
-        expect(result.value.props.email).toBe(inputCreate.email.value);
+        expect(result.value.props.email).toBe(inputCreate.email);
         expect(result.value.props.name).toBe(inputCreate.name);
         expect(result.value.props.password).toBe(inputCreate.password);
         expect(result.value.props.username).toBe(inputCreate.username);
