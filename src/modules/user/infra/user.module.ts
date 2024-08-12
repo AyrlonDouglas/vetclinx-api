@@ -67,6 +67,6 @@ import RemoveUserByIdUseCase from '../application/useCases/removeUserById/remove
       ],
     },
   ],
-  exports: [],
+  exports: [UserRepository],
 })
 export class UserModule {}

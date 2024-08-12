@@ -23,12 +23,14 @@ describe('CreateUserUseCase', () => {
     const userRepository = new FakeUserRepository([userMock.value as User]);
 
     const sut = new CreateUserUseCase(userRepository);
+
     const input = {
       name: 'Ayrlon',
       username: 'ayrlon.vilarim',
       email: 'ayrlon.teste@test.com',
       password: 'SenhaForte12@',
     };
+
     return {
       sut,
       userRepository,

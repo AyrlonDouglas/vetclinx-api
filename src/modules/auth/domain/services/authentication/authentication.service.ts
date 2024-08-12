@@ -1,9 +1,10 @@
 import { UserRepository } from '@modules/user/application/repositories/user.repository';
-import Credential from '../valueObjects/credential/cretendital.valueObect';
+import Credential from '../../valueObjects/credential/cretendital.valueObect';
 import { Either, left, right } from '@shared/core/either';
-import TokenPort from './token.port';
-import Token from '../valueObjects/token/token.objectValue';
+import TokenPort from '../token.port';
+import Token from '../../valueObjects/token/token.objectValue';
 import { Config } from '@modules/config/ports/config';
+import AuthenticationErros from './authentication.errors';
 
 type signInResponse = Either<Error | null, Token>;
 
@@ -20,21 +21,24 @@ export default class AuthenticationService {
       credential.props.email.value,
     );
 
-    // TODO: verificar senha se bate!
     if (
       !user ||
       user.props.password.value !== credential.props.password.value
     ) {
-      return left(new Error('Invalid credential1'));
+      return left(new AuthenticationErros.invalidCredentialError());
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userData } = user.props;
 
-    const tokenData = { user: userData };
-    const secretKey = this.config.getAuthenticationConfig().secretKey;
+    const payload = { user: userData };
+    const authConfig = this.config.getAuthenticationConfig();
 
-    const tokenOrError = this.tokenService.create(tokenData, secretKey);
+    const tokenOrError = await this.tokenService.create({
+      payload,
+      secretKey: authConfig.secretKey,
+      config: { expiresIn: authConfig.expiresIn },
+    });
 
     if (tokenOrError.isLeft()) {
       return left(tokenOrError.value);

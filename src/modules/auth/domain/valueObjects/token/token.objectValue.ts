@@ -1,8 +1,15 @@
 import { Either, left, right } from '@shared/core/either';
-import Inspetor, { InspetorError } from '@shared/core/inspetor';
+import Inspetor from '@shared/core/inspetor';
 
 // TODO: criar testes
 // TODO: criar error
+
+export class TokenError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'TokenError';
+  }
+}
 
 export default class Token {
   private constructor(
@@ -10,15 +17,20 @@ export default class Token {
     private readonly expiresIn: string,
   ) {}
 
-  static create(input: TokenCreateInput): Either<InspetorError, Token> {
+  get props() {
+    return { token: this.token, expiresIn: this.expiresIn };
+  }
+
+  static create(input: TokenCreateInput): Either<TokenError, Token> {
     const inputOrFail = Inspetor.againstFalsyBulk([
       { argument: input.token, argumentName: 'token' },
       { argument: input.expiresIn, argumentName: 'expiresIn' },
     ]);
 
     if (inputOrFail.isLeft()) {
-      return left(inputOrFail.value);
+      return left(new TokenError(inputOrFail.value.message));
     }
+
     const token = new Token(input.token, input.expiresIn);
     return right(token);
   }

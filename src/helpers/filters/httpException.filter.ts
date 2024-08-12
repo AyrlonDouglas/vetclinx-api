@@ -46,6 +46,7 @@ export default class AllExceptionsFilter implements ExceptionFilter {
         //   ? { stack }
         //   : {}),
       };
+
       response.status(_status).json(errorResponse);
     };
 

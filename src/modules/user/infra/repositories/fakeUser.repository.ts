@@ -15,8 +15,8 @@ export default class FakeUserRepository implements UserRepository {
     }).value as User,
   ];
 
-  constructor(userList: User[] = []) {
-    userList.forEach((user) => this.userList.push(user));
+  constructor(users: User[] = []) {
+    users.forEach((user) => this.userList.push(user));
   }
 
   async findAll(): Promise<User[]> {

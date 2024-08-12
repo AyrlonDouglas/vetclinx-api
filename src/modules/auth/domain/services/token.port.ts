@@ -1,17 +1,18 @@
 import { Either } from '@shared/core/either';
-import Token from '../valueObjects/token/token.objectValue';
-import { InspetorError } from '@shared/core/inspetor';
+import Token, { TokenError } from '../valueObjects/token/token.objectValue';
 
-export default interface TokenPort {
-  create: (
-    payload: any,
-    secretKey?: string,
-    config?: signConfig,
-  ) => Either<InspetorError, Token>;
+export default abstract class TokenPort {
+  create: (input: TokenPortCreateInput) => Promise<Either<TokenError, Token>>;
   // verify: (token: string, secretKey: string) => void;
 }
 
+export type TokenPortCreateInput = {
+  payload: any;
+  secretKey?: string;
+  config?: signConfig;
+};
+
 type signConfig = {
-  expiresIn: string;
-  algorithm: string;
+  expiresIn?: string;
+  algorithm?: string;
 };

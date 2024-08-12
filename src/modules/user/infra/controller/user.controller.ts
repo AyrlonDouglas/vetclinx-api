@@ -8,7 +8,9 @@ export class UserController {
 
   @Post()
   async create(@Body() createUserDTO: CreateUserDTO) {
-    return (await this.userUseCases.createUser.perform(createUserDTO)).value;
+    const result = await this.userUseCases.createUser.perform(createUserDTO);
+    if (result.isLeft()) throw result.value;
+    return result.value;
   }
 
   // @Get()
@@ -18,13 +20,19 @@ export class UserController {
 
   @Get('by-username/:username')
   async findOneByUsername(@Param('username') username: string) {
-    return (await this.userUseCases.getUserByUsername.perform({ username }))
-      .value;
+    const result = await this.userUseCases.getUserByUsername.perform({
+      username,
+    });
+
+    if (result.isLeft()) throw result.value;
+    return result.value;
   }
 
   @Get('/:id')
   async findOneById(@Param('id') id: string) {
-    return (await this.userUseCases.getUserById.perform({ id })).value;
+    const result = await this.userUseCases.getUserById.perform({ id });
+    if (result.isLeft()) throw result.value;
+    return result.value;
   }
 
   // @Get()
@@ -44,6 +52,8 @@ export class UserController {
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    return (await this.userUseCases.removeUserById.perform({ id })).value;
+    const result = await this.userUseCases.removeUserById.perform({ id });
+    if (result.isLeft()) throw result.value;
+    return result.value;
   }
 }

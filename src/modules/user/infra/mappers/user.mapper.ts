@@ -7,10 +7,10 @@ import Password from '@modules/user/domain/valueObjects/password/password.valueO
 export class UserMongooseMapper implements Mapper<User> {
   toPersistense(user: User): any {
     return {
-      email: user.props.email,
+      email: user.props.email.value,
       name: user.props.name,
       username: user.props.username,
-      password: user.props.password,
+      password: user.props.password.value,
     };
   }
 

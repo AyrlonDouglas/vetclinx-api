@@ -18,6 +18,7 @@ export default class UserMongooseRepository implements UserRepository {
 
   async findById(id: string): Promise<User | null> {
     const user = await this.userModel.findById(id);
+    if (!user) return null;
     return this.mapper.toDomain(user);
   }
 
@@ -35,6 +36,7 @@ export default class UserMongooseRepository implements UserRepository {
 
   async save(user: User): Promise<string> {
     const userToPersistence = this.mapper.toPersistense(user);
+    console.log(userToPersistence);
     const createdUser = new this.userModel(userToPersistence);
     const savedUser = await createdUser.save();
     return savedUser._id.toString();

@@ -9,15 +9,15 @@ import Password, {
 } from '@modules/user/domain/valueObjects/password/password.valueObject';
 import { InspetorError } from '@shared/core/inspetor';
 import { Either, left, right } from '@shared/core/either';
-import AuthenticationService from '@modules/auth/domain/services/authentication.service';
-import { SignInDTO } from './singIn.dto';
+import AuthenticationService from '@modules/auth/domain/services/authentication/authentication.service';
+import { SignInDTO } from './signIn.dto';
 
 type Response = Either<InspetorError | EmailError | PasswordError, Token>;
 
 // TODO: criar testes
 // TODO: criar error de useCase
 
-export default class SignIn implements UseCase<SignInDTO, Response> {
+export default class SignInUseCase implements UseCase<SignInDTO, Response> {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
   async perform(request?: SignInDTO): Promise<Response> {
