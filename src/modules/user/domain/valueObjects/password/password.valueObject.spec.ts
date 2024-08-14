@@ -1,4 +1,5 @@
-import Password, { PasswordError } from './password.valueObject';
+import PasswordErrors from './password.errors';
+import Password from './password.valueObject';
 
 describe('Password.create', () => {
   const makeSut = () => {
@@ -53,7 +54,7 @@ describe('Password.create', () => {
 
       expect(result).toBeDefined();
       expect(result.isRight()).toBe(false);
-      expect(result.value).toBeInstanceOf(PasswordError);
+      expect(result.value).toBeInstanceOf(PasswordErrors.InvalidPasswordError);
     }
   });
 });

@@ -8,37 +8,42 @@ import Email, {
 import CreateUserErrors from './createUser.errors';
 import { Either, left, right } from '@shared/core/either';
 import { InspetorError } from '@shared/core/inspetor';
-import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
+import PasswordFactory from '@modules/user/domain/valueObjects/password/password.factory';
 
 type Response = Either<
   | InspetorError
   | EmailError
-  | InstanceType<(typeof CreateUserErrors)['emailAlreadyExistsError']>
-  | InstanceType<(typeof CreateUserErrors)['usernameTakenError']>,
+  | InstanceType<(typeof CreateUserErrors)['EmailAlreadyExistsError']>
+  | InstanceType<(typeof CreateUserErrors)['UsernameTakenError']>
+  | InstanceType<(typeof CreateUserErrors)['InvalidPasswordError']>,
   { id: string }
 >;
 export default class CreateUserUseCase
   implements UseCase<CreateUserDTO, Response>
 {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly passwordFactory: PasswordFactory,
+  ) {}
 
   async perform(request: CreateUserDTO): Promise<Response> {
     const emailOrError = Email.create(request.email);
-    const passwordOrError = Password.create(request.password);
     if (emailOrError.isLeft()) {
       return left(emailOrError.value);
     }
+
+    const passwordOrError = await this.passwordFactory.create(request.password);
 
     if (passwordOrError.isLeft()) {
       return left(passwordOrError.value);
     }
 
     if (await this.userRepository.findByUsername(request.username)) {
-      return left(new CreateUserErrors.usernameTakenError(request.username));
+      return left(new CreateUserErrors.UsernameTakenError(request.username));
     }
 
     if (await this.userRepository.findByEmail(request.email)) {
-      return left(new CreateUserErrors.emailAlreadyExistsError(request.email));
+      return left(new CreateUserErrors.EmailAlreadyExistsError(request.email));
     }
 
     const createInput = {

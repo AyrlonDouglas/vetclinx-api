@@ -4,15 +4,16 @@ import Token from '@modules/auth/domain/valueObjects/token/token.objectValue';
 import SignInError from './signIn.errors';
 
 describe('SignInUseCase', () => {
-  const makeSut = () => {
-    const { authenticationService, validCredential } = new AuthTestFactory();
+  const makeSut = async () => {
+    const { authenticationService, validCredential } =
+      await new AuthTestFactory().prepare();
 
     const sut = new SignInUseCase(authenticationService);
     return { sut, authenticationService, validCredential };
   };
 
   test('Should return left containing UnauthorizedError when email invalid', async () => {
-    const { sut } = makeSut();
+    const { sut } = await makeSut();
 
     const result = await sut.perform({
       email: '124asd@com',
@@ -25,7 +26,7 @@ describe('SignInUseCase', () => {
   });
 
   test('Should returnl left containing UnauthorizedError when password invalid', async () => {
-    const { sut } = makeSut();
+    const { sut } = await makeSut();
 
     const result = await sut.perform({
       email: '124asd@com.com',
@@ -38,8 +39,7 @@ describe('SignInUseCase', () => {
   });
 
   test('Should return rigth containing a Token', async () => {
-    const { sut, validCredential } = makeSut();
-
+    const { sut, validCredential } = await makeSut();
     const result = await sut.perform({
       email: validCredential.props.email.value,
       password: validCredential.props.password.value,

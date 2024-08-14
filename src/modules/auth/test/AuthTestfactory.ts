@@ -1,13 +1,16 @@
 import User from '@modules/user/domain/entities/user.entity';
 import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
-import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
 import FakeUserRepository from '@modules/user/infra/repositories/fakeUser.repository';
 import Credential from '../domain/valueObjects/credential/credential.valueObject';
 import { Config } from '@modules/config/ports/config';
 import { UserRepository } from '@modules/user/application/repositories/user.repository';
-import JWTTokenService from '../infra/services/token/token.service';
+import JWTTokenService from '../../shared/infra/token/jwtToken.service';
 import AuthenticationService from '../domain/services/authentication/authentication.service';
-import TokenService from '../domain/services/token.service';
+import TokenService from '../../shared/domain/token.service';
+import HashService from '@modules/shared/domain/hash.service';
+import BcryptHashService from '@modules/shared/infra/hash/bcrytHash.service';
+import PasswordFactory from '@modules/user/domain/valueObjects/password/password.factory';
+import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
 
 export default class AuthTestFactory {
   userRepository: UserRepository;
@@ -15,34 +18,39 @@ export default class AuthTestFactory {
   config: Config;
   tokenService: TokenService;
   authenticationService: AuthenticationService;
+  hashService: HashService;
+  passwordFactory: PasswordFactory;
 
-  constructor() {
+  constructor() {}
+
+  async prepare() {
+    this.hashService = new BcryptHashService();
+    this.passwordFactory = new PasswordFactory(this.hashService);
+
     const emailMock = Email.create('teste@teste.com');
-    const passwordMock = Password.create('SenhaForte54!');
+    if (emailMock.isLeft()) throw new Error('email fail');
+
+    const pass = 'SenhaForte54!';
+    const passwordRawMock = Password.create(pass);
+    if (passwordRawMock.isLeft()) throw new Error('passwordRawMock fail');
+
+    const hashedPass = await this.passwordFactory.create(pass);
+    if (hashedPass.isLeft()) throw new Error('hashedPass fail');
 
     const userMock = User.create({
       name: 'Ayrlon',
-      email: emailMock.value as Email,
-      password: passwordMock.value as Password,
+      email: emailMock.value,
+      password: hashedPass.value,
       username: 'ayrlon',
     });
 
-    this.userRepository = new FakeUserRepository([userMock.value as User]);
+    this.userRepository = new FakeUserRepository();
+    this.userRepository.save(userMock.value as User);
 
     this.validCredential = Credential.create({
-      email: emailMock.value as Email,
-      password: passwordMock.value as Password,
+      email: emailMock.value,
+      password: passwordRawMock.value,
     }).value as Credential;
-
-    // const invalidCredential = Credential.create({
-    //   email: Email.create('teste@teste.com').value as Email,
-    //   password: Password.create('SinvalidForte12@!').value as Password,
-    // }).value as Credential;
-
-    // const invalidCredential2 = Credential.create({
-    //   email: Email.create('invalid@testeteste.com.br').value as Email,
-    //   password: Password.create('SenhaForte54!').value as Password,
-    // }).value as Credential;
 
     this.config = {
       getAuthenticationConfig: () => ({
@@ -57,6 +65,9 @@ export default class AuthTestFactory {
       this.userRepository,
       this.tokenService,
       this.config,
+      this.hashService,
     );
+
+    return this;
   }
 }

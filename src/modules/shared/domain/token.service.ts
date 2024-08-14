@@ -1,5 +1,7 @@
 import { Either } from '@shared/core/either';
-import Token, { TokenError } from '../valueObjects/token/token.objectValue';
+import Token, {
+  TokenError,
+} from '../../auth/domain/valueObjects/token/token.objectValue';
 
 export default abstract class TokenService {
   create: (

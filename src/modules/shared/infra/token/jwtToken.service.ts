@@ -3,12 +3,14 @@ import { Either, left, right } from '@shared/core/either';
 import Inspetor from '@shared/core/inspetor';
 import TokenService, {
   TokenServiceCreateInput,
-} from '@modules/auth/domain/services/token.service';
+} from '@modules/shared/domain/token.service';
 import Token, {
   TokenError,
 } from '@modules/auth/domain/valueObjects/token/token.objectValue';
-import TokenServiceErrors from './token.service.errors';
+import TokenServiceErrors from './jwtToken.service.errors';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export default class JWTTokenService implements TokenService {
   async create(
     input: TokenServiceCreateInput,

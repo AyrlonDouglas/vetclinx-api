@@ -1,6 +1,6 @@
 import { Either, left, right } from '@shared/core/either';
 import ValueObject from '@shared/core/valueObject';
-
+import PasswordErrors from './password.errors';
 /**
  * Pelo menos 8 caracteres.
  * Não mais que 32 caracteres.
@@ -14,13 +14,6 @@ import ValueObject from '@shared/core/valueObject';
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[~!?@#$%^&*_\-+\[\]\{\}<>/\\|"'.,:;])[A-Za-zА-Яа-яЁё\d~!?@#$%^&*_\-+\[\]\{\}<>/\\|"'.,:;]{8,32}$/;
 
-export class PasswordError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'PasswordError';
-  }
-}
-
 export default class Password extends ValueObject<PasswordProps> {
   private constructor(content: PasswordProps) {
     super(content);
@@ -30,11 +23,17 @@ export default class Password extends ValueObject<PasswordProps> {
     return this.content.password;
   }
 
-  static create(password: string): Either<PasswordError, Password> {
+  static create(
+    password: string,
+    shouldVerify: boolean = true,
+  ): Either<
+    InstanceType<(typeof PasswordErrors)['InvalidPasswordError']>,
+    Password
+  > {
     const passwordFormated = Password.format(password);
 
-    if (!Password.isValid(passwordFormated)) {
-      return left(new PasswordError(`Password ${password} not is valid!`));
+    if (shouldVerify && !Password.isValid(passwordFormated)) {
+      return left(new PasswordErrors.InvalidPasswordError());
     }
 
     return right(new Password({ password: passwordFormated }));

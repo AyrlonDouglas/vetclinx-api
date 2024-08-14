@@ -1,5 +1,5 @@
-import JWTTokenService from './token.service';
-import TokenServiceErrors from './token.service.errors';
+import JWTTokenService from './jwtToken.service';
+import TokenServiceErrors from './jwtToken.service.errors';
 
 describe('JWTTokenService', () => {
   describe(`create`, () => {

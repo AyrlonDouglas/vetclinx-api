@@ -13,6 +13,7 @@
     "paths": {
       "@modules/*":["src/modules/*"],
       "@shared/*":["src/shared/*"],
+      "@common/*":["src/common/*"],
       "@helpers/*":["src/helpers/*"],
     },
     "incremental": true,

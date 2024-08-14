@@ -1,15 +1,14 @@
-import AuthenticationService from './authentication.service';
 import Credential from '../../valueObjects/credential/credential.valueObject';
 import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
 import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
 import AuthenticationErrors from './authentication.errors';
-import TokenServiceErrors from '@modules/auth/infra/services/token/token.service.errors';
+import TokenServiceErrors from '@modules/shared/infra/token/jwtToken.service.errors';
 import Token from '../../valueObjects/token/token.objectValue';
 import AuthTestFactory from '@modules/auth/test/AuthTestfactory';
 import { left } from '@shared/core/either';
 
 describe('AuthenticationService', () => {
-  const makeSut = () => {
+  const makeSut = async () => {
     const invalidCredential = Credential.create({
       email: Email.create('teste@teste.com').value as Email,
       password: Password.create('SinvalidForte12@!').value as Password,
@@ -20,10 +19,10 @@ describe('AuthenticationService', () => {
       password: Password.create('SenhaForte54!').value as Password,
     }).value as Credential;
 
-    const { config, tokenService, userRepository, validCredential } =
-      new AuthTestFactory();
+    const { tokenService, validCredential, authenticationService } =
+      await new AuthTestFactory().prepare();
 
-    const sut = new AuthenticationService(userRepository, tokenService, config);
+    const sut = authenticationService;
 
     return {
       sut,
@@ -36,7 +35,7 @@ describe('AuthenticationService', () => {
 
   describe(`signIn`, () => {
     test('Should return left containing InvalidCredentialError when invalid credentials', async () => {
-      const { sut, invalidCredential, invalidCredential2 } = makeSut();
+      const { sut, invalidCredential, invalidCredential2 } = await makeSut();
 
       const result = await sut.signIn(invalidCredential);
       const result2 = await sut.signIn(invalidCredential2);
@@ -55,12 +54,13 @@ describe('AuthenticationService', () => {
     });
 
     test('Should return left containing TokenError when secret invalid', async () => {
-      const { sut, validCredential, tokenService } = makeSut();
+      const { sut, validCredential, tokenService } = await makeSut();
       jest
         .spyOn(tokenService, 'create')
         .mockResolvedValue(
           left(new TokenServiceErrors.InvalidInputError('invalid')),
         );
+
       const result = await sut.signIn(validCredential);
 
       expect(result).toBeDefined();
@@ -69,7 +69,7 @@ describe('AuthenticationService', () => {
     });
 
     test('Should return rigth containing Token when credentials is valid', async () => {
-      const { sut, validCredential } = makeSut();
+      const { sut, validCredential } = await makeSut();
 
       const result = await sut.signIn(validCredential);
 

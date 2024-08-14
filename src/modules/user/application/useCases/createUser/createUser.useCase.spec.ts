@@ -7,6 +7,8 @@ import CreateUserErrors from './createUser.errors';
 
 import CreateUserUseCase from './createUser.useCase';
 import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
+import BcryptHashService from '@modules/shared/infra/hash/bcrytHash.service';
+import PasswordFactory from '@modules/user/domain/valueObjects/password/password.factory';
 
 describe('CreateUserUseCase', () => {
   const makeSut = () => {
@@ -21,8 +23,10 @@ describe('CreateUserUseCase', () => {
     });
 
     const userRepository = new FakeUserRepository([userMock.value as User]);
+    const hashService = new BcryptHashService();
+    const passwordFactory = new PasswordFactory(hashService);
 
-    const sut = new CreateUserUseCase(userRepository);
+    const sut = new CreateUserUseCase(userRepository, passwordFactory);
 
     const input = {
       name: 'Ayrlon',
@@ -48,12 +52,11 @@ describe('CreateUserUseCase', () => {
     if (result.isRight()) {
       expect(result.value).toBeDefined();
       expect(result.value).toHaveProperty('id', expect.any(String));
-
       const userCreated = await userRepository.findById(result.value.id);
       expect(userCreated.props.username).toEqual(input.username);
       expect(userCreated.props.email.value).toEqual(input.email);
       expect(userCreated.props.name).toEqual(input.name);
-      expect(userCreated.props.password.value).toEqual(input.password);
+      expect(userCreated.props.password.value).toBeTruthy();
     }
   });
 
@@ -77,7 +80,7 @@ describe('CreateUserUseCase', () => {
     const result = await sut.perform({ ...input, username: username });
 
     expect(result.isLeft()).toBe(true);
-    expect(result.value).toBeInstanceOf(CreateUserErrors.usernameTakenError);
+    expect(result.value).toBeInstanceOf(CreateUserErrors.UsernameTakenError);
   });
 
   test('Should return left when input is alread exist account with same email', async () => {
@@ -88,7 +91,7 @@ describe('CreateUserUseCase', () => {
 
     expect(result.isLeft()).toBe(true);
     expect(result.value).toBeInstanceOf(
-      CreateUserErrors.emailAlreadyExistsError,
+      CreateUserErrors.EmailAlreadyExistsError,
     );
   });
 });

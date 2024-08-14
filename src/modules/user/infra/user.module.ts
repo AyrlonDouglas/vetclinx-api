@@ -9,20 +9,32 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserModel, UserSchema } from './schemas/user.schema';
 import UserMongooseRepository from './repositories/UserMongoose.repository';
 import RemoveUserByIdUseCase from '../application/useCases/removeUserById/removeUserById.userCase';
+import { SharedModule } from '@modules/shared/infra/shared.module';
+import PasswordFactory from '../domain/valueObjects/password/password.factory';
+import HashService from '@modules/shared/domain/hash.service';
 
 @Module({
   controllers: [UserController],
   imports: [
     MongooseModule.forFeature([{ name: UserModel.name, schema: UserSchema }]),
+    SharedModule,
   ],
   providers: [
     UserMongooseRepository,
     { provide: UserRepository, useClass: UserMongooseRepository },
     {
+      provide: PasswordFactory,
+      useFactory: (hashService: HashService) =>
+        new PasswordFactory(hashService),
+      inject: [HashService],
+    },
+    {
       provide: CreateUserUseCase,
-      useFactory: (userRepository: UserRepository) =>
-        new CreateUserUseCase(userRepository),
-      inject: [UserRepository],
+      useFactory: (
+        userRepository: UserRepository,
+        passwordFactory: PasswordFactory,
+      ) => new CreateUserUseCase(userRepository, passwordFactory),
+      inject: [UserRepository, PasswordFactory],
     },
     {
       provide: GetUserByUsernameUseCase,
@@ -67,6 +79,6 @@ import RemoveUserByIdUseCase from '../application/useCases/removeUserById/remove
       ],
     },
   ],
-  exports: [UserRepository],
+  exports: [UserRepository, PasswordFactory],
 })
 export class UserModule {}

@@ -5,10 +5,12 @@ import SignInUseCase from '../application/useCases/signIn/signIn.useCase';
 import AuthenticationService from '../domain/services/authentication/authentication.service';
 import { UserRepository } from '@modules/user/application/repositories/user.repository';
 import { Config } from '@modules/config/ports/config';
-import TokenService from '../domain/services/token.service';
+import TokenService from '../../shared/domain/token.service';
 import { UserModule } from '@modules/user/infra/user.module';
-import JWTTokenService from './services/token/token.service';
+import JWTTokenService from '../../shared/infra/token/jwtToken.service';
 import { ConfigsModule } from '@modules/config/infra/config.module';
+import { SharedModule } from '@modules/shared/infra/shared.module';
+import HashService from '@modules/shared/domain/hash.service';
 
 @Module({
   controllers: [AuthController],
@@ -20,8 +22,15 @@ import { ConfigsModule } from '@modules/config/infra/config.module';
         userRepository: UserRepository,
         tokenService: TokenService,
         config: Config,
-      ) => new AuthenticationService(userRepository, tokenService, config),
-      inject: [UserRepository, TokenService, Config],
+        hashService: HashService,
+      ) =>
+        new AuthenticationService(
+          userRepository,
+          tokenService,
+          config,
+          hashService,
+        ),
+      inject: [UserRepository, TokenService, Config, HashService],
     },
     {
       provide: SignInUseCase,
@@ -37,6 +46,6 @@ import { ConfigsModule } from '@modules/config/infra/config.module';
     },
   ],
   exports: [],
-  imports: [UserModule, ConfigsModule],
+  imports: [UserModule, ConfigsModule, SharedModule],
 })
 export default class AuthModule {}

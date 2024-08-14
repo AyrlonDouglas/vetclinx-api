@@ -4,16 +4,20 @@ import Credential from '@modules/auth/domain/valueObjects/credential/credential.
 import Email, {
   EmailError,
 } from '@modules/user/domain/valueObjects/email/email.valueObject';
-import Password, {
-  PasswordError,
-} from '@modules/user/domain/valueObjects/password/password.valueObject';
 import { InspetorError } from '@shared/core/inspetor';
 import { Either, left, right } from '@shared/core/either';
 import AuthenticationService from '@modules/auth/domain/services/authentication/authentication.service';
 import { SignInDTO } from './signIn.dto';
 import SignInError from './signIn.errors';
+import PasswordErrors from '@modules/user/domain/valueObjects/password/password.errors';
+import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
 
-type Response = Either<InspetorError | EmailError | PasswordError, Token>;
+type Response = Either<
+  | InspetorError
+  | EmailError
+  | InstanceType<(typeof PasswordErrors)['InvalidPasswordError']>,
+  Token
+>;
 
 export default class SignInUseCase implements UseCase<SignInDTO, Response> {
   constructor(private readonly authenticationService: AuthenticationService) {}
@@ -21,7 +25,7 @@ export default class SignInUseCase implements UseCase<SignInDTO, Response> {
   async perform(request?: SignInDTO): Promise<Response> {
     const emailOrError = Email.create(request.email);
     const passwordOrError = Password.create(request.password);
-    SignInError;
+
     if (emailOrError.isLeft()) {
       return left(new SignInError.UnauthorizedError());
     }
@@ -30,8 +34,8 @@ export default class SignInUseCase implements UseCase<SignInDTO, Response> {
     }
 
     const credentialOrError = Credential.create({
-      email: emailOrError.value as Email,
-      password: passwordOrError.value as Password,
+      email: emailOrError.value,
+      password: passwordOrError.value,
     });
 
     if (credentialOrError.isLeft()) {
