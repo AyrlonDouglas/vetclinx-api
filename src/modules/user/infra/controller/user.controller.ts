@@ -1,10 +1,14 @@
+import { UserMapper } from '@modules/user/application/mappers/user.mapper';
 import { CreateUserDTO } from '@modules/user/application/useCases/createUser/createUser.dto';
 import UserUseCases from '@modules/user/application/useCases/user.useCases';
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userUseCases: UserUseCases) {}
+  constructor(
+    private readonly userUseCases: UserUseCases,
+    private readonly userMapper: UserMapper,
+  ) {}
 
   @Post()
   async create(@Body() createUserDTO: CreateUserDTO) {
@@ -25,14 +29,14 @@ export class UserController {
     });
 
     if (result.isLeft()) throw result.value;
-    return result.value;
+    return this.userMapper.toDTO(result.value);
   }
 
   @Get('/:id')
   async findOneById(@Param('id') id: string) {
     const result = await this.userUseCases.getUserById.perform({ id });
     if (result.isLeft()) throw result.value;
-    return result.value;
+    return this.userMapper.toDTO(result.value);
   }
 
   // @Get()

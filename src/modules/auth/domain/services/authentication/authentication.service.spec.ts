@@ -3,8 +3,8 @@ import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
 import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
 import AuthenticationErrors from './authentication.errors';
 import TokenServiceErrors from '@modules/shared/infra/token/jwtToken.service.errors';
-import Token from '../../valueObjects/token/token.objectValue';
-import AuthTestFactory from '@modules/auth/test/AuthTestfactory';
+import Token from '../../valueObjects/token/token.valueObject';
+import AuthTestSetup from '@modules/auth/test/AuthTest.setup';
 import { left } from '@common/core/either';
 
 describe('AuthenticationService', () => {
@@ -20,7 +20,7 @@ describe('AuthenticationService', () => {
     }).value as Credential;
 
     const { tokenService, validCredential, authenticationService } =
-      await new AuthTestFactory().prepare();
+      await new AuthTestSetup().prepare();
 
     const sut = authenticationService;
 

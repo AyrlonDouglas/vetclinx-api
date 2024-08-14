@@ -1,12 +1,12 @@
 import SignInUseCase from './signIn.useCase';
-import AuthTestFactory from '@modules/auth/test/AuthTestfactory';
-import Token from '@modules/auth/domain/valueObjects/token/token.objectValue';
+import AuthTestSetup from '@modules/auth/test/AuthTest.setup';
+import Token from '@modules/auth/domain/valueObjects/token/token.valueObject';
 import SignInError from './signIn.errors';
 
 describe('SignInUseCase', () => {
   const makeSut = async () => {
     const { authenticationService, validCredential } =
-      await new AuthTestFactory().prepare();
+      await new AuthTestSetup().prepare();
 
     const sut = new SignInUseCase(authenticationService);
     return { sut, authenticationService, validCredential };

@@ -1,4 +1,4 @@
-import Token, { TokenError } from './token.objectValue';
+import Token, { TokenError } from './token.valueObject';
 
 describe('Token', () => {
   const makeSut = () => {

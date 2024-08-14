@@ -6,7 +6,7 @@ import TokenService, {
 } from '@modules/shared/domain/token.service';
 import Token, {
   TokenError,
-} from '@modules/auth/domain/valueObjects/token/token.objectValue';
+} from '@modules/auth/domain/valueObjects/token/token.valueObject';
 import TokenServiceErrors from './jwtToken.service.errors';
 import { Injectable } from '@nestjs/common';
 

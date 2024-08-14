@@ -1,5 +1,5 @@
 import { UseCase } from '@common/core/useCase';
-import Token from '@modules/auth/domain/valueObjects/token/token.objectValue';
+import Token from '@modules/auth/domain/valueObjects/token/token.valueObject';
 import Credential from '@modules/auth/domain/valueObjects/credential/credential.valueObject';
 import Email, {
   EmailError,

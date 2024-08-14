@@ -1,9 +1,9 @@
 import { UseCase } from '@common/core/useCase';
-import User from '@modules/user/domain/entities/user.entity';
 import { UserRepository } from '../../repositories/user.repository';
 import { GetUserByIdDTO } from './getUserById.dto';
 import { Either, left, right } from '@common/core/either';
 import Inspetor, { InspetorError } from '@common/core/inspetor';
+import User from '@modules/user/domain/entities/user.entity';
 
 type Response = Either<InspetorError, User | null>;
 

@@ -12,7 +12,7 @@ import BcryptHashService from '@modules/shared/infra/hash/bcrytHash.service';
 import PasswordFactory from '@modules/user/domain/valueObjects/password/password.factory';
 import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
 
-export default class AuthTestFactory {
+export default class AuthTestSetup {
   userRepository: UserRepository;
   validCredential: Credential;
   config: Config;

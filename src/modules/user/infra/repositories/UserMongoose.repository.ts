@@ -4,16 +4,16 @@ import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserModel } from '../schemas/user.schema';
-import { UserMongooseMapper } from '../mappers/user.mapper';
+import { UserMapper } from '../../application/mappers/user.mapper';
 
 @Injectable()
 export default class UserMongooseRepository implements UserRepository {
-  mapper: UserMongooseMapper;
+  mapper: UserMapper;
 
   constructor(
     @InjectModel(UserModel.name) private readonly userModel: Model<UserModel>,
   ) {
-    this.mapper = new UserMongooseMapper();
+    this.mapper = new UserMapper();
   }
 
   async findById(id: string): Promise<User | null> {
@@ -36,7 +36,6 @@ export default class UserMongooseRepository implements UserRepository {
 
   async save(user: User): Promise<string> {
     const userToPersistence = this.mapper.toPersistense(user);
-    console.log(userToPersistence);
     const createdUser = new this.userModel(userToPersistence);
     const savedUser = await createdUser.save();
     return savedUser._id.toString();

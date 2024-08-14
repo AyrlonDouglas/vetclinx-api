@@ -1,25 +1,11 @@
 import { InspetorError } from '@common/core/inspetor';
-import GetUserByIdUseCase from './getUserById.useCase';
-import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
 import User from '@modules/user/domain/entities/user.entity';
-import FakeUserRepository from '@modules/user/infra/repositories/fakeUser.repository';
-import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
+import { UserTestSetup } from '@modules/user/test/userTest.setup';
 
 describe('GetUserByIdUseCase', () => {
   const makeSut = () => {
-    const emailMock = Email.create('teste@teste.com');
-    const passwordMock = Password.create('SenhaForte54!');
-
-    const userMock = User.create({
-      name: 'Ayrlon',
-      email: emailMock.value as Email,
-      password: passwordMock.value as Password,
-      username: 'ayrlon',
-      id: '3',
-    });
-
-    const userRepository = new FakeUserRepository([userMock.value as User]);
-    const sut = new GetUserByIdUseCase(userRepository);
+    const { getUserByIdUseCase, userMock } = new UserTestSetup().prepare();
+    const sut = getUserByIdUseCase;
     return { sut, userMock };
   };
 

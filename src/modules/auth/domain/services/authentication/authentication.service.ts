@@ -2,7 +2,7 @@ import { UserRepository } from '@modules/user/application/repositories/user.repo
 import Credential from '../../valueObjects/credential/credential.valueObject';
 import { Either, left, right } from '@common/core/either';
 import TokenService from '../../../../shared/domain/token.service';
-import Token, { TokenError } from '../../valueObjects/token/token.objectValue';
+import Token, { TokenError } from '../../valueObjects/token/token.valueObject';
 import { Config } from '@modules/config/ports/config';
 import AuthenticationErros from './authentication.errors';
 import HashService from '@modules/shared/domain/hash.service';
