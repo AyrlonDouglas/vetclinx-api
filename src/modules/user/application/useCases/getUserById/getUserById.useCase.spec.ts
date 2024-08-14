@@ -1,4 +1,4 @@
-import { InspetorError } from '@shared/core/inspetor';
+import { InspetorError } from '@common/core/inspetor';
 import GetUserByIdUseCase from './getUserById.useCase';
 import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
 import User from '@modules/user/domain/entities/user.entity';

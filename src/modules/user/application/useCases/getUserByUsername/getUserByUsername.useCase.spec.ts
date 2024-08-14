@@ -1,4 +1,4 @@
-import { InspetorError } from '@shared/core/inspetor';
+import { InspetorError } from '@common/core/inspetor';
 import GetUserByUsernameUseCase from './getUserByUsername.useCase';
 import User from '@modules/user/domain/entities/user.entity';
 import FakeUserRepository from '@modules/user/infra/repositories/fakeUser.repository';

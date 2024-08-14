@@ -1,6 +1,6 @@
 import { UserRepository } from '@modules/user/application/repositories/user.repository';
 import Credential from '../../valueObjects/credential/credential.valueObject';
-import { Either, left, right } from '@shared/core/either';
+import { Either, left, right } from '@common/core/either';
 import TokenService from '../../../../shared/domain/token.service';
 import Token, { TokenError } from '../../valueObjects/token/token.objectValue';
 import { Config } from '@modules/config/ports/config';
@@ -30,7 +30,9 @@ export default class AuthenticationService {
     if (!user) {
       return left(new AuthenticationErros.InvalidCredentialError());
     }
-
+    console.log(user);
+    console.log(credential.props);
+    console.log(user.props.password.value);
     const passMatch = await this.hashService.compare(
       credential.props.password.value,
       user.props.password.value,

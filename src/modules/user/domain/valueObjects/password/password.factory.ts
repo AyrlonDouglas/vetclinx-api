@@ -1,6 +1,6 @@
 import HashService from '@modules/shared/domain/hash.service';
 import Password from './password.valueObject';
-import { Either, left, right } from '@shared/core/either';
+import { Either, left, right } from '@common/core/either';
 import PasswordErrors from './password.errors';
 
 export default class PasswordFactory {

@@ -1,4 +1,4 @@
-import { InspetorError } from '@shared/core/inspetor';
+import { InspetorError } from '@common/core/inspetor';
 import Email from '../valueObjects/email/email.valueObject';
 import User from './user.entity';
 import Password from '../valueObjects/password/password.valueObject';

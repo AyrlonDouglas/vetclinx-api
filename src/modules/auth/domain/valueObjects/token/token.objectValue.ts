@@ -1,5 +1,5 @@
-import { Either, left, right } from '@shared/core/either';
-import Inspetor from '@shared/core/inspetor';
+import { Either, left, right } from '@common/core/either';
+import Inspetor from '@common/core/inspetor';
 
 // TODO: criar testes
 // TODO: criar error

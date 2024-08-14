@@ -1,4 +1,4 @@
-import { UseCase } from '@shared/core/useCase';
+import { UseCase } from '@common/core/useCase';
 import { UserRepository } from '@modules/user/application/repositories/user.repository';
 import { CreateUserDTO } from './createUser.dto';
 import User from '@modules/user/domain/entities/user.entity';
@@ -6,8 +6,8 @@ import Email, {
   EmailError,
 } from '@modules/user/domain/valueObjects/email/email.valueObject';
 import CreateUserErrors from './createUser.errors';
-import { Either, left, right } from '@shared/core/either';
-import { InspetorError } from '@shared/core/inspetor';
+import { Either, left, right } from '@common/core/either';
+import { InspetorError } from '@common/core/inspetor';
 import PasswordFactory from '@modules/user/domain/valueObjects/password/password.factory';
 
 type Response = Either<

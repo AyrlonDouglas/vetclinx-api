@@ -1,5 +1,5 @@
-import { Either, left, right } from '@shared/core/either';
-import ValueObject from '@shared/core/valueObject';
+import { Either, left, right } from '@common/core/either';
+import ValueObject from '@common/core/valueObject';
 
 export class EmailError extends Error {
   constructor(message: string) {

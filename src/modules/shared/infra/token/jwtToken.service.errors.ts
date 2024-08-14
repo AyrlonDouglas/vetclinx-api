@@ -1,5 +1,5 @@
-import BaseError from '@shared/errors/baseError.error';
-import { HttpStatusCode } from '@shared/http/httpStatusCode';
+import BaseError from '@common/errors/baseError.error';
+import { HttpStatusCode } from '@common/http/httpStatusCode';
 
 class InvalidInputError extends BaseError {
   constructor(message: string) {

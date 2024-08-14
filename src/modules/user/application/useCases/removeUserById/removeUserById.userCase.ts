@@ -1,8 +1,8 @@
-import { UseCase } from '@shared/core/useCase';
+import { UseCase } from '@common/core/useCase';
 import { RemoveUserByIdDTO } from './removeUserById.dto';
 import { UserRepository } from '../../repositories/user.repository';
-import Inspetor, { InspetorError } from '@shared/core/inspetor';
-import { Either, left, right } from '@shared/core/either';
+import Inspetor, { InspetorError } from '@common/core/inspetor';
+import { Either, left, right } from '@common/core/either';
 
 type Response = Either<InspetorError, string>;
 

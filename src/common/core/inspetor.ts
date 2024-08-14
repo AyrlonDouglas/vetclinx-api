@@ -1,6 +1,6 @@
-import BaseError from '@shared/errors/baseError.error';
+import BaseError from '@common/errors/baseError.error';
 import { Either, left, right } from './either';
-import { HttpStatusCode } from '@shared/http/httpStatusCode';
+import { HttpStatusCode } from '@common/http/httpStatusCode';
 
 export type InspetorResponse = string;
 

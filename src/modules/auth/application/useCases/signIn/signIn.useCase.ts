@@ -1,11 +1,11 @@
-import { UseCase } from '@shared/core/useCase';
+import { UseCase } from '@common/core/useCase';
 import Token from '@modules/auth/domain/valueObjects/token/token.objectValue';
 import Credential from '@modules/auth/domain/valueObjects/credential/credential.valueObject';
 import Email, {
   EmailError,
 } from '@modules/user/domain/valueObjects/email/email.valueObject';
-import { InspetorError } from '@shared/core/inspetor';
-import { Either, left, right } from '@shared/core/either';
+import { InspetorError } from '@common/core/inspetor';
+import { Either, left, right } from '@common/core/either';
 import AuthenticationService from '@modules/auth/domain/services/authentication/authentication.service';
 import { SignInDTO } from './signIn.dto';
 import SignInError from './signIn.errors';

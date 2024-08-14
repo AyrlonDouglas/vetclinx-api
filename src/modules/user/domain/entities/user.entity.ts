@@ -1,5 +1,5 @@
-import { Either, left, right } from '@shared/core/either';
-import Inspetor, { InspetorError } from '@shared/core/inspetor';
+import { Either, left, right } from '@common/core/either';
+import Inspetor, { InspetorError } from '@common/core/inspetor';
 import Email from '../valueObjects/email/email.valueObject';
 import Password from '../valueObjects/password/password.valueObject';
 

@@ -5,7 +5,7 @@ import AuthenticationErrors from './authentication.errors';
 import TokenServiceErrors from '@modules/shared/infra/token/jwtToken.service.errors';
 import Token from '../../valueObjects/token/token.objectValue';
 import AuthTestFactory from '@modules/auth/test/AuthTestfactory';
-import { left } from '@shared/core/either';
+import { left } from '@common/core/either';
 
 describe('AuthenticationService', () => {
   const makeSut = async () => {

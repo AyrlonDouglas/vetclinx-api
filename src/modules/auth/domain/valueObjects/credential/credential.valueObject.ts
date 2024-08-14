@@ -1,8 +1,8 @@
 import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
 import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
-import { Either, left, right } from '@shared/core/either';
-import Inspetor from '@shared/core/inspetor';
-import ValueObject from '@shared/core/valueObject';
+import { Either, left, right } from '@common/core/either';
+import Inspetor from '@common/core/inspetor';
+import ValueObject from '@common/core/valueObject';
 
 export class CredentialError extends Error {
   constructor(message: string) {
