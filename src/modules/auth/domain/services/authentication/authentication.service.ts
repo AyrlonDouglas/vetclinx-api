@@ -30,9 +30,7 @@ export default class AuthenticationService {
     if (!user) {
       return left(new AuthenticationErros.InvalidCredentialError());
     }
-    console.log(user);
-    console.log(credential.props);
-    console.log(user.props.password.value);
+
     const passMatch = await this.hashService.compare(
       credential.props.password.value,
       user.props.password.value,
