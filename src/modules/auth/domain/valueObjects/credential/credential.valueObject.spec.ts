@@ -1,5 +1,5 @@
 import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
-import Credential, { CredentialError } from './cretendital.valueObect';
+import Credential, { CredentialError } from './credential.valueObject';
 import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
 
 describe('Credential', () => {

@@ -7,5 +7,8 @@ class InvalidCredentialError extends BaseError {
     this.name = 'InvalidCredentialError';
   }
 }
+const AuthenticationErrors = {
+  InvalidCredentialError,
+};
 
-export default { invalidCredentialError: InvalidCredentialError };
+export default AuthenticationErrors;

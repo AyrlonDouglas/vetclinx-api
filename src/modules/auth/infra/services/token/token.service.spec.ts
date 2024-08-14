@@ -35,13 +35,13 @@ describe('TokenService', () => {
       expect(result1).toBeDefined();
       expect(result1.isLeft()).toBe(true);
       expect(result1.value).toBeInstanceOf(
-        TokenServiceErrors.invalidInputError,
+        TokenServiceErrors.InvalidInputError,
       );
 
       expect(result2).toBeDefined();
       expect(result2.isLeft()).toBe(true);
       expect(result2.value).toBeInstanceOf(
-        TokenServiceErrors.invalidInputError,
+        TokenServiceErrors.InvalidInputError,
       );
     });
   });

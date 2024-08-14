@@ -20,7 +20,7 @@ export default class TokenService implements TokenPort {
 
     if (inputOrError.isLeft()) {
       return left(
-        new TokenServiceErrors.invalidInputError(inputOrError.value.message),
+        new TokenServiceErrors.InvalidInputError(inputOrError.value.message),
       );
     }
 

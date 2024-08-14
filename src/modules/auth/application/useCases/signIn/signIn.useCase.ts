@@ -1,6 +1,6 @@
 import { UseCase } from '@shared/core/useCase';
 import Token from '@modules/auth/domain/valueObjects/token/token.objectValue';
-import Credential from '@modules/auth/domain/valueObjects/credential/cretendital.valueObect';
+import Credential from '@modules/auth/domain/valueObjects/credential/credential.valueObject';
 import Email, {
   EmailError,
 } from '@modules/user/domain/valueObjects/email/email.valueObject';
@@ -11,6 +11,7 @@ import { InspetorError } from '@shared/core/inspetor';
 import { Either, left, right } from '@shared/core/either';
 import AuthenticationService from '@modules/auth/domain/services/authentication/authentication.service';
 import { SignInDTO } from './signIn.dto';
+import SignInError from './signIn.errors';
 
 type Response = Either<InspetorError | EmailError | PasswordError, Token>;
 
@@ -23,12 +24,12 @@ export default class SignInUseCase implements UseCase<SignInDTO, Response> {
   async perform(request?: SignInDTO): Promise<Response> {
     const emailOrError = Email.create(request.email);
     const passwordOrError = Password.create(request.password);
-
+    SignInError;
     if (emailOrError.isLeft()) {
-      return left(emailOrError.value);
+      return left(new SignInError.UnauthorizedError());
     }
     if (passwordOrError.isLeft()) {
-      return left(passwordOrError.value);
+      return left(new SignInError.UnauthorizedError());
     }
 
     const credentialOrError = Credential.create({
@@ -37,7 +38,7 @@ export default class SignInUseCase implements UseCase<SignInDTO, Response> {
     });
 
     if (credentialOrError.isLeft()) {
-      return left(credentialOrError.value);
+      return left(new SignInError.UnauthorizedError());
     }
 
     const signInOrError = await this.authenticationService.signIn(
@@ -45,7 +46,7 @@ export default class SignInUseCase implements UseCase<SignInDTO, Response> {
     );
 
     if (signInOrError.isLeft()) {
-      return left(signInOrError.value);
+      return left(new SignInError.UnauthorizedError());
     }
 
     return right(signInOrError.value);
