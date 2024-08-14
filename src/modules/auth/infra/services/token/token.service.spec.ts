@@ -1,14 +1,14 @@
-import TokenService from './token.service';
+import JWTTokenService from './token.service';
 import TokenServiceErrors from './token.service.errors';
 
-describe('TokenService', () => {
+describe('JWTTokenService', () => {
   describe(`create`, () => {
     const makeSut = () => {
       const payload = { name: 'teste' };
       const secretKey = 'secretKeyTest';
       const config = { expiresIn: '1h' };
 
-      const sut = new TokenService().create;
+      const sut = new JWTTokenService().create;
 
       return { sut, payload, secretKey, config };
     };

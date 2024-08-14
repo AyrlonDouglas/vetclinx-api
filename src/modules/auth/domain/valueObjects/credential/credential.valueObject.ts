@@ -2,6 +2,7 @@ import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
 import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
 import { Either, left, right } from '@shared/core/either';
 import Inspetor from '@shared/core/inspetor';
+import ValueObject from '@shared/core/valueObject';
 
 export class CredentialError extends Error {
   constructor(message: string) {
@@ -10,16 +11,15 @@ export class CredentialError extends Error {
   }
 }
 
-export default class Credential {
-  private constructor(
-    private readonly email: Email,
-    private readonly password: Password,
-  ) {}
+export default class Credential extends ValueObject<CredentialProps> {
+  private constructor(content: CredentialProps) {
+    super(content);
+  }
 
   get props(): CredentialProps {
     return {
-      email: this.email,
-      password: this.password,
+      email: this.content.email,
+      password: this.content.password,
     };
   }
 
@@ -35,7 +35,10 @@ export default class Credential {
       return left(new CredentialError(inputOrFail.value.message));
     }
 
-    const credential = new Credential(input.email, input.password);
+    const credential = new Credential({
+      email: input.email,
+      password: input.password,
+    });
 
     return right(credential);
   }

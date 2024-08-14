@@ -1,12 +1,14 @@
 import { Either } from '@shared/core/either';
 import Token, { TokenError } from '../valueObjects/token/token.objectValue';
 
-export default abstract class TokenPort {
-  create: (input: TokenPortCreateInput) => Promise<Either<TokenError, Token>>;
+export default abstract class TokenService {
+  create: (
+    input: TokenServiceCreateInput,
+  ) => Promise<Either<TokenError, Token>>;
   // verify: (token: string, secretKey: string) => void;
 }
 
-export type TokenPortCreateInput = {
+export type TokenServiceCreateInput = {
   payload: any;
   secretKey?: string;
   config?: signConfig;

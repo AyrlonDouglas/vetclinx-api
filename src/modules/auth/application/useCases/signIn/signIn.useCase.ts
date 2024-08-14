@@ -15,9 +15,6 @@ import SignInError from './signIn.errors';
 
 type Response = Either<InspetorError | EmailError | PasswordError, Token>;
 
-// TODO: criar testes
-// TODO: criar error de useCase
-
 export default class SignInUseCase implements UseCase<SignInDTO, Response> {
   constructor(private readonly authenticationService: AuthenticationService) {}
 

@@ -1,7 +1,7 @@
 import { UserRepository } from '@modules/user/application/repositories/user.repository';
 import Credential from '../../valueObjects/credential/credential.valueObject';
 import { Either, left, right } from '@shared/core/either';
-import TokenPort from '../token.port';
+import TokenService from '../token.service';
 import Token from '../../valueObjects/token/token.objectValue';
 import { Config } from '@modules/config/ports/config';
 import AuthenticationErros from './authentication.errors';
@@ -11,7 +11,7 @@ type signInResponse = Either<Error | null, Token>;
 export default class AuthenticationService {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly tokenService: TokenPort,
+    private readonly tokenService: TokenService,
     private readonly config: Config,
   ) {}
 

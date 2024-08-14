@@ -1,17 +1,17 @@
 import * as jwt from 'jsonwebtoken';
 import { Either, left, right } from '@shared/core/either';
 import Inspetor from '@shared/core/inspetor';
-import TokenPort, {
-  TokenPortCreateInput,
-} from '@modules/auth/domain/services/token.port';
+import TokenService, {
+  TokenServiceCreateInput,
+} from '@modules/auth/domain/services/token.service';
 import Token, {
   TokenError,
 } from '@modules/auth/domain/valueObjects/token/token.objectValue';
 import TokenServiceErrors from './token.service.errors';
 
-export default class TokenService implements TokenPort {
+export default class JWTTokenService implements TokenService {
   async create(
-    input: TokenPortCreateInput,
+    input: TokenServiceCreateInput,
   ): Promise<Either<TokenError, Token>> {
     const inputOrError = Inspetor.againstFalsyBulk([
       { argument: input.payload, argumentName: 'payload' },

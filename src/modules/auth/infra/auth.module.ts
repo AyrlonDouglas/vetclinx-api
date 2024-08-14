@@ -5,23 +5,23 @@ import SignInUseCase from '../application/useCases/signIn/signIn.useCase';
 import AuthenticationService from '../domain/services/authentication/authentication.service';
 import { UserRepository } from '@modules/user/application/repositories/user.repository';
 import { Config } from '@modules/config/ports/config';
-import TokenPort from '../domain/services/token.port';
+import TokenService from '../domain/services/token.service';
 import { UserModule } from '@modules/user/infra/user.module';
-import TokenService from './services/token/token.service';
+import JWTTokenService from './services/token/token.service';
 import { ConfigsModule } from '@modules/config/infra/config.module';
 
 @Module({
   controllers: [AuthController],
   providers: [
-    { provide: TokenPort, useClass: TokenService },
+    { provide: TokenService, useClass: JWTTokenService },
     {
       provide: AuthenticationService,
       useFactory: (
         userRepository: UserRepository,
-        tokenService: TokenPort,
+        tokenService: TokenService,
         config: Config,
       ) => new AuthenticationService(userRepository, tokenService, config),
-      inject: [UserRepository, TokenPort, Config],
+      inject: [UserRepository, TokenService, Config],
     },
     {
       provide: SignInUseCase,

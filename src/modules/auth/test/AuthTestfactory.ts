@@ -4,9 +4,10 @@ import Password from '@modules/user/domain/valueObjects/password/password.valueO
 import FakeUserRepository from '@modules/user/infra/repositories/fakeUser.repository';
 import Credential from '../domain/valueObjects/credential/credential.valueObject';
 import { Config } from '@modules/config/ports/config';
-import TokenService from '../infra/services/token/token.service';
-import AuthenticationService from '../domain/services/authentication/authentication.service';
 import { UserRepository } from '@modules/user/application/repositories/user.repository';
+import JWTTokenService from '../infra/services/token/token.service';
+import AuthenticationService from '../domain/services/authentication/authentication.service';
+import TokenService from '../domain/services/token.service';
 
 export default class AuthTestFactory {
   userRepository: UserRepository;
@@ -50,7 +51,7 @@ export default class AuthTestFactory {
       }),
     } as Config;
 
-    this.tokenService = new TokenService();
+    this.tokenService = new JWTTokenService();
 
     this.authenticationService = new AuthenticationService(
       this.userRepository,

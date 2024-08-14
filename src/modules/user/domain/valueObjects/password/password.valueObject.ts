@@ -1,4 +1,5 @@
 import { Either, left, right } from '@shared/core/either';
+import ValueObject from '@shared/core/valueObject';
 
 /**
  * Pelo menos 8 caracteres.
@@ -20,11 +21,13 @@ export class PasswordError extends Error {
   }
 }
 
-export default class Password {
-  private constructor(private readonly password: string) {}
+export default class Password extends ValueObject<PasswordProps> {
+  private constructor(content: PasswordProps) {
+    super(content);
+  }
 
   get value() {
-    return this.password;
+    return this.content.password;
   }
 
   static create(password: string): Either<PasswordError, Password> {
@@ -34,7 +37,7 @@ export default class Password {
       return left(new PasswordError(`Password ${password} not is valid!`));
     }
 
-    return right(new Password(passwordFormated));
+    return right(new Password({ password: passwordFormated }));
   }
 
   static isValid(password: string): boolean {
@@ -45,3 +48,7 @@ export default class Password {
     return password?.trim();
   }
 }
+
+type PasswordProps = {
+  password: string;
+};
