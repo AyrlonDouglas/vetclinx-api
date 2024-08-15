@@ -1,10 +1,11 @@
+import { PayloadToken } from '@modules/shared/domain/token.service';
 import JWTTokenService from './jwtToken.service';
 import TokenServiceErrors from './jwtToken.service.errors';
 
 describe('JWTTokenService', () => {
   describe(`create`, () => {
     const makeSut = () => {
-      const payload = { name: 'teste' };
+      const payload = { userId: '123' };
       const secretKey = 'secretKeyTest';
       const config = { expiresIn: '1h' };
 
@@ -29,7 +30,7 @@ describe('JWTTokenService', () => {
     test('Should be return a TokenServiceInvalidInputError when input is invalid', async () => {
       const { sut, payload, secretKey } = makeSut();
 
-      const result1 = await sut({ payload: '', secretKey });
+      const result1 = await sut({ payload: {} as PayloadToken, secretKey });
       const result2 = await sut({ payload, secretKey: '' });
 
       expect(result1).toBeDefined();
