@@ -4,7 +4,7 @@ import { HttpStatusCode } from '@common/http/httpStatusCode';
 class UnauthorizedError extends BaseError {
   constructor() {
     super([`Unauthorized`], HttpStatusCode.UNAUTHORIZED);
-    this.name = 'UnauthorizedError';
+    this.name = 'SignInErrorUnauthorizedError';
   }
 }
 

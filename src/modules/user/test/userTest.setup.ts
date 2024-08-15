@@ -34,6 +34,7 @@ export class UserTestSetup {
     this.userMock = userMock.value;
 
     this.userRepository = new FakeUserRepository([this.userMock]);
+
     this.getUserByIdUseCase = new GetUserByIdUseCase(this.userRepository);
     return this;
   }

@@ -7,9 +7,16 @@ class InvalidInputError extends BaseError {
     this.name = 'TokenServiceInvalidInputError';
   }
 }
+class InvalidTokenPayloadError extends BaseError {
+  constructor() {
+    super([`Invalid payload.`], HttpStatusCode.NOT_FOUND);
+    this.name = 'TokenServiceInvalidTokenPayloadError';
+  }
+}
 
 const TokenServiceErrors = {
   InvalidInputError,
+  InvalidTokenPayloadError,
 };
 
 export default TokenServiceErrors;

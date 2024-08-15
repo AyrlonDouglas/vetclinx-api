@@ -7,7 +7,7 @@ class UserNotFoundError extends BaseError {
       [`No user with the username ${username} was found`],
       HttpStatusCode.NOT_FOUND,
     );
-    this.name = 'UserNotFoundError';
+    this.name = 'GetUserByUsernameUserNotFoundError';
   }
 }
 

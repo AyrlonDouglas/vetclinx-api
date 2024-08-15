@@ -4,7 +4,7 @@ import { HttpStatusCode } from '@common/http/httpStatusCode';
 class UserNotFoundError extends BaseError {
   constructor(id: string) {
     super([`No user with the id ${id} was found`], HttpStatusCode.NOT_FOUND);
-    this.name = 'UserNotFoundError';
+    this.name = 'GetUserByIdUserNotFoundError';
   }
 }
 

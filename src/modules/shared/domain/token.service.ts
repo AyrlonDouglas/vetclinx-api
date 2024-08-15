@@ -7,11 +7,15 @@ export default abstract class TokenService {
   create: (
     input: TokenServiceCreateInput,
   ) => Promise<Either<TokenError, Token>>;
-  // verify: (token: string, secretKey: string) => void;
+  verifyAsync: (
+    input: TokenServiceVerifyAsyncInput,
+  ) => Promise<VerifyAsyncResult>;
 }
 
+export type PayloadToken = { userId: string };
+
 export type TokenServiceCreateInput = {
-  payload: any;
+  payload: PayloadToken;
   secretKey?: string;
   config?: signConfig;
 };
@@ -20,3 +24,10 @@ type signConfig = {
   expiresIn?: string;
   algorithm?: string;
 };
+
+export type TokenServiceVerifyAsyncInput = {
+  token: string;
+  secretKey: string;
+};
+
+export type VerifyAsyncResult = Either<Error, PayloadToken>;

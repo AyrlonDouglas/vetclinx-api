@@ -7,7 +7,7 @@ class UsernameTakenError extends BaseError {
       [`The username ${username} was already taken`],
       HttpStatusCode.CONFLICT,
     );
-    this.name = 'UsernameTakenError';
+    this.name = 'CreatUserUsernameTakenError';
   }
 }
 
@@ -17,14 +17,14 @@ class EmailAlreadyExistsError extends BaseError {
       [`The email ${email} associated for this account already exists`],
       HttpStatusCode.CONFLICT,
     );
-    this.name = 'EmailAlreadyExistsError';
+    this.name = 'CreatUserEmailAlreadyExistsError';
   }
 }
 
 class InvalidPasswordError extends BaseError {
   constructor() {
     super([`Password is invalid!`], HttpStatusCode.NOT_ACCEPTABLE);
-    this.name = 'InvalidPasswordError';
+    this.name = 'CreatUserInvalidPasswordError';
   }
 }
 const CreatUserErrors = {

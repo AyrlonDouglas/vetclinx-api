@@ -2,7 +2,10 @@ import * as jwt from 'jsonwebtoken';
 import { Either, left, right } from '@common/core/either';
 import Inspetor from '@common/core/inspetor';
 import TokenService, {
+  PayloadToken,
   TokenServiceCreateInput,
+  TokenServiceVerifyAsyncInput,
+  VerifyAsyncResult,
 } from '@modules/shared/domain/token.service';
 import Token, {
   TokenError,
@@ -17,6 +20,7 @@ export default class JWTTokenService implements TokenService {
   ): Promise<Either<TokenError, Token>> {
     const inputOrError = Inspetor.againstFalsyBulk([
       { argument: input.payload, argumentName: 'payload' },
+      { argument: input.payload.userId, argumentName: 'payload-user' },
       { argument: input.secretKey, argumentName: 'secretKey' },
     ]);
 
@@ -40,5 +44,28 @@ export default class JWTTokenService implements TokenService {
     }
 
     return right(token.value);
+  }
+
+  async verifyAsync(
+    input: TokenServiceVerifyAsyncInput,
+  ): Promise<VerifyAsyncResult> {
+    return new Promise((resolve) => {
+      jwt.verify(input.token, input.secretKey, (err, decoded) => {
+        if (err) {
+          return resolve(left(err));
+        }
+
+        if (
+          typeof decoded === 'object' &&
+          decoded !== null &&
+          'userId' in decoded
+        ) {
+          const payload = { userId: (decoded as any).userId } as PayloadToken;
+          return resolve(right(payload));
+        }
+
+        return resolve(left(new TokenServiceErrors.InvalidTokenPayloadError()));
+      });
+    });
   }
 }
