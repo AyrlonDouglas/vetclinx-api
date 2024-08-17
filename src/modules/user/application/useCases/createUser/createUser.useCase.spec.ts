@@ -1,32 +1,16 @@
-import User from '@modules/user/domain/entities/user.entity';
-import FakeUserRepository from '@modules/user/infra/repositories/fakeUser.repository';
-import Email, {
-  EmailError,
-} from '@modules/user/domain/valueObjects/email/email.valueObject';
+import { EmailError } from '@modules/user/domain/valueObjects/email/email.valueObject';
 import CreateUserErrors from './createUser.errors';
 
-import CreateUserUseCase from './createUser.useCase';
-import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
-import BcryptHashService from '@modules/shared/infra/hash/bcrytHash.service';
-import PasswordFactory from '@modules/user/domain/valueObjects/password/password.factory';
+import { UserTestSetup } from '@modules/user/test/userTest.setup';
+import { left } from '@common/core/either';
+import PasswordErrors from '@modules/user/domain/valueObjects/password/password.errors';
+import User from '@modules/user/domain/entities/user.entity';
+import { InspetorError } from '@common/core/inspetor';
 
 describe('CreateUserUseCase', () => {
   const makeSut = () => {
-    const emailMock = Email.create('teste@teste.com');
-    const passwordMock = Password.create('SenhaForte54!');
-
-    const userMock = User.create({
-      name: 'Ayrlon',
-      email: emailMock.value as Email,
-      password: passwordMock.value as Password,
-      username: 'ayrlon',
-    });
-
-    const userRepository = new FakeUserRepository([userMock.value as User]);
-    const hashService = new BcryptHashService();
-    const passwordFactory = new PasswordFactory(hashService);
-
-    const sut = new CreateUserUseCase(userRepository, passwordFactory);
+    const { createUserUseCase, userRepository, passwordFactory } =
+      new UserTestSetup().prepare();
 
     const input = {
       name: 'Ayrlon',
@@ -36,9 +20,10 @@ describe('CreateUserUseCase', () => {
     };
 
     return {
-      sut,
+      sut: createUserUseCase,
       userRepository,
       input,
+      passwordFactory,
     };
   };
 
@@ -93,5 +78,29 @@ describe('CreateUserUseCase', () => {
     expect(result.value).toBeInstanceOf(
       CreateUserErrors.EmailAlreadyExistsError,
     );
+  });
+
+  test('Should reuturn left when passwordFactory.create fail', async () => {
+    const { sut, input, passwordFactory } = makeSut();
+
+    jest
+      .spyOn(passwordFactory, 'create')
+      .mockResolvedValueOnce(left(new PasswordErrors.InvalidPasswordError()));
+
+    const result = await sut.perform(input);
+
+    expect(result.isLeft()).toBe(true);
+    expect(result.value).toBeInstanceOf(PasswordErrors.InvalidPasswordError);
+  });
+
+  test('Should reuturn left when passwordFactory.create fail', async () => {
+    const { sut, input } = makeSut();
+
+    jest.spyOn(User, 'create').mockReturnValueOnce(left(new InspetorError('')));
+
+    const result = await sut.perform(input);
+
+    expect(result.isLeft()).toBe(true);
+    expect(result.value).toBeInstanceOf(InspetorError);
   });
 });

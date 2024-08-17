@@ -1,14 +1,14 @@
 import CreateUserUseCase from './createUser/createUser.useCase';
 import GetUserByIdUseCase from './getUserById/getUserById.useCase';
 import GetUserByUsernameUseCase from './getUserByUsername/getUserByUsername.useCase';
-import RemoveUserByIdUserCase from './removeUserById/removeUserById.userCase';
+import RemoveUserByIdUseCase from './removeUserById/removeUserById.useCase';
 
 export default class UserUseCases {
   constructor(
     private readonly getUserByUsernameUseCase: GetUserByUsernameUseCase,
     private readonly createUserUseCase: CreateUserUseCase,
     private readonly getUserByIdUserCase: GetUserByIdUseCase,
-    private readonly removeUserByIdUserCase: RemoveUserByIdUserCase,
+    private readonly removeUserByIdUserCase: RemoveUserByIdUseCase,
   ) {}
 
   get createUser() {

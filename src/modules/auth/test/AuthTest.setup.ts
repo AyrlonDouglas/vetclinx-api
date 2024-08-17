@@ -20,6 +20,8 @@ export default class AuthTestSetup {
   authenticationService: AuthenticationService;
   hashService: HashService;
   passwordFactory: PasswordFactory;
+  validEmail: Email;
+  validPassword: Password;
 
   constructor() {}
 
@@ -27,19 +29,21 @@ export default class AuthTestSetup {
     this.hashService = new BcryptHashService();
     this.passwordFactory = new PasswordFactory(this.hashService);
 
-    const emailMock = Email.create('teste@teste.com');
-    if (emailMock.isLeft()) throw new Error('email fail');
+    const validEmail = Email.create('teste@teste.com');
+    if (validEmail.isLeft()) throw new Error('email fail');
+    this.validEmail = validEmail.value;
 
     const pass = 'SenhaForte54!';
-    const passwordRawMock = Password.create(pass);
-    if (passwordRawMock.isLeft()) throw new Error('passwordRawMock fail');
+    const validPassword = Password.create(pass);
+    if (validPassword.isLeft()) throw new Error('validPassword fail');
+    this.validPassword = validPassword.value;
 
     const hashedPass = await this.passwordFactory.create(pass);
     if (hashedPass.isLeft()) throw new Error('hashedPass fail');
 
     const userMock = User.create({
       name: 'Ayrlon',
-      email: emailMock.value,
+      email: validEmail.value,
       password: hashedPass.value,
       username: 'ayrlon',
     });
@@ -48,8 +52,8 @@ export default class AuthTestSetup {
     this.userRepository.save(userMock.value as User);
 
     this.validCredential = Credential.create({
-      email: emailMock.value,
-      password: passwordRawMock.value,
+      email: validEmail.value,
+      password: validPassword.value,
     }).value as Credential;
 
     this.config = {

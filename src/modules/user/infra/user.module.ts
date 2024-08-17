@@ -8,7 +8,7 @@ import UserUseCases from '@modules/user/application/useCases/user.useCases';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModel, UserSchema } from './schemas/user.schema';
 import UserMongooseRepository from './repositories/UserMongoose.repository';
-import RemoveUserByIdUseCase from '../application/useCases/removeUserById/removeUserById.userCase';
+import RemoveUserByIdUseCase from '../application/useCases/removeUserById/removeUserById.useCase';
 import { SharedModule } from '@modules/shared/infra/shared.module';
 import PasswordFactory from '../domain/valueObjects/password/password.factory';
 import HashService from '@modules/shared/domain/hash.service';
