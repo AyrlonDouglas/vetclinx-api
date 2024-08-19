@@ -5,7 +5,7 @@ import { left } from '@common/core/either';
 import Credential from '@modules/auth/domain/valueObjects/credential/credential.valueObject';
 import AuthenticationErrors from '@modules/auth/domain/services/authentication/authentication.errors';
 import Token from '@modules/auth/domain/valueObjects/token/token.valueObject';
-import AuthTestSetup from '@moduleTest/auth/test/AuthTest.setup';
+import AuthTestSetup from '@modulesTest/auth/test/AuthTest.setup';
 
 describe('AuthenticationService', () => {
   const makeSut = async () => {

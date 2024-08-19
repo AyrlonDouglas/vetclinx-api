@@ -1,6 +1,6 @@
 import { InspetorError } from '@common/core/inspetor';
 import User from '@modules/user/domain/entities/user.entity';
-import { UserTestSetup } from '@moduleTest/user/test/userTest.setup';
+import { UserTestSetup } from '@modulesTest/user/test/userTest.setup';
 
 describe('GetUserByIdUseCase', () => {
   const makeSut = () => {

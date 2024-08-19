@@ -77,7 +77,7 @@
       "^@modules/(.*)$": "<rootDir>/src/modules/$1",
       "^@common/(.*)$": "<rootDir>/src/common/$1",
       "^@helpers/(.*)$": "<rootDir>/src/helpers/$1",
-      "^@moduleTest/(.*)$": "<rootDir>/test/units/modules/$1"
+      "^@modulesTest/(.*)$": "<rootDir>/test/units/modules/$1"
     }
   }
 }

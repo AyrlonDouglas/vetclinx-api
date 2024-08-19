@@ -1,6 +1,6 @@
 import AuthUseCases from '@modules/auth/application/useCases/auth.useCases';
 import SignInUseCase from '@modules/auth/application/useCases/signIn/signIn.useCase';
-import AuthTestSetup from '@moduleTest/auth/test/AuthTest.setup';
+import AuthTestSetup from '@modulesTest/auth/test/AuthTest.setup';
 
 describe('AuthUserCases', () => {
   const makeSut = async () => {

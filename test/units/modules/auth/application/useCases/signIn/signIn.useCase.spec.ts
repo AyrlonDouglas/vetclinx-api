@@ -3,7 +3,7 @@ import Credential from '@modules/auth/domain/valueObjects/credential/credential.
 import { left, right } from '@common/core/either';
 import SignInUseCase from '@modules/auth/application/useCases/signIn/signIn.useCase';
 import SignInError from '@modules/auth/application/useCases/signIn/signIn.errors';
-import AuthTestSetup from '@moduleTest/auth/test/AuthTest.setup';
+import AuthTestSetup from '@modulesTest/auth/test/AuthTest.setup';
 
 describe('SignInUseCase', () => {
   const makeSut = async () => {

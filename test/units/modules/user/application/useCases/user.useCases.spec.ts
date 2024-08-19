@@ -2,7 +2,7 @@ import CreateUserUseCase from '@modules/user/application/useCases/createUser/cre
 import GetUserByIdUseCase from '@modules/user/application/useCases/getUserById/getUserById.useCase';
 import GetUserByUsernameUseCase from '@modules/user/application/useCases/getUserByUsername/getUserByUsername.useCase';
 import RemoveUserByIdUseCase from '@modules/user/application/useCases/removeUserById/removeUserById.useCase';
-import { UserTestSetup } from '@moduleTest/user/test/userTest.setup';
+import { UserTestSetup } from '@modulesTest/user/test/userTest.setup';
 
 describe('UserUseCases', () => {
   const makeSut = () => {

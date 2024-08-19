@@ -5,7 +5,7 @@ import PasswordErrors from '@modules/user/domain/valueObjects/password/password.
 import User from '@modules/user/domain/entities/user.entity';
 import { InspetorError } from '@common/core/inspetor';
 import CreateUserErrors from '@modules/user/application/useCases/createUser/createUser.errors';
-import { UserTestSetup } from '@moduleTest/user/test/userTest.setup';
+import { UserTestSetup } from '@modulesTest/user/test/userTest.setup';
 
 describe('CreateUserUseCase', () => {
   const makeSut = () => {
