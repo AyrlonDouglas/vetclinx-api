@@ -21,15 +21,9 @@ class EmailAlreadyExistsError extends BaseError {
   }
 }
 
-class InvalidPasswordError extends BaseError {
-  constructor() {
-    super([`Password is invalid!`], HttpStatusCode.NOT_ACCEPTABLE);
-    this.name = 'CreatUserInvalidPasswordError';
-  }
-}
 const CreatUserErrors = {
   UsernameTakenError,
   EmailAlreadyExistsError,
-  InvalidPasswordError,
 };
+
 export default CreatUserErrors;

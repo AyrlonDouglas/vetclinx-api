@@ -14,8 +14,7 @@ type Response = Either<
   | InspetorError
   | EmailError
   | InstanceType<(typeof CreateUserErrors)['EmailAlreadyExistsError']>
-  | InstanceType<(typeof CreateUserErrors)['UsernameTakenError']>
-  | InstanceType<(typeof CreateUserErrors)['InvalidPasswordError']>,
+  | InstanceType<(typeof CreateUserErrors)['UsernameTakenError']>,
   { id: string }
 >;
 export default class CreateUserUseCase
