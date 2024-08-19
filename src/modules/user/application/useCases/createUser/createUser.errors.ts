@@ -21,9 +21,9 @@ class EmailAlreadyExistsError extends BaseError {
   }
 }
 
-const CreatUserErrors = {
+const CreateUserErrors = {
   UsernameTakenError,
   EmailAlreadyExistsError,
 };
 
-export default CreatUserErrors;
+export default CreateUserErrors;
