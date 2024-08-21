@@ -1,7 +1,7 @@
 import {
   voteGradeScale,
   VoteManager,
-} from '@modules/discussion/domain/domainComponent/voteManager.component';
+} from '@modules/discussion/domain/component/voteManager.component';
 
 describe('VoteManager', () => {
   describe('VoteManager.balance', () => {

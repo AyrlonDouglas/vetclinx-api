@@ -1,6 +1,6 @@
 import { Either, left, right } from '@common/core/either';
 import Inspetor, { InspetorError } from '@common/core/inspetor';
-import { VoteManager } from '../../domainComponent/voteManager.component';
+import { VoteManager } from '../../component/voteManager.component';
 import { Comment } from '../comment/comment.entity';
 
 export class Discussion {
