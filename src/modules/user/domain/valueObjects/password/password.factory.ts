@@ -14,7 +14,7 @@ export default class PasswordFactory {
       Password
     >
   > {
-    const isValid = Password.isValid(password);
+    const isValid = Password.isValid(Password.format(password));
 
     if (!isValid) {
       return left(new PasswordErrors.InvalidPasswordError());

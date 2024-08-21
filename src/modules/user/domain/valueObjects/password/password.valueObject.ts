@@ -43,7 +43,7 @@ export default class Password extends ValueObject<PasswordProps> {
     return passwordRegex.test(password);
   }
 
-  private static format(password: string): string {
+  static format(password: string): string {
     return password?.trim();
   }
 }
