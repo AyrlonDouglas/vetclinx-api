@@ -60,6 +60,10 @@ export class Comment {
   downvote() {
     this.voteManager.downvote();
   }
+
+  getVoteGrade() {
+    return this.voteManager.grade;
+  }
 }
 
 type CommentProps = {

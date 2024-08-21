@@ -69,6 +69,10 @@ export class Discussion {
     this.voteManager.downvote();
   }
 
+  getVoteGrade() {
+    return this.voteManager.grade;
+  }
+
   addComment(comment: Comment) {
     this.comments.push(comment);
   }

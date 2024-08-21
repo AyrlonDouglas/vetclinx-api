@@ -30,11 +30,11 @@ export class VoteManager {
     return this.upvotes + this.downvotes;
   }
 
-  private wilsonScore(likes: number, unlikes: number): number {
-    const n = likes + unlikes;
+  private wilsonScore(upvotes: number, downvotes: number): number {
+    const n = upvotes + downvotes;
     if (n === 0) return 0;
     const z = 1.96; // para 95% de confiança
-    const p = likes / n;
+    const p = upvotes / n;
     const score =
       (p +
         (z * z) / (2 * n) -

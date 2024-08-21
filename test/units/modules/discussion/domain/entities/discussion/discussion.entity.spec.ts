@@ -1,3 +1,4 @@
+import { voteGradeScale } from '@modules/discussion/domain/component/voteManager.component';
 import {
   Comment,
   CommentCreateInput,
@@ -141,6 +142,16 @@ describe('Discussion', () => {
       sut.addComment(commentMock);
       expect(result.props.comments.length).toEqual(2);
       expect(sut.props.comments).toStrictEqual([commentMock, commentMock]);
+    });
+  });
+
+  describe('Discussion.getGradeVote()', () => {
+    test('Should return gradeVote', () => {
+      const { discussionMock: sut } = makeSut();
+
+      const result = sut.getVoteGrade();
+
+      expect(result).toEqual(voteGradeScale.neutral);
     });
   });
 });

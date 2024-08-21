@@ -1,4 +1,5 @@
 import { InspetorError } from '@common/core/inspetor';
+import { voteGradeScale } from '@modules/discussion/domain/component/voteManager.component';
 import {
   Comment,
   CommentCreateInput,
@@ -109,6 +110,16 @@ describe('Comment', () => {
       result.downvote();
       result.downvote();
       expect(result.props.downvotes).toBe(5);
+    });
+  });
+
+  describe('Comment.getGradeVote()', () => {
+    test('Should return gradeVote', () => {
+      const { commentMock: sut } = makeSut();
+
+      const result = sut.getVoteGrade();
+
+      expect(result).toEqual(voteGradeScale.neutral);
     });
   });
 });
