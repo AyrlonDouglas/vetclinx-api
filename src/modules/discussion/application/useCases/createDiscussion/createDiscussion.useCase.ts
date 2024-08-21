@@ -11,12 +11,12 @@ export class CreateDiscussionUseCase
   implements UseCase<CreateDiscussionDTO, Response>
 {
   constructor(
-    private readonly contextStorageService: ContextStorageService,
+    private readonly context: ContextStorageService,
     private readonly discussionRepository: DiscussionRepository,
   ) {}
 
   async perform(request: CreateDiscussionDTO): Promise<Response> {
-    const authorId = this.contextStorageService.get('currentUser').props.id;
+    const authorId = this.context.get('currentUser').props.id;
 
     const discussionOrFail = Discussion.create({
       authorId,

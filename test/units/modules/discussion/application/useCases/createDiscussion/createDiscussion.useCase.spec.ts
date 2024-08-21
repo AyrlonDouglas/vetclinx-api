@@ -1,29 +1,22 @@
 import { InspetorError } from '@common/core/inspetor';
-import { CreateDiscussionUseCase } from '@modules/discussion/application/useCases/createDiscussion/createDiscussion.useCase';
-import { DiscussionFakeRepository } from '@modules/discussion/infra/repositories/discussionFakeRepository';
-import {
-  ContextStorageService,
-  Context,
-} from '@modules/shared/domain/contextStorage.service';
-import { AsyncLocalStorage } from 'async_hooks';
+import { DiscussionTestSetup } from '@modulesTest/discussion/test/DiscussionTest.setup';
 
 describe('CreateDiscussionUseCase', () => {
-  const makeSut = () => {
-    const contextStorageService = new ContextStorageService(
-      {} as AsyncLocalStorage<Context>,
-    );
-
-    const discussionRepository = new DiscussionFakeRepository([]);
-    const sut = new CreateDiscussionUseCase(
-      contextStorageService,
+  const makeSut = async () => {
+    const {
+      createDiscussionUseCase,
       discussionRepository,
-    );
-
-    return { sut, discussionRepository, contextStorageService };
+      contextStorageService,
+    } = (await new DiscussionTestSetup().prepare()) as DiscussionTestSetup;
+    return {
+      sut: createDiscussionUseCase,
+      discussionRepository,
+      contextStorageService,
+    };
   };
 
   test('should return InspectorError when CreateDiscussionUseCaseDTO was invalid', async () => {
-    const { sut, contextStorageService } = makeSut();
+    const { sut, contextStorageService } = await makeSut();
     jest
       .spyOn(contextStorageService, 'get')
       .mockReturnValueOnce({ props: { id: '123' } } as any);
@@ -35,7 +28,7 @@ describe('CreateDiscussionUseCase', () => {
   });
 
   test('should return new discussion`s id when CreateDiscussionUseCaseDTO was valid', async () => {
-    const { sut, contextStorageService } = makeSut();
+    const { sut, contextStorageService } = await makeSut();
     jest
       .spyOn(contextStorageService, 'get')
       .mockReturnValueOnce({ props: { id: '123' } } as any);

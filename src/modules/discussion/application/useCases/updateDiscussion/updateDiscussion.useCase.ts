@@ -1,5 +1,5 @@
 import { Either, left, right } from '@common/core/either';
-import { InspetorError } from '@common/core/inspetor';
+import Inspetor, { InspetorError } from '@common/core/inspetor';
 import { UseCase } from '@common/core/useCase';
 import { UpdateDiscussionDTO } from './updateDiscussion.dto';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
@@ -22,9 +22,24 @@ export class UpdateDiscussionUseCase
     private readonly discussionRepository: DiscussionRepository,
   ) {}
 
-  async perform(request?: UpdateDiscussionDTO): Promise<Response> {
-    const userId = this.context.get('currentUser').props.id;
+  async perform(request: UpdateDiscussionDTO): Promise<Response> {
+    const idOrFail = Inspetor.againstFalsy(request.id, 'id');
 
+    if (idOrFail.isLeft()) {
+      return left(idOrFail.value);
+    }
+
+    const requestOrFail = Inspetor.atLeastOneTruthy([
+      { argument: request.description, argumentName: 'description' },
+      { argument: request.resolution, argumentName: 'resolution' },
+      { argument: request.title, argumentName: 'title' },
+    ]);
+
+    if (requestOrFail.isLeft()) {
+      return left(requestOrFail.value);
+    }
+
+    const userId = this.context.get('currentUser').props.id;
     const discussion = await this.discussionRepository.findById(request.id);
 
     if (!discussion) {

@@ -130,6 +130,22 @@ export default class Inspetor {
     }
   }
 
+  public static atLeastOneTruthy(
+    args: InspectorArgumentCollection,
+  ): Either<InspetorError, InspetorResponse> {
+    const allFalsy = args.every((arg) => !arg.argument);
+
+    if (allFalsy) {
+      return left(
+        new InspetorError(
+          `All arguments ${args.map((e) => e.argumentName).join(', ')} are falsy.`,
+        ),
+      );
+    } else {
+      return right(INSPETOR_RIGHT_VALUE);
+    }
+  }
+
   // public static inRange(
   //   num: number,
   //   min: number,

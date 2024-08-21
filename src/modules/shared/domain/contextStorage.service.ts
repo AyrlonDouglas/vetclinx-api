@@ -4,8 +4,13 @@ import { AsyncLocalStorage } from 'async_hooks';
 export class ContextStorageService {
   constructor(private readonly als: AsyncLocalStorage<Context>) {}
 
-  run(store: Context, callback: () => void): void {
-    this.als.run(store, callback);
+  async run(store: Context, callback: () => void): Promise<void> {
+    return new Promise((resolve) => {
+      this.als.run(store, () => {
+        callback();
+        resolve();
+      });
+    });
   }
 
   getStore() {
