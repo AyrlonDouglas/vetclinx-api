@@ -78,7 +78,7 @@ export class Discussion {
   }
 }
 
-type DiscussionProps = {
+export type DiscussionProps = {
   title: string;
   description: string;
   authorId: string;
