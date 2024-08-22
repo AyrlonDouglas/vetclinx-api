@@ -36,6 +36,7 @@ describe(`PasswordFactory`, () => {
         .mockReturnValue(
           right(Password.create('hashedPassword', false).value as Password),
         );
+      jest.spyOn(hashServiceMock, 'genSalt').mockResolvedValueOnce(`salt`);
       jest
         .spyOn(hashServiceMock, 'hash')
         .mockResolvedValueOnce(`hashedPassword`);
@@ -44,7 +45,10 @@ describe(`PasswordFactory`, () => {
 
       expect(result.isRight()).toBe(true);
       expect(result.value).toBeInstanceOf(Password);
-      expect(hashServiceMock.hash).toHaveBeenCalledWith('valid_password');
+      expect(hashServiceMock.hash).toHaveBeenCalledWith(
+        'valid_password',
+        'salt',
+      );
     });
 
     test('should return an error when Password.create fails', async () => {

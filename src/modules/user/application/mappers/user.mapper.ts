@@ -1,6 +1,5 @@
 import User from '@modules/user/domain/entities/user.entity';
 import { Mapper } from '@common/infra/Mapper';
-import { UserDocument } from '../../infra/schemas/user.schema';
 import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
 import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
 
@@ -14,7 +13,7 @@ export class UserMapper implements Mapper<User> {
     };
   }
 
-  toDomain(user: UserDocument): User {
+  toDomain(user: UserMapperToDomain): User {
     return User.create({
       email: Email.create(user.email).value as Email,
       name: user.name,
@@ -45,3 +44,11 @@ export class UserDTO {
     });
   }
 }
+
+type UserMapperToDomain = {
+  email: string;
+  name: string;
+  password: string;
+  username: string;
+  id: string;
+};

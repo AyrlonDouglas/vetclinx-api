@@ -19,8 +19,8 @@ export default class PasswordFactory {
     if (!isValid) {
       return left(new PasswordErrors.InvalidPasswordError());
     }
-
-    const hashedPass = await this.hashService.hash(password);
+    const salt = await this.hashService.genSalt(10);
+    const hashedPass = await this.hashService.hash(password, salt);
     const pass = Password.create(hashedPass, false);
 
     if (pass.isLeft()) {
