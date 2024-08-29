@@ -49,7 +49,7 @@ export class UpdateDiscussionUseCase
     }
 
     if (discussion.props.authorId !== userId) {
-      return left(new UpdateDiscussionErrors.OnlyCreatorCanDeleteError());
+      return left(new UpdateDiscussionErrors.OnlyCreatorCanUpdateError());
     }
 
     const discussionUpdatedOrFail = Discussion.create({

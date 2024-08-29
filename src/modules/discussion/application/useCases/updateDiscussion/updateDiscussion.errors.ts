@@ -20,10 +20,20 @@ class OnlyCreatorCanDeleteError extends BaseError {
     this.name = 'UpdateDiscussionOnlyCreatorCanDeleteError';
   }
 }
+class OnlyCreatorCanUpdateError extends BaseError {
+  constructor() {
+    super(
+      [`Only the creator of the discussion can update it.`],
+      HttpStatusCode.CONFLICT,
+    );
+    this.name = 'UpdateDiscussionOnlyCreatorCanDeleteError';
+  }
+}
 
 const UpdateDiscussionErrors = {
   DiscussionNotFoundError,
   OnlyCreatorCanDeleteError,
+  OnlyCreatorCanUpdateError,
 };
 
 export default UpdateDiscussionErrors;

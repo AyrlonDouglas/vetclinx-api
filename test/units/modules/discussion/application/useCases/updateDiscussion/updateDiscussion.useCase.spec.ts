@@ -57,7 +57,7 @@ describe('UpdateDiscussionUseCase', () => {
     );
   });
 
-  test('Should return left containing OnlyCreatorCanDeleteError when userId is different than creator', async () => {
+  test('Should return left containing OnlyCreatorCanUpdateError when userId is different than creator', async () => {
     const { sut, discusssionMock, contextStorageService } = await makeSut();
     jest
       .spyOn(contextStorageService, 'get')
@@ -70,7 +70,7 @@ describe('UpdateDiscussionUseCase', () => {
 
     expect(result.isLeft()).toBe(true);
     expect(result.value).toBeInstanceOf(
-      UpdateDiscussionErrors.OnlyCreatorCanDeleteError,
+      UpdateDiscussionErrors.OnlyCreatorCanUpdateError,
     );
   });
 
