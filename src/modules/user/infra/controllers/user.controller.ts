@@ -17,11 +17,6 @@ export class UserController {
     return result.value;
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.testeService.findAll();
-  // }
-
   @Get('by-username/:username')
   async findOneByUsername(@Param('username') username: string) {
     const result = await this.userUseCases.getUserByUsername.perform({
@@ -36,23 +31,8 @@ export class UserController {
   async findOneById(@Param('id') id: string) {
     const result = await this.userUseCases.getUserById.perform({ id });
     if (result.isLeft()) throw result.value;
-    return this.userMapper.toDTO(result.value);
+    return result.value ? this.userMapper.toDTO(result.value) : null;
   }
-
-  // @Get()
-  // findAll() {
-  //   return this.testeService.findAll();
-  // }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.testeService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateTesteDto: UpdateTesteDto) {
-  //   return this.testeService.update(+id, updateTesteDto);
-  // }
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
@@ -60,4 +40,9 @@ export class UserController {
     if (result.isLeft()) throw result.value;
     return result.value;
   }
+
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateTesteDto: UpdateTesteDto) {
+  //   return this.testeService.update(+id, updateTesteDto);
+  // }
 }

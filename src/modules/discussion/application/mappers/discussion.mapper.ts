@@ -4,12 +4,29 @@ import { Discussion } from '@modules/discussion/domain/entities/discussion/discu
 
 export class DiscussionMapper implements Mapper<Discussion> {
   toPersistense(data: Discussion) {
-    data;
-    throw new Error('Method not implemented.');
+    return {
+      id: data.props.id,
+      title: data.props.title,
+      description: data.props.description,
+      authorId: data.props.authorId,
+      comments: data.props.comments,
+      upvotes: data.props.upvotes,
+      downvotes: data.props.downvotes,
+      resolution: data.props.resolution,
+    };
   }
-  toDomain(data: any): Discussion {
-    data;
-    throw new Error('Method not implemented.');
+  toDomain(data: DiscussionMapperToDomain): Discussion {
+    return Discussion.create({
+      authorId: data.authorId,
+      description: data.description,
+      title: data.title,
+      comments: [],
+      createdAt: data.createdAt,
+      downvotes: data.downvotes,
+      id: data.id,
+      resolution: data.resolution,
+      upvotes: data.upvotes,
+    }).value as Discussion;
   }
   toDTO(data: Discussion): DiscussionDTO {
     return new DiscussionDTO({
@@ -25,6 +42,18 @@ export class DiscussionMapper implements Mapper<Discussion> {
     });
   }
 }
+
+export type DiscussionMapperToDomain = {
+  id: string;
+  authorId: string;
+  description: string;
+  title: string;
+  comments: [];
+  createdAt: Date;
+  downvotes: number;
+  upvotes: number;
+  resolution: string;
+};
 
 export class DiscussionDTO {
   title: string;

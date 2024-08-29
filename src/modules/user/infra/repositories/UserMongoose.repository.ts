@@ -1,7 +1,7 @@
 import { UserRepository } from '@modules/user/application/repositories/user.repository';
 import User from '@modules/user/domain/entities/user.entity';
 import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserDocument, UserModel } from '../schemas/user.schema';
 import { UserMapper } from '../../application/mappers/user.mapper';
@@ -27,6 +27,8 @@ export default class UserMongooseRepository implements UserRepository {
   }
 
   async findById(id: string): Promise<User | null> {
+    const isValidId = Types.ObjectId.isValid(id);
+    if (!isValidId) return null;
     const user = await this.userModel.findById(id);
     if (!user) return null;
     return this.mapper.toDomain(this.mongooseToDomain(user));
