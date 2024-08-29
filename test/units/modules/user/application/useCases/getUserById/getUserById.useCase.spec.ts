@@ -20,7 +20,7 @@ describe('GetUserByIdUseCase', () => {
     }
   });
 
-  test('Should dont get error when not found user', async () => {
+  test('Should return null when not found user', async () => {
     const { sut } = makeSut();
 
     const result = await sut.perform({ id: '698' });

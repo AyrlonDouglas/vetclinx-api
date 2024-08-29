@@ -5,7 +5,7 @@ import { randomUUID } from 'crypto';
 export class DiscussionFakeRepository implements DiscussionRepository {
   constructor(private list: Discussion[]) {}
   findById(id: string): Promise<Discussion | null> {
-    return Promise.resolve(this.list.find((el) => el.props.id === id));
+    return Promise.resolve(this.list.find((el) => el.props.id === id) ?? null);
   }
 
   async save(discussion: Discussion): Promise<string> {

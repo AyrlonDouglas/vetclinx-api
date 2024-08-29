@@ -1,5 +1,6 @@
 import { DiscussionRepository } from '@modules/discussion/application/repositories/discussion.repository';
 import { CreateDiscussionUseCase } from '@modules/discussion/application/useCases/createDiscussion/createDiscussion.useCase';
+import { GetDiscussionByIdUseCase } from '@modules/discussion/application/useCases/getDiscussionById/getDiscussionById.useCase';
 import { UpdateDiscussionUseCase } from '@modules/discussion/application/useCases/updateDiscussion/updateDiscussion.useCase';
 import { Discussion } from '@modules/discussion/domain/entities/discussion/discussion.entity';
 import { DiscussionFakeRepository } from '@modules/discussion/infra/repositories/discussionFakeRepository';
@@ -21,6 +22,7 @@ export class DiscussionTestSetup {
   userMock: User;
   updateDiscussionUseCase: UpdateDiscussionUseCase;
   discusssionMock: Discussion;
+  getDiscussionByIdUseCase: GetDiscussionByIdUseCase;
 
   constructor() {}
 
@@ -63,6 +65,10 @@ export class DiscussionTestSetup {
 
     this.updateDiscussionUseCase = new UpdateDiscussionUseCase(
       this.contextStorageService,
+      this.discussionRepository,
+    );
+
+    this.getDiscussionByIdUseCase = new GetDiscussionByIdUseCase(
       this.discussionRepository,
     );
 
