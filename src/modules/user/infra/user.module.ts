@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { UserController } from './controller/user.controller';
+import { UserController } from './controllers/user.controller';
 import { UserRepository } from '@modules/user/application/repositories/user.repository';
 import CreateUserUseCase from '@modules/user/application/useCases/createUser/createUser.useCase';
 import GetUserByUsernameUseCase from '@modules/user/application/useCases/getUserByUsername/getUserByUsername.useCase';

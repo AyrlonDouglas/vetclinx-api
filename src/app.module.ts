@@ -12,12 +12,14 @@ import { ConfigKey, DatabaseConfig } from './modules/config/config.interface';
 import AuthModule from '@modules/auth/infra/auth.module';
 import { SharedModule } from '@modules/shared/infra/shared.module';
 import { AuthMiddleware } from '@modules/auth/middleware/auth.middleware';
+import { DiscussionModule } from '@modules/discussion/infra/discussion.module';
 
 @Module({
   imports: [
     ConfigsModule,
     UserModule,
     AuthModule,
+    DiscussionModule,
     MongooseModule.forRootAsync({
       imports: [ConfigsModule],
       useFactory: async (configService: ConfigService) => ({

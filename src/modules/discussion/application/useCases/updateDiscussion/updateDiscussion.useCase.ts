@@ -54,13 +54,13 @@ export class UpdateDiscussionUseCase
 
     const discussionUpdatedOrFail = Discussion.create({
       authorId: discussion.props.authorId,
-      description: request.description ?? discussion.props.description,
-      title: request.title ?? discussion.props.title,
+      description: request.description || discussion.props.description,
+      title: request.title || discussion.props.title,
       comments: discussion.props.comments,
       createdAt: discussion.props.createdAt,
       downvotes: discussion.props.downvotes,
       id: discussion.props.id,
-      resolution: request.resolution ?? discussion.props.resolution,
+      resolution: request.resolution || discussion.props.resolution,
       upvotes: discussion.props.upvotes,
     });
 
