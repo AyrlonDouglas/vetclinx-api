@@ -26,6 +26,7 @@ export default class AllExceptionsFilter implements ExceptionFilter {
       exception instanceof HttpException
         ? exception.getStatus()
         : (exception.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR);
+
     /**
      * @description Exception json response
      * @param type
@@ -42,7 +43,6 @@ export default class AllExceptionsFilter implements ExceptionFilter {
     ) => {
       const appConfig = this.configService.get<AppConfig>(ConfigKey.app);
       const showStack = appConfig.env === Environment.dev;
-
       const errorResponse = {
         statusCode: _status,
         path: request.url,
@@ -54,6 +54,13 @@ export default class AllExceptionsFilter implements ExceptionFilter {
         timestamp: new Date().getTime(),
         ...(showStack ? { stack } : {}),
       };
+
+      if (showStack) {
+        const copyResponse = { ...errorResponse };
+        delete copyResponse.stack;
+        // console.log();
+        console.error(copyResponse, '\n', stack);
+      }
 
       response.status(_status).json(errorResponse);
     };

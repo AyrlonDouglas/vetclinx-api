@@ -40,7 +40,7 @@ export class DiscussionController {
       id,
     });
     if (result.isLeft()) throw result.value;
-    return this.discussionMapper.toDTO(result.value);
+    return !result.value ? null : this.discussionMapper.toDTO(result.value);
   }
 
   // @Get()
