@@ -4,11 +4,31 @@ import { randomUUID } from 'crypto';
 
 export class DiscussionFakeRepository implements DiscussionRepository {
   constructor(private list: Discussion[]) {}
-  findById(id: string): Promise<Discussion | null> {
-    return Promise.resolve(this.list.find((el) => el.props.id === id) ?? null);
+  async updateById(id: string, discussion: Discussion): Promise<string | null> {
+    const oldDiscuttion = this.list.find((el) => el.props.id === id);
+    if (!oldDiscuttion) return null;
+    const discussionUpdated = Discussion.create({
+      id: discussion.props.id,
+      title: discussion.props.title,
+      description: discussion.props.description,
+      authorId: discussion.props.authorId,
+      createdAt: discussion.props.createdAt,
+      comments: discussion.props.comments,
+      upvotes: discussion.props.upvotes,
+      downvotes: discussion.props.downvotes,
+      resolution: discussion.props.resolution,
+    });
+
+    if (discussionUpdated.isLeft()) {
+      return null;
+    }
+
+    this.list = this.list.filter((el) => el.props.id !== id);
+    this.list.push(discussionUpdated.value);
+    return id;
   }
 
-  async save(discussion: Discussion): Promise<string> {
+  async create(discussion: Discussion): Promise<string> {
     const discussionToDbOrFail = Discussion.create({
       authorId: discussion.props.authorId,
       description: discussion.props.description,
@@ -29,5 +49,8 @@ export class DiscussionFakeRepository implements DiscussionRepository {
     this.list.push(discussionToDb);
 
     return discussionToDb.props.id;
+  }
+  findById(id: string): Promise<Discussion | null> {
+    return Promise.resolve(this.list.find((el) => el.props.id === id) ?? null);
   }
 }

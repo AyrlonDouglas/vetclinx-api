@@ -21,7 +21,7 @@ import { DiscussionModel, DiscussionSchema } from './schemas/discussion.schema';
     ]),
   ],
   providers: [
-    DiscussionMapper, // { provide: DiscussionMapper, useFactory: () => new DiscussionMapper() },
+    DiscussionMapper,
     DiscussionMongooseRepository,
     {
       provide: DiscussionRepository,

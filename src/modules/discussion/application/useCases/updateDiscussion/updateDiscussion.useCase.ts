@@ -39,7 +39,6 @@ export class UpdateDiscussionUseCase
       return left(requestOrFail.value);
     }
 
-    const userId = this.context.get('currentUser').props.id;
     const discussion = await this.discussionRepository.findById(request.id);
 
     if (!discussion) {
@@ -48,6 +47,7 @@ export class UpdateDiscussionUseCase
       );
     }
 
+    const userId = this.context.get('currentUser').props.id;
     if (discussion.props.authorId !== userId) {
       return left(new UpdateDiscussionErrors.OnlyCreatorCanUpdateError());
     }
@@ -68,7 +68,8 @@ export class UpdateDiscussionUseCase
       return left(discussionUpdatedOrFail.value);
     }
 
-    const discussionUpdated = await this.discussionRepository.save(
+    const discussionUpdated = await this.discussionRepository.updateById(
+      request.id,
       discussionUpdatedOrFail.value,
     );
 

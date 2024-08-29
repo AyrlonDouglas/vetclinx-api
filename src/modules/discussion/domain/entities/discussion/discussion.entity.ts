@@ -10,6 +10,7 @@ export class Discussion {
     private description: string,
     private authorId: string,
     private createdAt: Date = new Date(),
+    private updatedAt: Date = new Date(),
     private comments: Comment[] = [],
     upvotes: number = 0,
     downvotes: number = 0,
@@ -27,6 +28,7 @@ export class Discussion {
       authorId: this.authorId,
       comments: this.comments,
       createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
       downvotes: this.voteManager.props.downvotes,
       upvotes: this.voteManager.props.upvotes,
       resolution: this.resolution,
@@ -51,6 +53,7 @@ export class Discussion {
       input.description,
       input.authorId,
       input.createdAt,
+      input.updatedAt,
       input.comments,
       input.upvotes,
       input.downvotes,
@@ -83,6 +86,7 @@ export type DiscussionProps = {
   description: string;
   authorId: string;
   createdAt: Date;
+  updatedAt: Date;
   comments: Comment[];
   upvotes: number;
   downvotes: number;

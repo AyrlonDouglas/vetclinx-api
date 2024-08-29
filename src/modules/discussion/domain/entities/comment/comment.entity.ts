@@ -11,6 +11,7 @@ export class Comment {
     private readonly authorId: string,
     private readonly content: string,
     private readonly createdAt: Date = new Date(),
+    private readonly updateAt: Date = new Date(),
     upvotes: number = 0,
     downvotes: number = 0,
   ) {
@@ -26,6 +27,7 @@ export class Comment {
       createdAt: this.createdAt,
       downvotes: this.voteManager.props.downvotes,
       upvotes: this.voteManager.props.upvotes,
+      updatedAt: this.updateAt,
     };
   }
 
@@ -46,6 +48,7 @@ export class Comment {
       input.authorId,
       input.content,
       input.createdAt,
+      input.updatedAt,
       input.upvotes,
       input.downvotes,
     );
@@ -71,9 +74,10 @@ type CommentProps = {
   discussionId: string;
   authorId: string;
   content: string;
-  createdAt: Date;
   upvotes: number;
   downvotes: number;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type CommentCreateInput = Partial<CommentProps> &

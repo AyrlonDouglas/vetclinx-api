@@ -28,7 +28,7 @@ export class CreateDiscussionUseCase
       return left(discussionOrFail.value);
     }
 
-    const discussionSaved = await this.discussionRepository.save(
+    const discussionSaved = await this.discussionRepository.create(
       discussionOrFail.value,
     );
 
