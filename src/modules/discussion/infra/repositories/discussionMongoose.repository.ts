@@ -21,7 +21,37 @@ export class DiscussionMongooseRepository implements DiscussionRepository {
     this.mapper = new DiscussionMapper();
   }
 
-  mongooseToDomain(data: DiscussionDocument): DiscussionMapperToDomain {
+  domainToModel(discussion: Discussion) {
+    return {
+      authorId: discussion.props.authorId,
+      comments: discussion.props.comments,
+      createdAt: discussion.props.createdAt,
+      description: discussion.props.description,
+      downvotes: discussion.props.downvotes,
+      resolution: discussion.props.resolution,
+      title: discussion.props.title,
+      updatedAt: discussion.props.updatedAt,
+      upvotes: discussion.props.upvotes,
+    };
+  }
+
+  async create(discussion: Discussion): Promise<string> {
+    const discussionCreated = await this.discussionModel.create(
+      this.domainToModel(discussion),
+    );
+    return discussionCreated.id;
+  }
+
+  async updateById(id: string, discussion: Discussion): Promise<string | null> {
+    const updated = await this.discussionModel.findByIdAndUpdate(
+      id,
+      this.domainToModel(discussion),
+    );
+
+    return updated.id;
+  }
+
+  modelToMapperDomain(data: DiscussionDocument): DiscussionMapperToDomain {
     return {
       authorId: data.authorId,
       description: data.description,
@@ -32,28 +62,8 @@ export class DiscussionMongooseRepository implements DiscussionRepository {
       id: data.id,
       resolution: data.resolution,
       upvotes: data.upvotes,
+      updatedAt: data.updatedAt,
     };
-  }
-  //FIXME: Savar nova discussão não funciona
-  //TODO: criar métodos diferentes para salvar e atualizar!
-  async save(discussion: Discussion): Promise<string> {
-    const { id, ...discussionToPersistence } =
-      this.mapper.toPersistense(discussion);
-
-    const filter = {
-      _id: id,
-    };
-    const options = {
-      upsert: true, // Cria um novo documento se não houver um existente
-      new: true, // Retorna o documento atualizado
-      setDefaultsOnInsert: true,
-    };
-    const update = { $set: discussionToPersistence };
-
-    const savedOrCreatedDiscussion =
-      await this.discussionModel.findOneAndUpdate(filter, update, options);
-
-    return savedOrCreatedDiscussion._id.toString();
   }
 
   async findById(id: string): Promise<Discussion | null> {
@@ -61,6 +71,6 @@ export class DiscussionMongooseRepository implements DiscussionRepository {
     if (!isValidId) return null;
     const discussion = await this.discussionModel.findById(id);
     if (!discussion) return null;
-    return this.mapper.toDomain(this.mongooseToDomain(discussion));
+    return this.mapper.toDomain(this.modelToMapperDomain(discussion));
   }
 }

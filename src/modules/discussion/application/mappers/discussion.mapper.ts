@@ -25,6 +25,7 @@ export class DiscussionMapper implements Mapper<Discussion> {
       downvotes: data.downvotes,
       id: data.id,
       resolution: data.resolution,
+      updatedAt: data.updatedAt,
       upvotes: data.upvotes,
     }).value as Discussion;
   }
@@ -53,6 +54,7 @@ export type DiscussionMapperToDomain = {
   downvotes: number;
   upvotes: number;
   resolution: string;
+  updatedAt: Date;
 };
 
 export class DiscussionDTO {

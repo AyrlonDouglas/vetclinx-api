@@ -1,53 +1,60 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
-class CommentModel {
-  @Prop({ required: true })
-  readonly discussionId: string;
+// class CommentModel {
+//   @Prop({ required: true })
+//    discussionId: string;
 
-  @Prop({ required: true })
-  readonly authorId: string;
+//   @Prop({ required: true })
+//    authorId: string;
 
-  @Prop({ required: true })
-  readonly content: string;
+//   @Prop({ required: true })
+//    content: string;
 
-  @Prop({ required: true })
-  readonly createdAt: Date;
+//   @Prop({ required: true })
+//    createdAt: Date;
 
-  @Prop({ required: true })
-  readonly upvotes: number;
+//   @Prop({ required: true })
+//    upvotes: number;
 
-  @Prop({ required: true })
-  readonly downvotes: number;
-}
+//   @Prop({ required: true })
+//    downvotes: number;
+// }
 
 export type DiscussionDocument = HydratedDocument<DiscussionModel>;
 
 @Schema({ collection: 'discussions', timestamps: true })
 export class DiscussionModel {
   @Prop({ required: true })
-  readonly title: string;
+  title: string;
 
   @Prop({ required: true })
-  readonly description: string;
+  description: string;
 
   @Prop({ required: true })
-  readonly authorId: string;
+  authorId: string;
 
-  @Prop({ required: false, type: [CommentModel], default: [] })
-  readonly comments: [CommentModel];
+  @Prop({
+    required: false,
+    type: Types.Array<Types.ArraySubdocument>,
+    default: [],
+  })
+  comments: [];
 
   @Prop({ required: false, default: 0 })
-  readonly upvotes: number;
+  upvotes: number;
 
   @Prop({ required: false, default: 0 })
-  readonly downvotes: number;
+  downvotes: number;
 
   @Prop({ required: false })
-  readonly resolution?: string;
+  resolution: string;
 
-  @Prop({ type: Date })
+  @Prop({ type: Date, required: true })
   createdAt: Date;
+
+  @Prop({ type: Date, required: true })
+  updatedAt: Date;
 }
 
 export const DiscussionSchema = SchemaFactory.createForClass(DiscussionModel);
