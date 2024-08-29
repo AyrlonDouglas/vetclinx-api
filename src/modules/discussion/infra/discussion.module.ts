@@ -7,11 +7,14 @@ import { ContextStorageService } from '@modules/shared/domain/contextStorage.ser
 import { DiscussionRepository } from '../application/repositories/discussion.repository';
 import { SharedModule } from '@modules/shared/infra/shared.module';
 import { DiscussionFakeRepository } from './repositories/discussionFakeRepository';
+import { GetDiscussionByIdUseCase } from '../application/useCases/getDiscussionById/getDiscussionById.useCase';
+import { DiscussionMapper } from '../application/mappers/discussion.mapper';
 
 @Module({
   controllers: [DiscussionController],
   imports: [SharedModule],
   providers: [
+    { provide: DiscussionMapper, useFactory: () => new DiscussionMapper() },
     {
       provide: DiscussionRepository,
       useFactory: () => new DiscussionFakeRepository([]),
@@ -25,6 +28,12 @@ import { DiscussionFakeRepository } from './repositories/discussionFakeRepositor
       ) => new UpdateDiscussionUseCase(context, discussionRepository),
     },
     {
+      provide: GetDiscussionByIdUseCase,
+      inject: [DiscussionRepository],
+      useFactory: (discussionRepository: DiscussionRepository) =>
+        new GetDiscussionByIdUseCase(discussionRepository),
+    },
+    {
       provide: CreateDiscussionUseCase,
       inject: [ContextStorageService, DiscussionRepository],
       useFactory: (
@@ -34,14 +43,20 @@ import { DiscussionFakeRepository } from './repositories/discussionFakeRepositor
     },
     {
       provide: DiscussionUseCases,
-      inject: [CreateDiscussionUseCase, UpdateDiscussionUseCase],
+      inject: [
+        CreateDiscussionUseCase,
+        UpdateDiscussionUseCase,
+        GetDiscussionByIdUseCase,
+      ],
       useFactory: (
         createDiscussionUseCase: CreateDiscussionUseCase,
         updateDiscussionUseCase: UpdateDiscussionUseCase,
+        getDiscussionByIdUseCase: GetDiscussionByIdUseCase,
       ) =>
         new DiscussionUseCases(
           createDiscussionUseCase,
           updateDiscussionUseCase,
+          getDiscussionByIdUseCase,
         ),
     },
   ],

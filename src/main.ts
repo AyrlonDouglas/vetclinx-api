@@ -11,7 +11,9 @@ async function bootstrap() {
 
   app.useGlobalFilters(new AllExceptionsFilter(config));
 
-  await app.listen(appConfig.port);
+  await app.listen(appConfig.port, () => {
+    console.info('🚀 On Fire!!');
+  });
 }
 
 bootstrap();
