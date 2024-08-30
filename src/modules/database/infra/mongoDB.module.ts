@@ -16,7 +16,13 @@ export const MongoDBModule = MongooseModule.forRootAsync({
     connectionFactory: (conn) => {
       const appConfig = configService.get<AppConfig>(ConfigKey.app);
       if (appConfig.env === Environment.dev) {
-        mongoose.set('debug', true);
+        mongoose.set('debug', (collectionName, method, query, doc) => {
+          console.log(
+            `${collectionName}.${method}`,
+            JSON.stringify(query),
+            doc,
+          );
+        });
       }
 
       if (conn.readyState === 1) {
