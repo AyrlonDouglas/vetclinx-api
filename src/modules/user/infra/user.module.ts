@@ -5,20 +5,22 @@ import CreateUserUseCase from '@modules/user/application/useCases/createUser/cre
 import GetUserByUsernameUseCase from '@modules/user/application/useCases/getUserByUsername/getUserByUsername.useCase';
 import GetUserByIdUseCase from '@modules/user/application/useCases/getUserById/getUserById.useCase';
 import UserUseCases from '@modules/user/application/useCases/user.useCases';
-import { MongooseModule } from '@nestjs/mongoose';
-import { UserModel, UserSchema } from './schemas/user.schema';
+// import { MongooseModule } from '@nestjs/mongoose';
+// import { UserModel, UserSchema } from './schemas/user.schema';
 import UserMongooseRepository from './repositories/UserMongoose.repository';
 import RemoveUserByIdUseCase from '../application/useCases/removeUserById/removeUserById.useCase';
 import { SharedModule } from '@modules/shared/infra/shared.module';
 import PasswordFactory from '../domain/valueObjects/password/password.factory';
 import HashService from '@modules/shared/domain/hash.service';
 import { UserMapper } from '../application/mappers/user.mapper';
+import { DatabaseModule } from '@modules/database/infra/database.module';
 
 @Module({
   controllers: [UserController],
   imports: [
-    MongooseModule.forFeature([{ name: UserModel.name, schema: UserSchema }]),
+    // MongooseModule.forFeature([{ name: UserModel.name, schema: UserSchema }]),
     SharedModule,
+    DatabaseModule,
   ],
   providers: [
     UserMongooseRepository,

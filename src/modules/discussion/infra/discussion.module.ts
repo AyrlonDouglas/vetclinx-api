@@ -9,16 +9,19 @@ import { SharedModule } from '@modules/shared/infra/shared.module';
 import { GetDiscussionByIdUseCase } from '../application/useCases/getDiscussionById/getDiscussionById.useCase';
 import { DiscussionMapper } from '../application/mappers/discussion.mapper';
 import { DiscussionMongooseRepository } from './repositories/discussionMongoose.repository';
-import { MongooseModule } from '@nestjs/mongoose';
-import { DiscussionModel, DiscussionSchema } from './schemas/discussion.schema';
+// import { MongooseModule } from '@nestjs/mongoose';
+// import { DiscussionModel, DiscussionSchema } from './schemas/discussion.schema';
+import { AddCommentUseCase } from '../application/useCases/addComment/addComment.useCase';
+import { DatabaseModule } from '@modules/database/infra/database.module';
 
 @Module({
   controllers: [DiscussionController],
   imports: [
     SharedModule,
-    MongooseModule.forFeature([
-      { name: DiscussionModel.name, schema: DiscussionSchema },
-    ]),
+    DatabaseModule,
+    // MongooseModule.forFeature([
+    //   { name: DiscussionModel.name, schema: DiscussionSchema },
+    // ]),
   ],
   providers: [
     DiscussionMapper,
@@ -50,21 +53,30 @@ import { DiscussionModel, DiscussionSchema } from './schemas/discussion.schema';
       ) => new CreateDiscussionUseCase(context, discussionRepository),
     },
     {
+      provide: AddCommentUseCase,
+      useFactory: (discussionRepository: DiscussionRepository) =>
+        new AddCommentUseCase(discussionRepository),
+      inject: [DiscussionRepository],
+    },
+    {
       provide: DiscussionUseCases,
       inject: [
         CreateDiscussionUseCase,
         UpdateDiscussionUseCase,
         GetDiscussionByIdUseCase,
+        AddCommentUseCase,
       ],
       useFactory: (
         createDiscussionUseCase: CreateDiscussionUseCase,
         updateDiscussionUseCase: UpdateDiscussionUseCase,
         getDiscussionByIdUseCase: GetDiscussionByIdUseCase,
+        addCommentUseCase: AddCommentUseCase,
       ) =>
         new DiscussionUseCases(
           createDiscussionUseCase,
           updateDiscussionUseCase,
           getDiscussionByIdUseCase,
+          addCommentUseCase,
         ),
     },
   ],

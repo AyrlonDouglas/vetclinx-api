@@ -53,10 +53,10 @@ export class DiscussionMongooseRepository implements DiscussionRepository {
 
   modelToMapperDomain(data: DiscussionDocument): DiscussionMapperToDomain {
     return {
-      authorId: data.authorId,
+      authorId: data.authorId.toString(),
       description: data.description,
       title: data.title,
-      comments: [],
+      comments: data.comments,
       createdAt: data.createdAt,
       downvotes: data.downvotes,
       id: data.id,

@@ -15,12 +15,13 @@ export class DiscussionMapper implements Mapper<Discussion> {
       resolution: data.props.resolution,
     };
   }
+
   toDomain(data: DiscussionMapperToDomain): Discussion {
     return Discussion.create({
       authorId: data.authorId,
       description: data.description,
       title: data.title,
-      comments: [],
+      comments: data.comments,
       createdAt: data.createdAt,
       downvotes: data.downvotes,
       id: data.id,
@@ -29,6 +30,7 @@ export class DiscussionMapper implements Mapper<Discussion> {
       upvotes: data.upvotes,
     }).value as Discussion;
   }
+
   toDTO(data: Discussion): DiscussionDTO {
     return new DiscussionDTO({
       id: data.props.id,

@@ -1,25 +1,29 @@
+import { UserModel } from '@modules/user/infra/schemas/user.schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 
-// class CommentModel {
-//   @Prop({ required: true })
-//    discussionId: string;
+export type CommentDocument = HydratedDocument<CommentModel>;
 
-//   @Prop({ required: true })
-//    authorId: string;
+@Schema({ timestamps: true })
+export class CommentModel {
+  @Prop({ required: true })
+  discussionId: string;
 
-//   @Prop({ required: true })
-//    content: string;
+  @Prop({ required: true })
+  authorId: string;
 
-//   @Prop({ required: true })
-//    createdAt: Date;
+  @Prop({ required: true })
+  content: string;
 
-//   @Prop({ required: true })
-//    upvotes: number;
+  @Prop({ required: true })
+  createdAt: Date;
 
-//   @Prop({ required: true })
-//    downvotes: number;
-// }
+  @Prop({ required: true })
+  upvotes: number;
+
+  @Prop({ required: true })
+  downvotes: number;
+}
 
 export type DiscussionDocument = HydratedDocument<DiscussionModel>;
 
@@ -31,12 +35,12 @@ export class DiscussionModel {
   @Prop({ required: true })
   description: string;
 
-  @Prop({ required: true })
-  authorId: string;
+  @Prop({ type: Types.ObjectId, ref: UserModel.name, required: true })
+  authorId: Types.ObjectId;
 
   @Prop({
     required: false,
-    type: Types.Array<Types.ArraySubdocument>,
+    type: [CommentModel],
     default: [],
   })
   comments: [];
