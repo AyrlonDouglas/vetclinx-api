@@ -21,17 +21,17 @@ describe('AddCommentUseCase', () => {
     const result1 = await sut.perform({
       author: discusssionMock.props.author as string,
       content: 'content',
-      discussionId: '',
+      discussion: '',
     });
     const result2 = await sut.perform({
       author: discusssionMock.props.author as string,
       content: '',
-      discussionId: discusssionMock.props.id,
+      discussion: discusssionMock.props.id,
     });
     const result3 = await sut.perform({
       author: '',
       content: 'content',
-      discussionId: discusssionMock.props.id,
+      discussion: discusssionMock.props.id,
     });
 
     expect(result1.isLeft()).toBe(true);
@@ -48,7 +48,7 @@ describe('AddCommentUseCase', () => {
     const result = await sut.perform({
       author: '1233213123asd',
       content: 'content',
-      discussionId: '123asdas123123assd',
+      discussion: '123asdas123123assd',
     });
 
     expect(result.isLeft()).toBe(true);
@@ -66,20 +66,20 @@ describe('AddCommentUseCase', () => {
     const result = await sut.perform({
       author: '1233213123asd',
       content: 'content',
-      discussionId: discusssionMock.props.id,
+      discussion: discusssionMock.props.id,
     });
 
     expect(result.isLeft()).toBe(true);
     expect(result.value).toBeInstanceOf(InspetorError);
   });
 
-  test('Should return discussionId when comment was add in discussion', async () => {
+  test('Should return discussion when comment was add in discussion', async () => {
     const { sut, discusssionMock, discussionRepository } = await makeSut();
 
     const result = await sut.perform({
       author: '123',
       content: 'content test',
-      discussionId: discusssionMock.props.id,
+      discussion: discusssionMock.props.id,
     });
 
     expect(result.isRight()).toBe(true);
@@ -93,7 +93,7 @@ describe('AddCommentUseCase', () => {
       expect(comment).toBeDefined();
       expect(comment.props.author).toEqual('123');
       expect(comment.props.content).toEqual('content test');
-      expect(comment.props.discussionId).toEqual(discusssionMock.props.id);
+      expect(comment.props.discussion).toEqual(discusssionMock.props.id);
       expect(comment.props.createdAt).toEqual(comment.props.updatedAt);
       expect(comment.props.downvotes).toEqual(0);
       expect(comment.props.upvotes).toEqual(0);

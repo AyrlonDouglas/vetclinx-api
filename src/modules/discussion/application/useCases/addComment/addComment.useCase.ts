@@ -18,7 +18,7 @@ export class AddCommentUseCase implements UseCase<AddCommentDTO, Output> {
     const inputOrFail = Inspetor.againstFalsyBulk([
       { argument: input.author, argumentName: 'author' },
       { argument: input.content, argumentName: 'content' },
-      { argument: input.discussionId, argumentName: 'discussionId' },
+      { argument: input.discussion, argumentName: 'discussion' },
     ]);
 
     if (inputOrFail.isLeft()) {
@@ -26,19 +26,19 @@ export class AddCommentUseCase implements UseCase<AddCommentDTO, Output> {
     }
 
     const discussion = await this.discussionRepository.findById(
-      input.discussionId,
+      input.discussion,
     );
 
     if (!discussion) {
       return left(
-        new AddCommentErrors.DiscussionNotFoundError(input.discussionId),
+        new AddCommentErrors.DiscussionNotFoundError(input.discussion),
       );
     }
 
     const commentOrFail = Comment.create({
       author: input.author,
       content: input.content,
-      discussionId: input.discussionId,
+      discussion: input.discussion,
     });
 
     if (commentOrFail.isLeft()) {
@@ -51,7 +51,7 @@ export class AddCommentUseCase implements UseCase<AddCommentDTO, Output> {
 
     const discussionUpdated =
       await this.discussionRepository.updateDiscussionById(
-        input.discussionId,
+        input.discussion,
         discussion,
       );
 

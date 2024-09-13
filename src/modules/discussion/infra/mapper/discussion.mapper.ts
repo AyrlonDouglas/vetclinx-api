@@ -43,6 +43,22 @@ export class DiscussionMapper implements Mapper<Discussion> {
     return data;
   }
 
+  mapDiscussionToObjectId(discussion: string | Discussion): Types.ObjectId {
+    if (discussion instanceof Discussion) {
+      return new Types.ObjectId(discussion.props.id);
+    }
+    return new Types.ObjectId(discussion);
+  }
+
+  mapObjectIdToDiscussion(
+    discussion: DiscussionDocument | Types.ObjectId,
+  ): string | Discussion {
+    if (discussion instanceof Types.ObjectId) {
+      return discussion.toString();
+    }
+    return this.toDomain(discussion);
+  }
+
   mapAuthorToObjectId(author: string | User): Types.ObjectId {
     if (author instanceof User) {
       return new Types.ObjectId(author.props.id);

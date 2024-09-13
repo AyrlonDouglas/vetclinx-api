@@ -2,13 +2,14 @@ import { Either, left, right } from '@common/core/either';
 import Inspetor, { InspetorError } from '@common/core/inspetor';
 import { VoteManager } from '../../component/voteManager.component';
 import User from '@modules/user/domain/entities/user.entity';
+import { Discussion } from '../discussion/discussion.entity';
 
 export class Comment {
   private voteManager: VoteManager;
 
   private constructor(
     private readonly id: string,
-    private readonly discussionId: string,
+    private readonly discussion: string | Discussion,
     private readonly author: string | User,
     private readonly content: string,
     private readonly createdAt: Date = new Date(),
@@ -23,7 +24,7 @@ export class Comment {
     return {
       id: this.id,
       author: this.author,
-      discussionId: this.discussionId,
+      discussion: this.discussion,
       content: this.content,
       createdAt: this.createdAt,
       downvotes: this.voteManager.props.downvotes,
@@ -36,7 +37,7 @@ export class Comment {
     const inputOrFail = Inspetor.againstFalsyBulk([
       { argument: input.author, argumentName: 'author' },
       { argument: input.content, argumentName: 'content' },
-      { argument: input.discussionId, argumentName: 'discussionId' },
+      { argument: input.discussion, argumentName: 'discussion' },
     ]);
 
     if (inputOrFail.isLeft()) {
@@ -45,7 +46,7 @@ export class Comment {
 
     const comment = new Comment(
       input.id,
-      input.discussionId,
+      input.discussion,
       input.author,
       input.content,
       input.createdAt,
@@ -72,7 +73,7 @@ export class Comment {
 
 type CommentProps = {
   id?: string;
-  discussionId: string;
+  discussion: string | Discussion;
   author: string | User;
   content: string;
   upvotes: number;
@@ -82,4 +83,4 @@ type CommentProps = {
 };
 
 export type CommentCreateInput = Partial<CommentProps> &
-  Pick<CommentProps, 'author' | 'content' | 'discussionId'>;
+  Pick<CommentProps, 'author' | 'content' | 'discussion'>;

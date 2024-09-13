@@ -38,7 +38,7 @@ export class DiscussionController {
   ) {
     const result = await this.discussionUseCases.addComment.perform({
       ...addCommentDTO,
-      discussionId: id,
+      discussion: id,
     });
 
     if (result.isLeft()) throw result.value;

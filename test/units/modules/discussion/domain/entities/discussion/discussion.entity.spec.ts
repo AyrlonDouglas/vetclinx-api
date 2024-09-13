@@ -24,7 +24,7 @@ describe('Discussion', () => {
     const commentCreateInput: CommentCreateInput = {
       author: '123',
       content: 'animal was sick',
-      discussionId: '123123',
+      discussion: '123123',
     };
 
     const commentMock = Comment.create(commentCreateInput);

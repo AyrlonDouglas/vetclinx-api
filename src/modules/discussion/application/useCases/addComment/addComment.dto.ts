@@ -1,5 +1,5 @@
 export type AddCommentDTO = {
-  discussionId: string;
+  discussion: string;
   author: string;
   content: string;
 };
