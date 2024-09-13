@@ -3,7 +3,7 @@ import { Discussion } from '@modules/discussion/domain/entities/discussion/discu
 export abstract class DiscussionRepository {
   abstract create(discussion: Discussion): Promise<string>;
   abstract findById(id: string): Promise<Discussion | null>;
-  abstract updateById(
+  abstract updateDiscussionById(
     id: string,
     discussion: Discussion,
   ): Promise<string | null>;

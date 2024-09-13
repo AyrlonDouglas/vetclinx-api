@@ -42,7 +42,7 @@ export class DiscussionTestSetup {
     const discusssionMock = Discussion.create({
       description: 'description teste',
       title: 'title test',
-      authorId: userMock.props.id,
+      author: userMock.props.id,
       id: randomUUID(),
     });
 

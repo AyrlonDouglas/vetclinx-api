@@ -6,6 +6,7 @@ import { ContextStorageService } from '@modules/shared/domain/contextStorage.ser
 import { DiscussionRepository } from '../../repositories/discussion.repository';
 import UpdateDiscussionErrors from './updateDiscussion.errors';
 import { Discussion } from '@modules/discussion/domain/entities/discussion/discussion.entity';
+import User from '@modules/user/domain/entities/user.entity';
 
 type Response = Either<
   | InspetorError
@@ -48,7 +49,12 @@ export class UpdateDiscussionUseCase
     }
 
     const userId = this.context.get('currentUser').props.id;
-    if (discussion.props.authorId !== userId) {
+
+    if (
+      (discussion.props.author instanceof User
+        ? discussion.props.author.props.id
+        : discussion.props.author) !== userId
+    ) {
       return left(new UpdateDiscussionErrors.OnlyCreatorCanUpdateError());
     }
 
@@ -56,7 +62,7 @@ export class UpdateDiscussionUseCase
       resolution: request.resolution || discussion.props.resolution,
       description: request.description || discussion.props.description,
       title: request.title || discussion.props.title,
-      authorId: discussion.props.authorId,
+      author: discussion.props.author,
       comments: discussion.props.comments,
       createdAt: discussion.props.createdAt,
       downvotes: discussion.props.downvotes,
@@ -68,10 +74,11 @@ export class UpdateDiscussionUseCase
       return left(discussionUpdatedOrFail.value);
     }
 
-    const discussionUpdated = await this.discussionRepository.updateById(
-      request.id,
-      discussionUpdatedOrFail.value,
-    );
+    const discussionUpdated =
+      await this.discussionRepository.updateDiscussionById(
+        request.id,
+        discussionUpdatedOrFail.value,
+      );
 
     return right({ id: discussionUpdated });
   }

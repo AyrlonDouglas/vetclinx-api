@@ -1,76 +1,64 @@
-import {
-  DiscussionMapper,
-  DiscussionMapperToDomain,
-} from '@modules/discussion/application/mappers/discussion.mapper';
 import { DiscussionRepository } from '@modules/discussion/application/repositories/discussion.repository';
 import { Discussion } from '@modules/discussion/domain/entities/discussion/discussion.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import {
-  DiscussionDocument,
-  DiscussionModel,
-} from '../schemas/discussion.schema';
-
+import { DiscussionModel } from '../schemas/discussion.schema';
+import { DiscussionMapper } from '../mapper/discussion.mapper';
+import { CommentModel } from '../schemas/comment.schema';
+import { Comment } from '@modules/discussion/domain/entities/comment/comment.entity';
 export class DiscussionMongooseRepository implements DiscussionRepository {
-  mapper: DiscussionMapper;
+  discussionMapper = new DiscussionMapper();
 
   constructor(
     @InjectModel(DiscussionModel.name)
     private readonly discussionModel: Model<DiscussionModel>,
-  ) {
-    this.mapper = new DiscussionMapper();
-  }
-
-  domainToModel(discussion: Discussion) {
-    return {
-      authorId: discussion.props.authorId,
-      comments: discussion.props.comments,
-      createdAt: discussion.props.createdAt,
-      description: discussion.props.description,
-      downvotes: discussion.props.downvotes,
-      resolution: discussion.props.resolution,
-      title: discussion.props.title,
-      updatedAt: discussion.props.updatedAt,
-      upvotes: discussion.props.upvotes,
-    };
-  }
+    @InjectModel(CommentModel.name)
+    private readonly commentModel: Model<CommentModel>,
+  ) {}
 
   async create(discussion: Discussion): Promise<string> {
     const discussionCreated = await this.discussionModel.create(
-      this.domainToModel(discussion),
+      this.discussionMapper.toPersistense(discussion),
     );
     return discussionCreated.id;
   }
 
-  async updateById(id: string, discussion: Discussion): Promise<string | null> {
+  async updateDiscussionById(
+    id: string,
+    discussion: Discussion,
+  ): Promise<string | null> {
     const updated = await this.discussionModel.findByIdAndUpdate(
       id,
-      this.domainToModel(discussion),
+      this.discussionMapper.toPersistense(discussion),
     );
 
     return updated.id;
   }
 
-  modelToMapperDomain(data: DiscussionDocument): DiscussionMapperToDomain {
-    return {
-      authorId: data.authorId.toString(),
-      description: data.description,
-      title: data.title,
-      comments: data.comments,
-      createdAt: data.createdAt,
-      downvotes: data.downvotes,
-      id: data.id,
-      resolution: data.resolution,
-      upvotes: data.upvotes,
-      updatedAt: data.updatedAt,
-    };
-  }
-
   async findById(id: string): Promise<Discussion | null> {
     const isValidId = Types.ObjectId.isValid(id);
     if (!isValidId) return null;
-    const discussion = await this.discussionModel.findById(id);
+
+    const discussion = await this.discussionModel
+      .findById(id)
+      .populate({ path: 'author', select: '-password' })
+      .exec();
     if (!discussion) return null;
-    return this.mapper.toDomain(this.modelToMapperDomain(discussion));
+
+    return this.discussionMapper.toDomain(discussion);
   }
+
+  // private async addComment(comment: Comment) {
+  //   const newComment = new CommentModel();
+  //   newComment.author = this.discussionMapper.mapAuthorToObjectId(
+  //     comment.props.author,
+  //   );
+  //   newComment.content = comment.props.content;
+  //   newComment.createdAt = comment.props.createdAt;
+  //   newComment.discussion = comment.props.discussionId;
+  //   newComment.downvotes = comment.props.downvotes;
+  //   newComment.upvotes = comment.props.upvotes;
+
+  //   await this.commentModel.create(newComment);
+  // }
 }

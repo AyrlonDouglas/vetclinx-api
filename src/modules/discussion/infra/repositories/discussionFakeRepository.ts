@@ -4,14 +4,17 @@ import { randomUUID } from 'crypto';
 
 export class DiscussionFakeRepository implements DiscussionRepository {
   constructor(private list: Discussion[]) {}
-  async updateById(id: string, discussion: Discussion): Promise<string | null> {
+  async updateDiscussionById(
+    id: string,
+    discussion: Discussion,
+  ): Promise<string | null> {
     const oldDiscuttion = this.list.find((el) => el.props.id === id);
     if (!oldDiscuttion) return null;
     const discussionUpdated = Discussion.create({
       id: discussion.props.id,
       title: discussion.props.title,
       description: discussion.props.description,
-      authorId: discussion.props.authorId,
+      author: discussion.props.author,
       createdAt: discussion.props.createdAt,
       comments: discussion.props.comments,
       upvotes: discussion.props.upvotes,
@@ -30,7 +33,7 @@ export class DiscussionFakeRepository implements DiscussionRepository {
 
   async create(discussion: Discussion): Promise<string> {
     const discussionToDbOrFail = Discussion.create({
-      authorId: discussion.props.authorId,
+      author: discussion.props.author,
       description: discussion.props.description,
       title: discussion.props.title,
       comments: discussion.props.comments,

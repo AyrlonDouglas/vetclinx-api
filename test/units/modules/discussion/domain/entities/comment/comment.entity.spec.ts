@@ -8,14 +8,14 @@ import {
 describe('Comment', () => {
   const makeSut = () => {
     const inputBase = {
-      authorId: '123',
+      author: '123',
       content: 'content teste',
       CommentId: '321',
     };
     const sut = Comment;
 
     const commentCreateInput: CommentCreateInput = {
-      authorId: '123',
+      author: '123',
       content: 'animal was sick',
       discussionId: '123123',
     };
@@ -33,17 +33,17 @@ describe('Comment', () => {
       const { sut } = makeSut();
 
       const result1 = sut.create({
-        authorId: '123123',
+        author: '123123',
         content: 'content',
         discussionId: '',
       });
       const result2 = sut.create({
-        authorId: '',
+        author: '',
         content: 'content',
         discussionId: '123123',
       });
       const result3 = sut.create({
-        authorId: '123123',
+        author: '123123',
         content: '',
         discussionId: '123123',
       });
@@ -60,7 +60,7 @@ describe('Comment', () => {
       const { sut } = makeSut();
 
       const result = sut.create({
-        authorId: '123123',
+        author: '123123',
         content: 'content',
         discussionId: '32132',
       });
@@ -68,7 +68,7 @@ describe('Comment', () => {
       expect(result.isRight()).toBe(true);
       expect(result.value).toBeInstanceOf(Comment);
       if (result.isRight()) {
-        expect(result.value.props.authorId).toEqual('123123');
+        expect(result.value.props.author).toEqual('123123');
         expect(result.value.props.content).toEqual('content');
         expect(result.value.props.discussionId).toEqual('32132');
         expect(result.value.props.upvotes).toEqual(0);

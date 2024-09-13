@@ -1,6 +1,7 @@
 import { Either, left, right } from '@common/core/either';
 import Inspetor, { InspetorError } from '@common/core/inspetor';
 import { VoteManager } from '../../component/voteManager.component';
+import User from '@modules/user/domain/entities/user.entity';
 
 export class Comment {
   private voteManager: VoteManager;
@@ -8,7 +9,7 @@ export class Comment {
   private constructor(
     private readonly id: string,
     private readonly discussionId: string,
-    private readonly authorId: string,
+    private readonly author: string | User,
     private readonly content: string,
     private readonly createdAt: Date = new Date(),
     private readonly updateAt: Date = new Date(),
@@ -21,7 +22,7 @@ export class Comment {
   get props(): CommentProps {
     return {
       id: this.id,
-      authorId: this.authorId,
+      author: this.author,
       discussionId: this.discussionId,
       content: this.content,
       createdAt: this.createdAt,
@@ -33,7 +34,7 @@ export class Comment {
 
   static create(input: CommentCreateInput): Either<InspetorError, Comment> {
     const inputOrFail = Inspetor.againstFalsyBulk([
-      { argument: input.authorId, argumentName: 'authorId' },
+      { argument: input.author, argumentName: 'author' },
       { argument: input.content, argumentName: 'content' },
       { argument: input.discussionId, argumentName: 'discussionId' },
     ]);
@@ -45,7 +46,7 @@ export class Comment {
     const comment = new Comment(
       input.id,
       input.discussionId,
-      input.authorId,
+      input.author,
       input.content,
       input.createdAt,
       input.updatedAt,
@@ -72,7 +73,7 @@ export class Comment {
 type CommentProps = {
   id?: string;
   discussionId: string;
-  authorId: string;
+  author: string | User;
   content: string;
   upvotes: number;
   downvotes: number;
@@ -81,4 +82,4 @@ type CommentProps = {
 };
 
 export type CommentCreateInput = Partial<CommentProps> &
-  Pick<CommentProps, 'authorId' | 'content' | 'discussionId'>;
+  Pick<CommentProps, 'author' | 'content' | 'discussionId'>;

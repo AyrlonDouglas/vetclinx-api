@@ -1,9 +1,9 @@
-import { DiscussionMapper } from '@modules/discussion/application/mappers/discussion.mapper';
 import { AddCommentDTO } from '@modules/discussion/application/useCases/addComment/addComment.dto';
 import { CreateDiscussionDTO } from '@modules/discussion/application/useCases/createDiscussion/createDiscussion.dto';
 import { DiscussionUseCases } from '@modules/discussion/application/useCases/discussion.useCases';
 import { UpdateDiscussionDTO } from '@modules/discussion/application/useCases/updateDiscussion/updateDiscussion.dto';
 import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { DiscussionMapper } from '../mapper/discussion.mapper';
 
 @Controller('discussion')
 export class DiscussionController {

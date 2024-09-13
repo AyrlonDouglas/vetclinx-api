@@ -2,13 +2,14 @@ import { Either, left, right } from '@common/core/either';
 import Inspetor, { InspetorError } from '@common/core/inspetor';
 import { VoteManager } from '../../component/voteManager.component';
 import { Comment } from '../comment/comment.entity';
+import User from '@modules/user/domain/entities/user.entity';
 
 export class Discussion {
   private voteManager: VoteManager;
   private constructor(
     private title: string,
     private description: string,
-    private authorId: string,
+    private author: string | User,
     private createdAt: Date = new Date(),
     private updatedAt: Date = new Date(),
     private comments: Comment[] = [],
@@ -25,7 +26,7 @@ export class Discussion {
       id: this.id,
       title: this.title,
       description: this.description,
-      authorId: this.authorId,
+      author: this.author,
       comments: this.comments,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
@@ -39,7 +40,7 @@ export class Discussion {
     input: DiscussionCreateInput,
   ): Either<InspetorError, Discussion> {
     const inputOrFail = Inspetor.againstFalsyBulk([
-      { argument: input.authorId, argumentName: 'authorId' },
+      { argument: input.author, argumentName: 'author' },
       { argument: input.description, argumentName: 'description' },
       { argument: input.title, argumentName: 'title' },
     ]);
@@ -51,7 +52,7 @@ export class Discussion {
     const discussion = new Discussion(
       input.title,
       input.description,
-      input.authorId,
+      input.author,
       input.createdAt,
       input.updatedAt,
       input.comments,
@@ -84,7 +85,7 @@ export class Discussion {
 export type DiscussionProps = {
   title: string;
   description: string;
-  authorId: string;
+  author: string | User;
   createdAt: Date;
   updatedAt: Date;
   comments: Comment[];
@@ -95,4 +96,4 @@ export type DiscussionProps = {
 };
 
 export type DiscussionCreateInput = Partial<DiscussionProps> &
-  Pick<DiscussionProps, 'authorId' | 'description' | 'title'>;
+  Pick<DiscussionProps, 'author' | 'description' | 'title'>;

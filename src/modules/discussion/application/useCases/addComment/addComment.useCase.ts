@@ -16,7 +16,7 @@ export class AddCommentUseCase implements UseCase<AddCommentDTO, Output> {
   constructor(private readonly discussionRepository: DiscussionRepository) {}
   async perform(input?: AddCommentDTO): Promise<Output> {
     const inputOrFail = Inspetor.againstFalsyBulk([
-      { argument: input.authorId, argumentName: 'authorId' },
+      { argument: input.author, argumentName: 'author' },
       { argument: input.content, argumentName: 'content' },
       { argument: input.discussionId, argumentName: 'discussionId' },
     ]);
@@ -36,7 +36,7 @@ export class AddCommentUseCase implements UseCase<AddCommentDTO, Output> {
     }
 
     const commentOrFail = Comment.create({
-      authorId: input.authorId,
+      author: input.author,
       content: input.content,
       discussionId: input.discussionId,
     });
@@ -49,10 +49,11 @@ export class AddCommentUseCase implements UseCase<AddCommentDTO, Output> {
 
     discussion.addComment(comment);
 
-    const discussionUpdated = await this.discussionRepository.updateById(
-      input.discussionId,
-      discussion,
-    );
+    const discussionUpdated =
+      await this.discussionRepository.updateDiscussionById(
+        input.discussionId,
+        discussion,
+      );
 
     return right({ id: discussionUpdated });
   }

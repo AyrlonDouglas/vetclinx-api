@@ -11,7 +11,7 @@ import {
 describe('Discussion', () => {
   const makeSut = () => {
     const discussionCreateInput: DiscussionCreateInput = {
-      authorId: '123',
+      author: '123',
       description: 'animal was sick',
       title: 'Ineed help to resolvethis case',
     };
@@ -22,7 +22,7 @@ describe('Discussion', () => {
     }
 
     const commentCreateInput: CommentCreateInput = {
-      authorId: '123',
+      author: '123',
       content: 'animal was sick',
       discussionId: '123123',
     };
@@ -47,17 +47,17 @@ describe('Discussion', () => {
       const { sut } = makeSut();
 
       const result1 = sut.create({
-        authorId: 'somethingg',
+        author: 'somethingg',
         description: 'something',
         title: '',
       });
       const result2 = sut.create({
-        authorId: 'somethingg',
+        author: 'somethingg',
         description: '',
         title: 'somethingg',
       });
       const result3 = sut.create({
-        authorId: '',
+        author: '',
         description: 'somethingg',
         title: 'somethingg',
       });
@@ -78,9 +78,7 @@ describe('Discussion', () => {
       expect(result.isRight()).toBe(true);
       expect(result.value).toBeInstanceOf(Discussion);
       if (result.isRight()) {
-        expect(result.value.props.authorId).toEqual(
-          discussionCreateInput.authorId,
-        );
+        expect(result.value.props.author).toEqual(discussionCreateInput.author);
         expect(result.value.props.description).toEqual(
           discussionCreateInput.description,
         );

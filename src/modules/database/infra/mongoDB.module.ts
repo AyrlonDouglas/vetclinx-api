@@ -6,6 +6,10 @@ import {
 } from '@modules/config/config.interface';
 import { ConfigsModule } from '@modules/config/infra/config.module';
 import {
+  CommentModel,
+  CommentSchema,
+} from '@modules/discussion/infra/schemas/comment.schema';
+import {
   DiscussionModel,
   DiscussionSchema,
 } from '@modules/discussion/infra/schemas/discussion.schema';
@@ -41,6 +45,7 @@ export const MongoDBModule = [
   }),
   MongooseModule.forFeature([
     { name: DiscussionModel.name, schema: DiscussionSchema },
+    { name: CommentModel.name, schema: CommentSchema },
     { name: UserModel.name, schema: UserSchema },
   ]),
 ];
