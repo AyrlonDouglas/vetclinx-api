@@ -7,6 +7,7 @@ import { DiscussionMapper } from '../mapper/discussion.mapper';
 import { CommentModel } from '../schemas/comment.schema';
 import { Comment } from '@modules/discussion/domain/entities/comment/comment.entity';
 import { CommentMapper } from '../mapper/comment.mapper';
+import { TransactionService } from '@modules/shared/domain/transaction.service';
 export class DiscussionMongooseRepository implements DiscussionRepository {
   discussionMapper = new DiscussionMapper();
   commentMapper = new CommentMapper();
@@ -17,12 +18,15 @@ export class DiscussionMongooseRepository implements DiscussionRepository {
 
     @InjectModel(CommentModel.name)
     private readonly commentModel: Model<CommentModel>,
+
+    private readonly transactionService: TransactionService,
   ) {}
 
   async create(discussion: Discussion): Promise<string> {
     const discussionCreated = await this.discussionModel.create(
       this.discussionMapper.toPersistense(discussion),
     );
+
     return discussionCreated.id;
   }
 

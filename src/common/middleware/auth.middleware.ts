@@ -1,10 +1,7 @@
 import BaseError from '@common/errors/baseError.error';
 import { HttpStatusCode } from '@common/http/httpStatusCode';
 import { Config } from '@modules/config/ports/config';
-import {
-  ContextKeysProps,
-  ContextStorageService,
-} from '@modules/shared/domain/contextStorage.service';
+import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
 import TokenService from '@modules/shared/domain/token.service';
 import { UserRepository } from '@modules/user/application/repositories/user.repository';
 import { Injectable, NestMiddleware } from '@nestjs/common';
@@ -17,7 +14,6 @@ class UnauthorizedError extends BaseError {
   }
 }
 
-// TODO: criar middleware do nest no infra
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
   constructor(
@@ -43,11 +39,6 @@ export class AuthMiddleware implements NestMiddleware {
       throw new UnauthorizedError();
     }
 
-    const store = new Map<
-      keyof ContextKeysProps,
-      ContextKeysProps[keyof ContextKeysProps]
-    >();
-
     const user = await this.userRepository.findById(
       payloadOrError.value.userId,
     );
@@ -56,9 +47,7 @@ export class AuthMiddleware implements NestMiddleware {
       throw new UnauthorizedError();
     }
 
-    store.set('currentUser', user);
-    this.contextStorageService.run(store, () => {
-      next();
-    });
+    this.contextStorageService.set('currentUser', user);
+    next();
   }
 }

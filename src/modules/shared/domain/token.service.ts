@@ -3,6 +3,7 @@ import Token, {
   TokenError,
 } from '../../auth/domain/valueObjects/token/token.valueObject';
 
+// TODO: Levar esse serviço pro módulo de auth (Maior sentido estar lá)
 export default abstract class TokenService {
   create: (
     input: TokenServiceCreateInput,

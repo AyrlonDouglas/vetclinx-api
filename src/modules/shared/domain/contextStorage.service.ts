@@ -1,5 +1,6 @@
 import User from '@modules/user/domain/entities/user.entity';
 import { AsyncLocalStorage } from 'async_hooks';
+import { ClientSession } from 'mongoose';
 
 export class ContextStorageService {
   constructor(private readonly als: AsyncLocalStorage<Context>) {}
@@ -32,11 +33,9 @@ export class ContextStorageService {
   }
 }
 
-export type Context = Map<
-  keyof ContextKeysProps,
-  ContextKeysProps[keyof ContextKeysProps]
->;
+export type Context = Map<keyof ContextKeysProps, any>;
 
 export type ContextKeysProps = {
   currentUser: User;
+  session?: ClientSession;
 };

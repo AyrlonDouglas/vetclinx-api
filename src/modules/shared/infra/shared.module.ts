@@ -8,6 +8,9 @@ import {
   ContextStorageService,
 } from '../domain/contextStorage.service';
 import { AsyncLocalStorage } from 'async_hooks';
+import { TransactionService } from '../domain/transaction.service';
+import { MongooseTransactionService } from './transaction/mongooseTransaction.service';
+import { DatabaseModule } from '@modules/database/infra/database.module';
 
 @Module({
   providers: [
@@ -20,7 +23,18 @@ import { AsyncLocalStorage } from 'async_hooks';
         new ContextStorageService(asyncLocalStorage),
       inject: [AsyncLocalStorage],
     },
+    MongooseTransactionService,
+    {
+      provide: TransactionService,
+      useClass: MongooseTransactionService,
+    },
   ],
-  exports: [HashService, TokenService, ContextStorageService],
+  exports: [
+    HashService,
+    TokenService,
+    ContextStorageService,
+    TransactionService,
+  ],
+  imports: [DatabaseModule],
 })
 export class SharedModule {}

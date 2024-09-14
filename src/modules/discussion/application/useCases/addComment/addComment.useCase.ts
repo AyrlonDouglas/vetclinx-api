@@ -5,6 +5,9 @@ import Inspetor, { InspetorError } from '@common/core/inspetor';
 import { Either, left, right } from '@common/core/either';
 import AddCommentErrors from './addComment.errors';
 import { Comment } from '@modules/discussion/domain/entities/comment/comment.entity';
+import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
+import User from '@modules/user/domain/entities/user.entity';
+import { TransactionService } from '@modules/shared/domain/transaction.service';
 
 type Output = Either<
   | InspetorError
@@ -13,10 +16,18 @@ type Output = Either<
 >;
 
 export class AddCommentUseCase implements UseCase<AddCommentDTO, Output> {
-  constructor(private readonly discussionRepository: DiscussionRepository) {}
+  constructor(
+    private readonly discussionRepository: DiscussionRepository,
+    private readonly contextStorageService: ContextStorageService,
+    private readonly transactionService: TransactionService,
+  ) {}
+
   async perform(input?: AddCommentDTO): Promise<Output> {
+    await this.transactionService.startTransaction();
+    const author = this.contextStorageService.get('currentUser') as User;
+
     const inputOrFail = Inspetor.againstFalsyBulk([
-      { argument: input.author, argumentName: 'author' },
+      { argument: author, argumentName: 'author' },
       { argument: input.content, argumentName: 'content' },
       { argument: input.discussion, argumentName: 'discussion' },
     ]);
@@ -36,7 +47,7 @@ export class AddCommentUseCase implements UseCase<AddCommentDTO, Output> {
     }
 
     const commentOrFail = Comment.create({
-      author: input.author,
+      author: author.props.id,
       content: input.content,
       discussion: input.discussion,
     });

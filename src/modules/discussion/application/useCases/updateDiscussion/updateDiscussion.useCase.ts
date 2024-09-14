@@ -50,11 +50,12 @@ export class UpdateDiscussionUseCase
 
     const userId = this.context.get('currentUser').props.id;
 
-    if (
-      (discussion.props.author instanceof User
+    const authorId =
+      discussion.props.author instanceof User
         ? discussion.props.author.props.id
-        : discussion.props.author) !== userId
-    ) {
+        : discussion.props.author;
+
+    if (authorId !== userId) {
       return left(new UpdateDiscussionErrors.OnlyCreatorCanUpdateError());
     }
 

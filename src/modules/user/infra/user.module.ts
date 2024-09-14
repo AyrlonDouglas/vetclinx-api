@@ -17,11 +17,7 @@ import { DatabaseModule } from '@modules/database/infra/database.module';
 
 @Module({
   controllers: [UserController],
-  imports: [
-    // MongooseModule.forFeature([{ name: UserModel.name, schema: UserSchema }]),
-    SharedModule,
-    DatabaseModule,
-  ],
+  imports: [SharedModule, DatabaseModule],
   providers: [
     UserMongooseRepository,
     { provide: UserRepository, useClass: UserMongooseRepository },
