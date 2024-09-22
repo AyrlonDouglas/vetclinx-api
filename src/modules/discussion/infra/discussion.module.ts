@@ -11,7 +11,8 @@ import { DiscussionMongooseRepository } from './repositories/discussionMongoose.
 import { AddCommentUseCase } from '../application/useCases/addComment/addComment.useCase';
 import { DatabaseModule } from '@modules/database/infra/database.module';
 import { DiscussionMapper } from './mapper/discussion.mapper';
-import { TransactionService } from '@modules/shared/domain/transaction.service';
+import { CommentRepository } from '../application/repositories/comment.repository';
+import { CommentMongooseRepository } from './repositories/commentMongoose.repository';
 
 @Module({
   controllers: [DiscussionController],
@@ -22,6 +23,11 @@ import { TransactionService } from '@modules/shared/domain/transaction.service';
     {
       provide: DiscussionRepository,
       useClass: DiscussionMongooseRepository,
+    },
+    CommentMongooseRepository,
+    {
+      provide: CommentRepository,
+      useClass: CommentMongooseRepository,
     },
     {
       provide: UpdateDiscussionUseCase,
@@ -50,14 +56,14 @@ import { TransactionService } from '@modules/shared/domain/transaction.service';
       useFactory: (
         discussionRepository: DiscussionRepository,
         contextStorageService: ContextStorageService,
-        transactionService: TransactionService,
+        commentRepository: CommentRepository,
       ) =>
         new AddCommentUseCase(
           discussionRepository,
           contextStorageService,
-          transactionService,
+          commentRepository,
         ),
-      inject: [DiscussionRepository, ContextStorageService, TransactionService],
+      inject: [DiscussionRepository, ContextStorageService, CommentRepository],
     },
     {
       provide: DiscussionUseCases,

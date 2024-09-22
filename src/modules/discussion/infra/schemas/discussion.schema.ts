@@ -27,6 +27,9 @@ export class DiscussionModel {
   @Prop({ required: false })
   resolution: string;
 
+  @Prop({ type: Number, required: true })
+  commentCount: number;
+
   @Prop({ type: Date, required: true })
   createdAt: Date;
 

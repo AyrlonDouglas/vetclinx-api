@@ -22,6 +22,8 @@ export class DiscussionMapper implements Mapper<Discussion> {
     discussionDocument.title = data.props.title;
     discussionDocument.updatedAt = data.props.updatedAt;
     discussionDocument.upvotes = data.props.upvotes;
+    discussionDocument.commentCount = data.props.commentCount;
+
     return discussionDocument;
   }
 
@@ -36,6 +38,7 @@ export class DiscussionMapper implements Mapper<Discussion> {
       resolution: data.resolution,
       updatedAt: data.updatedAt,
       upvotes: data.upvotes,
+      commentCount: data.commentCount,
     }).value as Discussion;
   }
 

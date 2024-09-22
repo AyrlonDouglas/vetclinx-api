@@ -22,6 +22,14 @@ export class DiscussionMongooseRepository implements DiscussionRepository {
     private readonly transactionService: TransactionService,
   ) {}
 
+  async save(discussion: Discussion): Promise<string> {
+    if (discussion.props.id) {
+      return this.updateDiscussionById(discussion.props.id, discussion);
+    } else {
+      return this.create(discussion);
+    }
+  }
+
   async create(discussion: Discussion): Promise<string> {
     const discussionCreated = await this.discussionModel.create(
       this.discussionMapper.toPersistense(discussion),
