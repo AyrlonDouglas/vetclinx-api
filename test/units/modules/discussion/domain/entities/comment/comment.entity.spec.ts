@@ -15,9 +15,9 @@ describe('Comment', () => {
     const sut = Comment;
 
     const commentCreateInput: CommentCreateInput = {
-      author: '123',
+      authorId: '123',
       content: 'animal was sick',
-      discussion: '123123',
+      discussionId: '123123',
     };
 
     const commentMock = Comment.create(commentCreateInput);
@@ -33,19 +33,19 @@ describe('Comment', () => {
       const { sut } = makeSut();
 
       const result1 = sut.create({
-        author: '123123',
+        authorId: '123123',
         content: 'content',
-        discussion: '',
+        discussionId: '',
       });
       const result2 = sut.create({
-        author: '',
+        authorId: '',
         content: 'content',
-        discussion: '123123',
+        discussionId: '123123',
       });
       const result3 = sut.create({
-        author: '123123',
+        authorId: '123123',
         content: '',
-        discussion: '123123',
+        discussionId: '123123',
       });
 
       expect(result1.isLeft()).toBe(true);
@@ -60,17 +60,17 @@ describe('Comment', () => {
       const { sut } = makeSut();
 
       const result = sut.create({
-        author: '123123',
+        authorId: '123123',
         content: 'content',
-        discussion: '32132',
+        discussionId: '32132',
       });
 
       expect(result.isRight()).toBe(true);
       expect(result.value).toBeInstanceOf(Comment);
       if (result.isRight()) {
-        expect(result.value.props.author).toEqual('123123');
+        expect(result.value.props.authorId).toEqual('123123');
         expect(result.value.props.content).toEqual('content');
-        expect(result.value.props.discussion).toEqual('32132');
+        expect(result.value.props.discussionId).toEqual('32132');
         expect(result.value.props.upvotes).toEqual(0);
         expect(result.value.props.downvotes).toEqual(0);
         expect(result.value.props.createdAt).toBeInstanceOf(Date);

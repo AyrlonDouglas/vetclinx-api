@@ -34,10 +34,6 @@ export class DiscussionMongooseRepository implements DiscussionRepository {
     id: string,
     discussion: Discussion,
   ): Promise<string | null> {
-    for (const comment of discussion.props.comments) {
-      await this.addComment(comment);
-    }
-
     const updated = await this.discussionModel.findByIdAndUpdate(
       id,
       this.discussionMapper.toPersistense(discussion),
@@ -59,12 +55,12 @@ export class DiscussionMongooseRepository implements DiscussionRepository {
   private async addComment(comment: Comment) {
     const newComment = new CommentModel();
     newComment.author = this.discussionMapper.mapAuthorToObjectId(
-      comment.props.author,
+      comment.props.authorId,
     );
     newComment.content = comment.props.content;
     newComment.createdAt = comment.props.createdAt;
     newComment.discussion = this.discussionMapper.mapDiscussionToObjectId(
-      comment.props.id,
+      comment.props.discussionId,
     );
     newComment.downvotes = comment.props.downvotes;
     newComment.upvotes = comment.props.upvotes;

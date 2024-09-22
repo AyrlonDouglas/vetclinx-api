@@ -1,17 +1,15 @@
 import { Either, left, right } from '@common/core/either';
 import Inspetor, { InspetorError } from '@common/core/inspetor';
 import { VoteManager } from '../../component/voteManager.component';
-import User from '@modules/user/domain/entities/user.entity';
-import { Discussion } from '../discussion/discussion.entity';
 
 export class Comment {
   private voteManager: VoteManager;
 
   private constructor(
     private readonly id: string,
-    private readonly discussion: string | Discussion,
-    private readonly author: string | User,
-    private readonly content: string,
+    private readonly discussionId: string,
+    private readonly authorId: string,
+    private content: string,
     private readonly createdAt: Date = new Date(),
     private readonly updateAt: Date = new Date(),
     upvotes: number = 0,
@@ -23,8 +21,8 @@ export class Comment {
   get props(): CommentProps {
     return {
       id: this.id,
-      author: this.author,
-      discussion: this.discussion,
+      discussionId: this.discussionId,
+      authorId: this.authorId,
       content: this.content,
       createdAt: this.createdAt,
       downvotes: this.voteManager.props.downvotes,
@@ -35,9 +33,9 @@ export class Comment {
 
   static create(input: CommentCreateInput): Either<InspetorError, Comment> {
     const inputOrFail = Inspetor.againstFalsyBulk([
-      { argument: input.author, argumentName: 'author' },
+      { argument: input.discussionId, argumentName: 'discussionId' },
       { argument: input.content, argumentName: 'content' },
-      { argument: input.discussion, argumentName: 'discussion' },
+      { argument: input.authorId, argumentName: 'authorId' },
     ]);
 
     if (inputOrFail.isLeft()) {
@@ -46,8 +44,8 @@ export class Comment {
 
     const comment = new Comment(
       input.id,
-      input.discussion,
-      input.author,
+      input.discussionId,
+      input.authorId,
       input.content,
       input.createdAt,
       input.updatedAt,
@@ -69,12 +67,16 @@ export class Comment {
   getVoteGrade() {
     return this.voteManager.grade;
   }
+
+  editComment(content: string) {
+    this.content = content;
+  }
 }
 
 type CommentProps = {
   id?: string;
-  discussion: string | Discussion;
-  author: string | User;
+  discussionId: string;
+  authorId: string;
   content: string;
   upvotes: number;
   downvotes: number;
@@ -83,4 +85,4 @@ type CommentProps = {
 };
 
 export type CommentCreateInput = Partial<CommentProps> &
-  Pick<CommentProps, 'author' | 'content' | 'discussion'>;
+  Pick<CommentProps, 'authorId' | 'content' | 'discussionId'>;

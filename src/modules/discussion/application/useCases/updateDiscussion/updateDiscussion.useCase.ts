@@ -6,7 +6,6 @@ import { ContextStorageService } from '@modules/shared/domain/contextStorage.ser
 import { DiscussionRepository } from '../../repositories/discussion.repository';
 import UpdateDiscussionErrors from './updateDiscussion.errors';
 import { Discussion } from '@modules/discussion/domain/entities/discussion/discussion.entity';
-import User from '@modules/user/domain/entities/user.entity';
 
 type Response = Either<
   | InspetorError
@@ -50,10 +49,7 @@ export class UpdateDiscussionUseCase
 
     const userId = this.context.get('currentUser').props.id;
 
-    const authorId =
-      discussion.props.author instanceof User
-        ? discussion.props.author.props.id
-        : discussion.props.author;
+    const authorId = discussion.props.authorId;
 
     if (authorId !== userId) {
       return left(new UpdateDiscussionErrors.OnlyCreatorCanUpdateError());
@@ -63,8 +59,7 @@ export class UpdateDiscussionUseCase
       resolution: request.resolution || discussion.props.resolution,
       description: request.description || discussion.props.description,
       title: request.title || discussion.props.title,
-      author: discussion.props.author,
-      comments: discussion.props.comments,
+      authorId: discussion.props.authorId,
       createdAt: discussion.props.createdAt,
       downvotes: discussion.props.downvotes,
       id: discussion.props.id,

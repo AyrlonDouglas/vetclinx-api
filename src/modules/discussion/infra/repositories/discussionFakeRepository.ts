@@ -14,9 +14,9 @@ export class DiscussionFakeRepository implements DiscussionRepository {
       id: discussion.props.id,
       title: discussion.props.title,
       description: discussion.props.description,
-      author: discussion.props.author,
+      authorId: discussion.props.authorId,
       createdAt: discussion.props.createdAt,
-      comments: discussion.props.comments,
+      commentCount: discussion.props.commentCount,
       upvotes: discussion.props.upvotes,
       downvotes: discussion.props.downvotes,
       resolution: discussion.props.resolution,
@@ -33,10 +33,10 @@ export class DiscussionFakeRepository implements DiscussionRepository {
 
   async create(discussion: Discussion): Promise<string> {
     const discussionToDbOrFail = Discussion.create({
-      author: discussion.props.author,
+      authorId: discussion.props.authorId,
       description: discussion.props.description,
       title: discussion.props.title,
-      comments: discussion.props.comments,
+      commentCount: discussion.props.commentCount,
       createdAt: discussion.props.createdAt,
       downvotes: discussion.props.downvotes,
       id: discussion.props.id ?? randomUUID().toString(),

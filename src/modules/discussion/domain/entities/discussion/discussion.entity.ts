@@ -1,18 +1,16 @@
 import { Either, left, right } from '@common/core/either';
 import Inspetor, { InspetorError } from '@common/core/inspetor';
 import { VoteManager } from '../../component/voteManager.component';
-import { Comment } from '../comment/comment.entity';
-import User from '@modules/user/domain/entities/user.entity';
 
 export class Discussion {
   private voteManager: VoteManager;
   private constructor(
     private title: string,
     private description: string,
-    private author: string | User,
+    private authorId: string,
     private createdAt: Date = new Date(),
     private updatedAt: Date = new Date(),
-    private comments: Comment[] = [],
+    private commentCount: number = 0,
     upvotes: number = 0,
     downvotes: number = 0,
     private resolution: string,
@@ -26,8 +24,8 @@ export class Discussion {
       id: this.id,
       title: this.title,
       description: this.description,
-      author: this.author,
-      comments: this.comments,
+      authorId: this.authorId,
+      commentCount: this.commentCount,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
       downvotes: this.voteManager.props.downvotes,
@@ -40,7 +38,7 @@ export class Discussion {
     input: DiscussionCreateInput,
   ): Either<InspetorError, Discussion> {
     const inputOrFail = Inspetor.againstFalsyBulk([
-      { argument: input.author, argumentName: 'author' },
+      { argument: input.authorId, argumentName: 'authorId' },
       { argument: input.description, argumentName: 'description' },
       { argument: input.title, argumentName: 'title' },
     ]);
@@ -52,10 +50,10 @@ export class Discussion {
     const discussion = new Discussion(
       input.title,
       input.description,
-      input.author,
+      input.authorId,
       input.createdAt,
       input.updatedAt,
-      input.comments,
+      input.commentCount,
       input.upvotes,
       input.downvotes,
       input.resolution,
@@ -77,18 +75,22 @@ export class Discussion {
     return this.voteManager.grade;
   }
 
-  addComment(comment: Comment) {
-    this.comments.push(comment);
+  incrementCommentCount() {
+    this.commentCount++;
+  }
+
+  decrementCommentCount() {
+    this.commentCount = Math.max(0, this.commentCount - 1);
   }
 }
 
 export type DiscussionProps = {
   title: string;
   description: string;
-  author: string | User;
+  authorId: string;
   createdAt: Date;
   updatedAt: Date;
-  comments: Comment[];
+  commentCount: number;
   upvotes: number;
   downvotes: number;
   resolution?: string;
@@ -96,4 +98,4 @@ export type DiscussionProps = {
 };
 
 export type DiscussionCreateInput = Partial<DiscussionProps> &
-  Pick<DiscussionProps, 'author' | 'description' | 'title'>;
+  Pick<DiscussionProps, 'authorId' | 'description' | 'title'>;

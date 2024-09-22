@@ -11,7 +11,7 @@ import {
 describe('Discussion', () => {
   const makeSut = () => {
     const discussionCreateInput: DiscussionCreateInput = {
-      author: '123',
+      authorId: '123',
       description: 'animal was sick',
       title: 'Ineed help to resolvethis case',
     };
@@ -22,9 +22,9 @@ describe('Discussion', () => {
     }
 
     const commentCreateInput: CommentCreateInput = {
-      author: '123',
+      authorId: '123',
       content: 'animal was sick',
-      discussion: '123123',
+      discussionId: '123123',
     };
 
     const commentMock = Comment.create(commentCreateInput);
@@ -47,17 +47,17 @@ describe('Discussion', () => {
       const { sut } = makeSut();
 
       const result1 = sut.create({
-        author: 'somethingg',
+        authorId: 'somethingg',
         description: 'something',
         title: '',
       });
       const result2 = sut.create({
-        author: 'somethingg',
+        authorId: 'somethingg',
         description: '',
         title: 'somethingg',
       });
       const result3 = sut.create({
-        author: '',
+        authorId: '',
         description: 'somethingg',
         title: 'somethingg',
       });
@@ -78,7 +78,9 @@ describe('Discussion', () => {
       expect(result.isRight()).toBe(true);
       expect(result.value).toBeInstanceOf(Discussion);
       if (result.isRight()) {
-        expect(result.value.props.author).toEqual(discussionCreateInput.author);
+        expect(result.value.props.authorId).toEqual(
+          discussionCreateInput.authorId,
+        );
         expect(result.value.props.description).toEqual(
           discussionCreateInput.description,
         );
@@ -126,20 +128,18 @@ describe('Discussion', () => {
     });
   });
 
-  describe('Discussion.addComment()', () => {
+  describe('Discussion.incrementCommentCount()', () => {
     test('Should add comments when call addComment', () => {
-      const { commentMock, discussionMock: sut } = makeSut();
+      const { discussionMock: sut } = makeSut();
 
       const result = sut;
-      expect(result.props.comments.length).toStrictEqual(0);
+      expect(result.props.commentCount).toStrictEqual(0);
 
-      sut.addComment(commentMock);
-      expect(result.props.comments.length).toEqual(1);
-      expect(sut.props.comments).toStrictEqual([commentMock]);
+      sut.incrementCommentCount();
+      expect(result.props.commentCount).toEqual(1);
 
-      sut.addComment(commentMock);
-      expect(result.props.comments.length).toEqual(2);
-      expect(sut.props.comments).toStrictEqual([commentMock, commentMock]);
+      sut.incrementCommentCount();
+      expect(result.props.commentCount).toEqual(2);
     });
   });
 

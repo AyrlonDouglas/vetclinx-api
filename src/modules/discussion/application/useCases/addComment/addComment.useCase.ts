@@ -7,7 +7,8 @@ import AddCommentErrors from './addComment.errors';
 import { Comment } from '@modules/discussion/domain/entities/comment/comment.entity';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
 import User from '@modules/user/domain/entities/user.entity';
-import { TransactionService } from '@modules/shared/domain/transaction.service';
+import { CommentRepository } from '../../repositories/comment.repository';
+// import { TransactionService } from '@modules/shared/domain/transaction.service';
 
 type Output = Either<
   | InspetorError
@@ -19,17 +20,18 @@ export class AddCommentUseCase implements UseCase<AddCommentDTO, Output> {
   constructor(
     private readonly discussionRepository: DiscussionRepository,
     private readonly contextStorageService: ContextStorageService,
-    private readonly transactionService: TransactionService,
+    private readonly commentRepository: CommentRepository,
+    // private readonly transactionService: TransactionService,
   ) {}
 
   async perform(input?: AddCommentDTO): Promise<Output> {
-    await this.transactionService.startTransaction();
+    // await this.transactionService.startTransaction();
     const author = this.contextStorageService.get('currentUser') as User;
 
     const inputOrFail = Inspetor.againstFalsyBulk([
       { argument: author, argumentName: 'author' },
       { argument: input.content, argumentName: 'content' },
-      { argument: input.discussion, argumentName: 'discussion' },
+      { argument: input.discussionId, argumentName: 'discussionId' },
     ]);
 
     if (inputOrFail.isLeft()) {
@@ -37,19 +39,19 @@ export class AddCommentUseCase implements UseCase<AddCommentDTO, Output> {
     }
 
     const discussion = await this.discussionRepository.findById(
-      input.discussion,
+      input.discussionId,
     );
 
     if (!discussion) {
       return left(
-        new AddCommentErrors.DiscussionNotFoundError(input.discussion),
+        new AddCommentErrors.DiscussionNotFoundError(input.discussionId),
       );
     }
 
     const commentOrFail = Comment.create({
-      author: author.props.id,
+      authorId: author.props.id,
       content: input.content,
-      discussion: input.discussion,
+      discussionId: input.discussionId,
     });
 
     if (commentOrFail.isLeft()) {
@@ -58,14 +60,15 @@ export class AddCommentUseCase implements UseCase<AddCommentDTO, Output> {
 
     const comment = commentOrFail.value;
 
-    discussion.addComment(comment);
+    const commentCreated = await this.commentRepository.save(comment);
 
-    const discussionUpdated =
-      await this.discussionRepository.updateDiscussionById(
-        input.discussion,
-        discussion,
-      );
+    discussion.incrementCommentCount();
 
-    return right({ id: discussionUpdated });
+    await this.discussionRepository.updateDiscussionById(
+      input.discussionId,
+      discussion,
+    );
+
+    return right({ id: commentCreated });
   }
 }

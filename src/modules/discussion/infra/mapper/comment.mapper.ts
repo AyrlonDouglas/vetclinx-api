@@ -11,13 +11,13 @@ export class CommentMapper implements Mapper<Comment> {
   toPersistense(data: Comment): CommentModel {
     const comment = new CommentModel();
     comment.author = this.discussionMapper.mapAuthorToObjectId(
-      data.props.author,
+      data.props.authorId,
     );
     comment.createdAt = data.props.createdAt;
     comment.updatedAt = data.props.updatedAt;
     comment.content = data.props.content;
     comment.discussion = this.discussionMapper.mapDiscussionToObjectId(
-      data.props.discussion,
+      data.props.discussionId,
     );
     comment.downvotes = data.props.downvotes;
     comment.upvotes = data.props.upvotes;
@@ -26,11 +26,9 @@ export class CommentMapper implements Mapper<Comment> {
 
   toDomain(data: CommentDocument): Comment {
     return Comment.create({
-      author: this.discussionMapper.mapObjectIdToAuthor(data.author),
+      authorId: data.author._id.toString(),
       content: data.content,
-      discussion: this.discussionMapper.mapObjectIdToDiscussion(
-        data.discussion,
-      ),
+      discussionId: data.discussion._id.toString(),
       createdAt: data.createdAt,
       downvotes: data.downvotes,
       id: data._id.toString(),

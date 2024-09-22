@@ -14,7 +14,7 @@ export class DiscussionMapper implements Mapper<Discussion> {
 
   toPersistense(data: Discussion): DiscussionModel {
     const discussionDocument = new DiscussionModel();
-    discussionDocument.author = this.mapAuthorToObjectId(data.props.author);
+    discussionDocument.author = this.mapAuthorToObjectId(data.props.authorId);
     discussionDocument.createdAt = data.props.createdAt;
     discussionDocument.description = data.props.description;
     discussionDocument.downvotes = data.props.downvotes;
@@ -27,7 +27,7 @@ export class DiscussionMapper implements Mapper<Discussion> {
 
   toDomain(data: DiscussionDocument): Discussion {
     return Discussion.create({
-      author: this.mapObjectIdToAuthor(data.author),
+      authorId: data.author._id.toString(),
       description: data.description,
       title: data.title,
       createdAt: data.createdAt,
