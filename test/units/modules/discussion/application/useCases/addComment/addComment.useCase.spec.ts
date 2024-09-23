@@ -12,6 +12,11 @@ describe('AddCommentUseCase', () => {
       discusssionMock,
       contextStorageService,
     } = (await new DiscussionTestSetup().prepare()) as DiscussionTestSetup;
+
+    jest
+      .spyOn(contextStorageService, 'get')
+      .mockReturnValue({ props: { id: '123' } } as any);
+
     return {
       sut: addCommentUseCase,
       discussionRepository,
@@ -21,10 +26,7 @@ describe('AddCommentUseCase', () => {
   };
 
   test('Should return InspectorError when input is invalid', async () => {
-    const { sut, discusssionMock, contextStorageService } = await makeSut();
-    jest
-      .spyOn(contextStorageService, 'get')
-      .mockReturnValue({ props: { id: '123' } } as any);
+    const { sut, discusssionMock } = await makeSut();
 
     const result1 = await sut.perform({
       content: 'content',
@@ -42,10 +44,7 @@ describe('AddCommentUseCase', () => {
   });
 
   test('Should return DiscussionNotFoundError when discussion dont exists', async () => {
-    const { sut, contextStorageService } = await makeSut();
-    jest
-      .spyOn(contextStorageService, 'get')
-      .mockReturnValueOnce({ props: { id: '123' } } as any);
+    const { sut } = await makeSut();
 
     const result = await sut.perform({
       content: 'content',
@@ -59,10 +58,7 @@ describe('AddCommentUseCase', () => {
   });
 
   test('Should return InspetorError when create comment fails', async () => {
-    const { sut, discusssionMock, contextStorageService } = await makeSut();
-    jest
-      .spyOn(contextStorageService, 'get')
-      .mockReturnValueOnce({ props: { id: '123' } } as any);
+    const { sut, discusssionMock } = await makeSut();
 
     jest
       .spyOn(Comment, 'create')
@@ -77,29 +73,17 @@ describe('AddCommentUseCase', () => {
     expect(result.value).toBeInstanceOf(InspetorError);
   });
 
-  // test('Should return discussion when comment was add in discussion', async () => {
-  //   const { sut, discusssionMock, discussionRepository } = await makeSut();
+  test('Should return new comment id when comment was add in discussion', async () => {
+    const { sut, discusssionMock } = await makeSut();
 
-  //   const result = await sut.perform({
-  //     content: 'content test',
-  //     discussionId: discusssionMock.props.id,
-  //   });
+    const result = await sut.perform({
+      content: 'content test',
+      discussionId: discusssionMock.props.id,
+    });
 
-  //   expect(result.isRight()).toBe(true);
-  //   if (result.isRight()) {
-  //     expect(result.value).toEqual({ id: discusssionMock.props.id });
-
-  //     const discussion = await discussionRepository.findById(result.value.id);
-  //     const comment = discussion.props.comments.find(
-  //       (el) => el.props.author === '123',
-  //     );
-  //     expect(comment).toBeDefined();
-  //     expect(comment.props.author).toEqual('123');
-  //     expect(comment.props.content).toEqual('content test');
-  //     expect(comment.props.discussion).toEqual(discusssionMock.props.id);
-  //     expect(comment.props.createdAt).toEqual(comment.props.updatedAt);
-  //     expect(comment.props.downvotes).toEqual(0);
-  //     expect(comment.props.upvotes).toEqual(0);
-  //   }
-  // });
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value).toBeDefined();
+    }
+  });
 });

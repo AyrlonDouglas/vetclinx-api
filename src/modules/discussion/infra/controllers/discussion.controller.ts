@@ -2,8 +2,17 @@ import { AddCommentDTO } from '@modules/discussion/application/useCases/addComme
 import { CreateDiscussionDTO } from '@modules/discussion/application/useCases/createDiscussion/createDiscussion.dto';
 import { DiscussionUseCases } from '@modules/discussion/application/useCases/discussion.useCases';
 import { UpdateDiscussionDTO } from '@modules/discussion/application/useCases/updateDiscussion/updateDiscussion.dto';
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { DiscussionMapper } from '../mapper/discussion.mapper';
+import { UpdateCommentInput } from '@modules/discussion/application/useCases/updateComment/updateComment.dto';
 
 @Controller('discussion')
 export class DiscussionController {
@@ -45,6 +54,34 @@ export class DiscussionController {
     return result.value;
   }
 
+  @Patch('comment/:commentId')
+  async updateComment(
+    @Param('commentId') commentId: string,
+    @Body() updateCommentDTO: UpdateCommentInput,
+  ) {
+    const result = await this.discussionUseCases.updateComment.perform({
+      content: updateCommentDTO.content,
+      commentId,
+    });
+
+    if (result.isLeft()) throw result.value;
+    return result.value;
+  }
+
+  @Delete(':id/comment/:commentId')
+  async removeComment(
+    @Param('id') discussionId: string,
+    @Param('commentId') commentId: string,
+  ) {
+    const result = await this.discussionUseCases.removeComment.perform({
+      commentId,
+      discussionId,
+    });
+
+    if (result.isLeft()) throw result.value;
+    return result.value;
+  }
+
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -57,21 +94,4 @@ export class DiscussionController {
     if (result.isLeft()) throw result.value;
     return result.value;
   }
-
-  // @Get()
-  // findAll() {
-  //   return this.testeService.findAll();
-  // }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.testeService.findOne(+id);
-  // }
-
-  // @Delete(':id')
-  // async remove(@Param('id') id: string) {
-  //   const result = await this.userUseCases.removeUserById.perform({ id });
-  //   if (result.isLeft()) throw result.value;
-  //   return result.value;
-  // }
 }

@@ -5,7 +5,6 @@ import { Model, Types } from 'mongoose';
 import { DiscussionModel } from '../schemas/discussion.schema';
 import { DiscussionMapper } from '../mapper/discussion.mapper';
 import { CommentModel } from '../schemas/comment.schema';
-import { Comment } from '@modules/discussion/domain/entities/comment/comment.entity';
 import { CommentMapper } from '../mapper/comment.mapper';
 import { TransactionService } from '@modules/shared/domain/transaction.service';
 export class DiscussionMongooseRepository implements DiscussionRepository {
@@ -58,23 +57,5 @@ export class DiscussionMongooseRepository implements DiscussionRepository {
     if (!discussion) return null;
 
     return this.discussionMapper.toDomain(discussion);
-  }
-
-  private async addComment(comment: Comment) {
-    const newComment = new CommentModel();
-    newComment.author = this.discussionMapper.mapAuthorToObjectId(
-      comment.props.authorId,
-    );
-    newComment.content = comment.props.content;
-    newComment.createdAt = comment.props.createdAt;
-    newComment.discussion = this.discussionMapper.mapDiscussionToObjectId(
-      comment.props.discussionId,
-    );
-    newComment.downvotes = comment.props.downvotes;
-    newComment.upvotes = comment.props.upvotes;
-
-    const commentCreated = await this.commentModel.create(newComment);
-
-    return commentCreated.id;
   }
 }

@@ -64,10 +64,7 @@ export class AddCommentUseCase implements UseCase<AddCommentDTO, Output> {
 
     discussion.incrementCommentCount();
 
-    await this.discussionRepository.updateDiscussionById(
-      input.discussionId,
-      discussion,
-    );
+    await this.discussionRepository.save(discussion);
 
     return right({ id: commentCreated });
   }

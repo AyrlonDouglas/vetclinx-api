@@ -23,7 +23,7 @@ class OnlyCreatorCanUpdateError extends BaseError {
       [`Only the creator of the discussion can update it.`],
       HttpStatusCode.CONFLICT,
     );
-    this.name = 'UpdateDiscussionOnlyCreatorCanDeleteError';
+    this.name = 'UpdateDiscussionOnlyCreatorCanUpdateError';
   }
 }
 
