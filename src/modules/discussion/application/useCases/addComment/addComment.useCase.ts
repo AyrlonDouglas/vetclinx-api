@@ -48,10 +48,25 @@ export class AddCommentUseCase implements UseCase<AddCommentDTO, Output> {
       );
     }
 
+    let parentComment: Comment;
+    if (input.parentCommentId) {
+      parentComment = await this.commentRepository.findById(
+        input.parentCommentId,
+      );
+      if (!parentComment) {
+        return left(
+          new AddCommentErrors.ParentCommentNotFoundError(
+            input.parentCommentId,
+          ),
+        );
+      }
+    }
+
     const commentOrFail = Comment.create({
       authorId: author.props.id,
       content: input.content,
       discussionId: input.discussionId,
+      parentCommentId: input.parentCommentId,
     });
 
     if (commentOrFail.isLeft()) {
@@ -62,8 +77,12 @@ export class AddCommentUseCase implements UseCase<AddCommentDTO, Output> {
 
     const commentCreated = await this.commentRepository.save(comment);
 
-    discussion.incrementCommentCount();
+    if (parentComment) {
+      parentComment.incrementCommentCount();
+      this.commentRepository.save(parentComment);
+    }
 
+    discussion.incrementCommentCount();
     await this.discussionRepository.save(discussion);
 
     return right({ id: commentCreated });

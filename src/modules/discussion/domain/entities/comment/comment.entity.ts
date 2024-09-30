@@ -14,6 +14,8 @@ export class Comment {
     private readonly updateAt: Date = new Date(),
     upvotes: number = 0,
     downvotes: number = 0,
+    private readonly parentCommentId: string,
+    private commentCount: number = 0,
   ) {
     this.voteManager = new VoteManager(upvotes, downvotes);
   }
@@ -28,6 +30,8 @@ export class Comment {
       downvotes: this.voteManager.props.downvotes,
       upvotes: this.voteManager.props.upvotes,
       updatedAt: this.updateAt,
+      parentCommentId: this.parentCommentId,
+      commentCount: this.commentCount,
     };
   }
 
@@ -51,6 +55,8 @@ export class Comment {
       input.updatedAt,
       input.upvotes,
       input.downvotes,
+      input.parentCommentId,
+      input.commentCount,
     );
 
     return right(comment);
@@ -71,11 +77,21 @@ export class Comment {
   editComment(content: string) {
     this.content = content;
   }
+
+  incrementCommentCount() {
+    this.commentCount++;
+  }
+
+  decrementCommentCount() {
+    this.commentCount = Math.max(0, this.commentCount - 1);
+  }
 }
 
 type CommentProps = {
   id?: string;
   discussionId: string;
+  parentCommentId?: string;
+  commentCount: number;
   authorId: string;
   content: string;
   upvotes: number;

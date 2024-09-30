@@ -4,6 +4,17 @@ import { randomUUID } from 'crypto';
 
 export class CommentFakeRepository implements CommentRepository {
   constructor(private commentList: Comment[] = []) {}
+
+  deleteByParentCommentId(parentCommentId: string): Promise<number> {
+    parentCommentId;
+    throw new Error('Method not implemented.');
+  }
+
+  findChildrenCommentsByCommentId(id: string): Promise<Comment[] | null> {
+    id;
+    throw new Error('Method not implemented.');
+  }
+
   async deleteById(id: string): Promise<number> {
     const lengthOld = this.commentList.length;
     this.commentList = this.commentList.filter((el) => el.props.id !== id);

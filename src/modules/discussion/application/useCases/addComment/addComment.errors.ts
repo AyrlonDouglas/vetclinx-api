@@ -8,8 +8,19 @@ class DiscussionNotFoundError extends BaseError {
   }
 }
 
+class ParentCommentNotFoundError extends BaseError {
+  constructor(commentId: string) {
+    super(
+      [`The parent comment ${commentId} not found`],
+      HttpStatusCode.NOT_FOUND,
+    );
+    this.name = 'AddCommentCommentNotFoundError';
+  }
+}
+
 const AddCommentErrors = {
   DiscussionNotFoundError,
+  ParentCommentNotFoundError,
 };
 
 export default AddCommentErrors;

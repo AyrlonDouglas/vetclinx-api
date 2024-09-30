@@ -45,14 +45,32 @@ export class RemoveComment
       input.commentId,
     );
 
-    const discussion = await this.discussionRepository.findById(
-      input.discussionId,
-    );
+    let childrenDeleteCount = 0;
 
-    discussion.decrementCommentCount();
+    if (deleteCount) {
+      const discussion = await this.discussionRepository.findById(
+        input.discussionId,
+      );
 
-    await this.discussionRepository.save(discussion);
+      discussion.decrementCommentCount();
 
-    return right({ deleted: !!deleteCount });
+      await this.discussionRepository.save(discussion);
+
+      if (comment.props.parentCommentId) {
+        const parentComment = await this.commentRepository.findById(
+          comment.props.parentCommentId,
+        );
+        parentComment.decrementCommentCount();
+        await this.commentRepository.save(parentComment);
+      }
+
+      childrenDeleteCount =
+        await this.commentRepository.deleteByParentCommentId(input.commentId);
+    }
+
+    return right({
+      deleted: !!deleteCount,
+      count: childrenDeleteCount + deleteCount,
+    });
   }
 }

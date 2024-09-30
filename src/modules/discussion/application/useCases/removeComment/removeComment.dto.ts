@@ -7,5 +7,5 @@ export type RemoveCommentOutput = Either<
   | InspetorError
   | InstanceType<(typeof RemoveCommentErrors)['CommentNotFoundError']>
   | InstanceType<(typeof RemoveCommentErrors)['OnlyCreatorCanRemoveError']>,
-  { deleted: boolean }
+  { deleted: boolean; count: number }
 >;

@@ -17,6 +17,27 @@ export class CommentMongooseRepository implements CommentRepository {
     private readonly transactionService: TransactionService,
   ) {}
 
+  async deleteByParentCommentId(parentCommentId: string): Promise<number> {
+    const commentsRemoveds = await this.commentModel.deleteMany({
+      parentCommentId: new Types.ObjectId(parentCommentId),
+    });
+    console.log(commentsRemoveds);
+    return commentsRemoveds.deletedCount;
+  }
+
+  async findChildrenCommentsByCommentId(id: string): Promise<Comment[] | null> {
+    const isValidId = Types.ObjectId.isValid(id);
+    if (!isValidId) return null;
+
+    const childrenComments = await this.commentModel.find({
+      parentCommentId: new Types.ObjectId(id),
+    });
+
+    return childrenComments.map((comment) =>
+      this.commentMapper.toDomain(comment),
+    );
+  }
+
   async deleteById(id: string): Promise<number | null> {
     const commentRemoved = await this.commentModel.deleteOne({ _id: id });
     return commentRemoved.deletedCount;

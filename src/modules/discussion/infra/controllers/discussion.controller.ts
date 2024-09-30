@@ -54,7 +54,7 @@ export class DiscussionController {
     return result.value;
   }
 
-  @Patch('comment/:commentId')
+  @Patch(':id/comment/:commentId')
   async updateComment(
     @Param('commentId') commentId: string,
     @Body() updateCommentDTO: UpdateCommentInput,

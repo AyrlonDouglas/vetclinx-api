@@ -30,6 +30,12 @@ export class CommentModel {
 
   @Prop({ required: true })
   downvotes: number;
+
+  @Prop({ type: Number, required: true })
+  commentCount: number;
+
+  @Prop({ type: Types.ObjectId, ref: CommentModel.name, required: false })
+  parentCommentId: Types.ObjectId;
 }
 
 export const CommentSchema = SchemaFactory.createForClass(CommentModel);

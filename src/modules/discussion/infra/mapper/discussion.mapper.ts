@@ -47,6 +47,7 @@ export class DiscussionMapper implements Mapper<Discussion> {
   }
 
   mapDiscussionToObjectId(discussion: string | Discussion): Types.ObjectId {
+    if (!discussion) return;
     if (discussion instanceof Discussion) {
       return new Types.ObjectId(discussion.props.id);
     }
@@ -56,6 +57,8 @@ export class DiscussionMapper implements Mapper<Discussion> {
   mapObjectIdToDiscussion(
     discussion: DiscussionDocument | Types.ObjectId,
   ): string | Discussion {
+    if (!discussion) return;
+
     if (discussion instanceof Types.ObjectId) {
       return discussion.toString();
     }
@@ -63,6 +66,8 @@ export class DiscussionMapper implements Mapper<Discussion> {
   }
 
   mapAuthorToObjectId(author: string | User): Types.ObjectId {
+    if (!author) return;
+
     if (author instanceof User) {
       return new Types.ObjectId(author.props.id);
     }
@@ -70,6 +75,8 @@ export class DiscussionMapper implements Mapper<Discussion> {
   }
 
   mapObjectIdToAuthor(author: UserDocument | Types.ObjectId): string | User {
+    if (!author) return;
+
     if (author instanceof Types.ObjectId) {
       return author.toString();
     }
