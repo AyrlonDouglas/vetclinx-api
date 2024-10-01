@@ -40,6 +40,30 @@ export class DiscussionController {
     return result.value;
   }
 
+  @Patch(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() updateDiscussionDTO: UpdateDiscussionDTO,
+  ) {
+    const result = await this.discussionUseCases.updateDiscussion.perform({
+      ...updateDiscussionDTO,
+      id,
+    });
+    if (result.isLeft()) throw result.value;
+    return result.value;
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string) {
+    const result = await this.discussionUseCases.removeDiscussion.perform({
+      discussionId: id,
+    });
+    if (result.isLeft()) {
+      throw result.value;
+    }
+    return result.value;
+  }
+
   @Post(':id/comment')
   async addComment(
     @Param('id') id: string,
@@ -78,19 +102,6 @@ export class DiscussionController {
       discussionId,
     });
 
-    if (result.isLeft()) throw result.value;
-    return result.value;
-  }
-
-  @Patch(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() updateDiscussionDTO: UpdateDiscussionDTO,
-  ) {
-    const result = await this.discussionUseCases.updateDiscussion.perform({
-      ...updateDiscussionDTO,
-      id,
-    });
     if (result.isLeft()) throw result.value;
     return result.value;
   }

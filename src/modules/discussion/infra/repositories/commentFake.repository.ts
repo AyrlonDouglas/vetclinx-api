@@ -4,6 +4,10 @@ import { randomUUID } from 'crypto';
 
 export class CommentFakeRepository implements CommentRepository {
   constructor(private commentList: Comment[] = []) {}
+  deleteByDiscussionId(discussionId: string): Promise<number> {
+    discussionId;
+    throw new Error('Method not implemented.');
+  }
 
   deleteByParentCommentId(parentCommentId: string): Promise<number> {
     parentCommentId;

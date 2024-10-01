@@ -21,6 +21,15 @@ export class DiscussionMongooseRepository implements DiscussionRepository {
     private readonly transactionService: TransactionService,
   ) {}
 
+  async deleteById(id: string): Promise<number> {
+    const isValidId = Types.ObjectId.isValid(id);
+    if (!isValidId) return 0;
+
+    const discussionRemoved = await this.discussionModel.deleteOne({ _id: id });
+
+    return discussionRemoved.deletedCount;
+  }
+
   async save(discussion: Discussion): Promise<string> {
     if (discussion.props.id) {
       return this.updateDiscussionById(discussion.props.id, discussion);

@@ -17,11 +17,25 @@ export class CommentMongooseRepository implements CommentRepository {
     private readonly transactionService: TransactionService,
   ) {}
 
+  async deleteByDiscussionId(discussionId: string): Promise<number> {
+    const isValidId = Types.ObjectId.isValid(discussionId);
+    if (!isValidId) return 0;
+
+    const commentsRemoveds = await this.commentModel.deleteMany({
+      discussion: new Types.ObjectId(discussionId),
+    });
+
+    return commentsRemoveds.deletedCount;
+  }
+
   async deleteByParentCommentId(parentCommentId: string): Promise<number> {
+    const isValidId = Types.ObjectId.isValid(parentCommentId);
+    if (!isValidId) return 0;
+
     const commentsRemoveds = await this.commentModel.deleteMany({
       parentCommentId: new Types.ObjectId(parentCommentId),
     });
-    console.log(commentsRemoveds);
+
     return commentsRemoveds.deletedCount;
   }
 
@@ -39,6 +53,9 @@ export class CommentMongooseRepository implements CommentRepository {
   }
 
   async deleteById(id: string): Promise<number | null> {
+    const isValidId = Types.ObjectId.isValid(id);
+    if (!isValidId) return 0;
+
     const commentRemoved = await this.commentModel.deleteOne({ _id: id });
     return commentRemoved.deletedCount;
   }

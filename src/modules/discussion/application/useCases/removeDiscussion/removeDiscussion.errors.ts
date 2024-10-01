@@ -4,23 +4,21 @@ import { HttpStatusCode } from '@common/http/httpStatusCode';
 class DiscussionNotFoundError extends BaseError {
   constructor(discussion: string) {
     super([`The discussion ${discussion} not found`], HttpStatusCode.NOT_FOUND);
-    this.name = 'UpdateDiscussionDiscussionNotFoundError';
+    this.name = 'RemoveDiscussionDiscussionNotFoundError';
   }
 }
 
-class OnlyCreatorCanUpdateError extends BaseError {
+class OnlyCreatorCanDeleteError extends BaseError {
   constructor() {
     super(
-      [`Only the creator of the discussion can update it.`],
+      [`Only the creator of the discussion can delete it.`],
       HttpStatusCode.CONFLICT,
     );
-    this.name = 'UpdateDiscussionOnlyCreatorCanUpdateError';
+    this.name = 'RemoveDiscussionOnlyCreatorCanDeleteError';
   }
 }
 
-const UpdateDiscussionErrors = {
+export const RemoveDiscussionErrors = {
+  OnlyCreatorCanDeleteError,
   DiscussionNotFoundError,
-  OnlyCreatorCanUpdateError,
 };
-
-export default UpdateDiscussionErrors;

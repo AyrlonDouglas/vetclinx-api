@@ -9,8 +9,7 @@ import { Discussion } from '@modules/discussion/domain/entities/discussion/discu
 
 type Response = Either<
   | InspetorError
-  | InstanceType<(typeof UpdateDiscussionErrors)['DiscussionNotFoundError']>
-  | InstanceType<(typeof UpdateDiscussionErrors)['OnlyCreatorCanDeleteError']>,
+  | InstanceType<(typeof UpdateDiscussionErrors)['DiscussionNotFoundError']>,
   { id: string }
 >;
 

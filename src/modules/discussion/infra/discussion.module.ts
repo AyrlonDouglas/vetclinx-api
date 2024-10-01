@@ -15,6 +15,7 @@ import { CommentRepository } from '../application/repositories/comment.repositor
 import { CommentMongooseRepository } from './repositories/commentMongoose.repository';
 import { UpdateComment } from '../application/useCases/updateComment/updateComment.useCase';
 import { RemoveComment } from '../application/useCases/removeComment/removeComment.useCase';
+import { RemoveDiscussion } from '../application/useCases/removeDiscussion/removeDiscussion.useCase';
 
 @Module({
   controllers: [DiscussionController],
@@ -90,6 +91,20 @@ import { RemoveComment } from '../application/useCases/removeComment/removeComme
       inject: [CommentRepository, ContextStorageService, DiscussionRepository],
     },
     {
+      provide: RemoveDiscussion,
+      useFactory: (
+        discussionRepository: DiscussionRepository,
+        commentRepository: CommentRepository,
+        contextStorageService: ContextStorageService,
+      ) =>
+        new RemoveDiscussion(
+          discussionRepository,
+          commentRepository,
+          contextStorageService,
+        ),
+      inject: [DiscussionRepository, CommentRepository, ContextStorageService],
+    },
+    {
       provide: DiscussionUseCases,
       inject: [
         CreateDiscussionUseCase,
@@ -98,6 +113,7 @@ import { RemoveComment } from '../application/useCases/removeComment/removeComme
         AddCommentUseCase,
         UpdateComment,
         RemoveComment,
+        RemoveDiscussion,
       ],
       useFactory: (
         createDiscussionUseCase: CreateDiscussionUseCase,
@@ -106,6 +122,7 @@ import { RemoveComment } from '../application/useCases/removeComment/removeComme
         addCommentUseCase: AddCommentUseCase,
         updateComment: UpdateComment,
         removeComment: RemoveComment,
+        removeDiscussion: RemoveDiscussion,
       ) =>
         new DiscussionUseCases(
           createDiscussionUseCase,
@@ -114,6 +131,7 @@ import { RemoveComment } from '../application/useCases/removeComment/removeComme
           addCommentUseCase,
           updateComment,
           removeComment,
+          removeDiscussion,
         ),
     },
   ],

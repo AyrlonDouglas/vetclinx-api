@@ -4,6 +4,10 @@ import { randomUUID } from 'crypto';
 
 export class DiscussionFakeRepository implements DiscussionRepository {
   constructor(private list: Discussion[]) {}
+  deleteById(id: string): Promise<number> {
+    id;
+    throw new Error('Method not implemented.');
+  }
 
   save(discussion: Discussion): Promise<string> {
     if (discussion.props.id) {
