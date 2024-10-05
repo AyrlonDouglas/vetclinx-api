@@ -22,6 +22,28 @@ export class VoteManager {
     this.downvotes++;
   }
 
+  exchangeVote(from: keyof typeof VoteTypes, to: keyof typeof VoteTypes) {
+    if (from === VoteTypes.up && to === VoteTypes.down) {
+      this.upvotes--;
+      this.downvote();
+    }
+
+    if (from === VoteTypes.down && to === VoteTypes.up) {
+      this.upvote();
+      this.downvotes--;
+    }
+  }
+
+  removeVote(from: keyof typeof VoteTypes) {
+    if (from === VoteTypes.down) {
+      this.downvotes--;
+    }
+
+    if (from === VoteTypes.up) {
+      this.upvotes--;
+    }
+  }
+
   get balance(): number {
     return this.upvotes - this.downvotes;
   }
@@ -80,4 +102,14 @@ export const voteGradeScale = {
   neutral: 0,
   positive: 1,
   veryPositive: 2,
+} as const;
+
+export const VoteTypes = {
+  up: 'up',
+  down: 'down',
+} as const;
+
+export const VoteFor = {
+  discussion: 'discussion',
+  comment: 'comment',
 } as const;

@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { DiscussionMapper } from '../mapper/discussion.mapper';
 import { UpdateCommentInput } from '@modules/discussion/application/useCases/updateComment/updateComment.dto';
+import { VoteTypes } from '@modules/discussion/domain/component/voteManager.component';
 
 @Controller('discussion')
 export class DiscussionController {
@@ -48,6 +49,26 @@ export class DiscussionController {
     const result = await this.discussionUseCases.updateDiscussion.perform({
       ...updateDiscussionDTO,
       id,
+    });
+    if (result.isLeft()) throw result.value;
+    return result.value;
+  }
+
+  @Patch(':id/upvote')
+  async upvote(@Param('id') id: string) {
+    const result = await this.discussionUseCases.voteTheDiscussion.perform({
+      discussionId: id,
+      vote: VoteTypes.up,
+    });
+    if (result.isLeft()) throw result.value;
+    return result.value;
+  }
+
+  @Patch(':id/downvote')
+  async downvote(@Param('id') id: string) {
+    const result = await this.discussionUseCases.voteTheDiscussion.perform({
+      discussionId: id,
+      vote: VoteTypes.down,
     });
     if (result.isLeft()) throw result.value;
     return result.value;

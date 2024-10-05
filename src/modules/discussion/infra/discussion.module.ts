@@ -16,6 +16,9 @@ import { CommentMongooseRepository } from './repositories/commentMongoose.reposi
 import { UpdateComment } from '../application/useCases/updateComment/updateComment.useCase';
 import { RemoveComment } from '../application/useCases/removeComment/removeComment.useCase';
 import { RemoveDiscussion } from '../application/useCases/removeDiscussion/removeDiscussion.useCase';
+import { VoteTheDiscussion } from '../application/useCases/voteTheDiscussion/voteTheDiscussion.useCase';
+import { VoteRepository } from '../application/repositories/vote.repository';
+import { VoteMongooseRepository } from './repositories/voteMongoose.repository';
 
 @Module({
   controllers: [DiscussionController],
@@ -104,6 +107,17 @@ import { RemoveDiscussion } from '../application/useCases/removeDiscussion/remov
         ),
       inject: [DiscussionRepository, CommentRepository, ContextStorageService],
     },
+    VoteMongooseRepository,
+    { provide: VoteRepository, useClass: VoteMongooseRepository },
+    {
+      provide: VoteTheDiscussion,
+      inject: [DiscussionRepository, ContextStorageService, VoteRepository],
+      useFactory: (
+        discussionRepository: DiscussionRepository,
+        context: ContextStorageService,
+        voteRepository: VoteRepository,
+      ) => new VoteTheDiscussion(discussionRepository, context, voteRepository),
+    },
     {
       provide: DiscussionUseCases,
       inject: [
@@ -114,6 +128,7 @@ import { RemoveDiscussion } from '../application/useCases/removeDiscussion/remov
         UpdateComment,
         RemoveComment,
         RemoveDiscussion,
+        VoteTheDiscussion,
       ],
       useFactory: (
         createDiscussionUseCase: CreateDiscussionUseCase,
@@ -123,6 +138,7 @@ import { RemoveDiscussion } from '../application/useCases/removeDiscussion/remov
         updateComment: UpdateComment,
         removeComment: RemoveComment,
         removeDiscussion: RemoveDiscussion,
+        voteTheDiscussion: VoteTheDiscussion,
       ) =>
         new DiscussionUseCases(
           createDiscussionUseCase,
@@ -132,6 +148,7 @@ import { RemoveDiscussion } from '../application/useCases/removeDiscussion/remov
           updateComment,
           removeComment,
           removeDiscussion,
+          voteTheDiscussion,
         ),
     },
   ],

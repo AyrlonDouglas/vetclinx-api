@@ -13,6 +13,10 @@ import {
   DiscussionModel,
   DiscussionSchema,
 } from '@modules/discussion/infra/schemas/discussion.schema';
+import {
+  VoteModel,
+  VoteSchema,
+} from '@modules/discussion/infra/schemas/vote.schema';
 import { UserModel, UserSchema } from '@modules/user/infra/schemas/user.schema';
 import { ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -47,6 +51,7 @@ export const MongoDBModule = [
     { name: DiscussionModel.name, schema: DiscussionSchema },
     { name: CommentModel.name, schema: CommentSchema },
     { name: UserModel.name, schema: UserSchema },
+    { name: VoteModel.name, schema: VoteSchema },
   ]),
   // Connection,
 ];

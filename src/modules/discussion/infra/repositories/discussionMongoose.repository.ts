@@ -7,6 +7,8 @@ import { DiscussionMapper } from '../mapper/discussion.mapper';
 import { CommentModel } from '../schemas/comment.schema';
 import { CommentMapper } from '../mapper/comment.mapper';
 import { TransactionService } from '@modules/shared/domain/transaction.service';
+import { Injectable } from '@nestjs/common';
+@Injectable()
 export class DiscussionMongooseRepository implements DiscussionRepository {
   discussionMapper = new DiscussionMapper();
   commentMapper = new CommentMapper();

@@ -5,6 +5,7 @@ import { RemoveComment } from './removeComment/removeComment.useCase';
 import { RemoveDiscussion } from './removeDiscussion/removeDiscussion.useCase';
 import { UpdateComment } from './updateComment/updateComment.useCase';
 import { UpdateDiscussionUseCase } from './updateDiscussion/updateDiscussion.useCase';
+import { VoteTheDiscussion } from './voteTheDiscussion/voteTheDiscussion.useCase';
 
 export class DiscussionUseCases {
   constructor(
@@ -15,6 +16,7 @@ export class DiscussionUseCases {
     private readonly updateCommentUseCase: UpdateComment,
     private readonly removeCommentUseCase: RemoveComment,
     private readonly removeDiscussionUseCase: RemoveDiscussion,
+    private readonly voteTheDiscussionUseCase: VoteTheDiscussion,
   ) {}
 
   get createDiscussion() {
@@ -43,5 +45,9 @@ export class DiscussionUseCases {
 
   get removeDiscussion() {
     return this.removeDiscussionUseCase;
+  }
+
+  get voteTheDiscussion() {
+    return this.voteTheDiscussionUseCase;
   }
 }

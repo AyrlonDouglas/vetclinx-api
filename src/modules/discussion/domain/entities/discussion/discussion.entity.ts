@@ -1,6 +1,7 @@
 import { Either, left, right } from '@common/core/either';
 import Inspetor, { InspetorError } from '@common/core/inspetor';
-import { VoteManager } from '../../component/voteManager.component';
+import { VoteManager, VoteTypes } from '../../component/voteManager.component';
+import { Vote } from '../vote/vote.entity';
 
 export class Discussion {
   private voteManager: VoteManager;
@@ -81,6 +82,16 @@ export class Discussion {
 
   decrementCommentCount() {
     this.commentCount = Math.max(0, this.commentCount - 1);
+  }
+
+  removeVote(vote: Vote) {
+    if (!vote.props.id) {
+      this.voteManager.removeVote(vote.props.voteType);
+    }
+  }
+
+  exchangeVote(from: keyof typeof VoteTypes, to: keyof typeof VoteTypes) {
+    this.voteManager.exchangeVote(from, to);
   }
 }
 
