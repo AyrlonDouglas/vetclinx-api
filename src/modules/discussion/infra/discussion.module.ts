@@ -16,7 +16,7 @@ import { CommentMongooseRepository } from './repositories/commentMongoose.reposi
 import { UpdateComment } from '../application/useCases/updateComment/updateComment.useCase';
 import { RemoveComment } from '../application/useCases/removeComment/removeComment.useCase';
 import { RemoveDiscussion } from '../application/useCases/removeDiscussion/removeDiscussion.useCase';
-import { VoteTheDiscussion } from '../application/useCases/voteTheDiscussion/voteTheDiscussion.useCase';
+import { VoteOnDiscussion } from '../application/useCases/voteOnDiscussion/voteOnDiscussion.useCase';
 import { VoteRepository } from '../application/repositories/vote.repository';
 import { VoteMongooseRepository } from './repositories/voteMongoose.repository';
 
@@ -110,13 +110,13 @@ import { VoteMongooseRepository } from './repositories/voteMongoose.repository';
     VoteMongooseRepository,
     { provide: VoteRepository, useClass: VoteMongooseRepository },
     {
-      provide: VoteTheDiscussion,
+      provide: VoteOnDiscussion,
       inject: [DiscussionRepository, ContextStorageService, VoteRepository],
       useFactory: (
         discussionRepository: DiscussionRepository,
         context: ContextStorageService,
         voteRepository: VoteRepository,
-      ) => new VoteTheDiscussion(discussionRepository, context, voteRepository),
+      ) => new VoteOnDiscussion(discussionRepository, context, voteRepository),
     },
     {
       provide: DiscussionUseCases,
@@ -128,7 +128,7 @@ import { VoteMongooseRepository } from './repositories/voteMongoose.repository';
         UpdateComment,
         RemoveComment,
         RemoveDiscussion,
-        VoteTheDiscussion,
+        VoteOnDiscussion,
       ],
       useFactory: (
         createDiscussionUseCase: CreateDiscussionUseCase,
@@ -138,7 +138,7 @@ import { VoteMongooseRepository } from './repositories/voteMongoose.repository';
         updateComment: UpdateComment,
         removeComment: RemoveComment,
         removeDiscussion: RemoveDiscussion,
-        voteTheDiscussion: VoteTheDiscussion,
+        voteOnDiscussion: VoteOnDiscussion,
       ) =>
         new DiscussionUseCases(
           createDiscussionUseCase,
@@ -148,7 +148,7 @@ import { VoteMongooseRepository } from './repositories/voteMongoose.repository';
           updateComment,
           removeComment,
           removeDiscussion,
-          voteTheDiscussion,
+          voteOnDiscussion,
         ),
     },
   ],

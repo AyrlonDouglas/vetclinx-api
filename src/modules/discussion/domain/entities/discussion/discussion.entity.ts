@@ -85,9 +85,7 @@ export class Discussion {
   }
 
   removeVote(vote: Vote) {
-    if (!vote.props.id) {
-      this.voteManager.removeVote(vote.props.voteType);
-    }
+    this.voteManager.removeVote(vote.props.voteType);
   }
 
   exchangeVote(from: keyof typeof VoteTypes, to: keyof typeof VoteTypes) {

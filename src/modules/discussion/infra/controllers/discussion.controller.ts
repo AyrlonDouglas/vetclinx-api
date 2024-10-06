@@ -56,7 +56,7 @@ export class DiscussionController {
 
   @Patch(':id/upvote')
   async upvote(@Param('id') id: string) {
-    const result = await this.discussionUseCases.voteTheDiscussion.perform({
+    const result = await this.discussionUseCases.voteOnDiscussion.perform({
       discussionId: id,
       vote: VoteTypes.up,
     });
@@ -66,7 +66,7 @@ export class DiscussionController {
 
   @Patch(':id/downvote')
   async downvote(@Param('id') id: string) {
-    const result = await this.discussionUseCases.voteTheDiscussion.perform({
+    const result = await this.discussionUseCases.voteOnDiscussion.perform({
       discussionId: id,
       vote: VoteTypes.down,
     });

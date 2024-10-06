@@ -2,11 +2,11 @@ import { UseCase } from '@common/core/useCase';
 import {
   VoteTheDiscussionInput,
   VoteTheDiscussionOutput,
-} from './voteTheDiscussion.dto';
+} from './voteOnDiscussion.dto';
 import Inspetor from '@common/core/inspetor';
 import { left, right } from '@common/core/either';
 import { DiscussionRepository } from '../../repositories/discussion.repository';
-import { VoteTheDiscussionError } from './voteTheDiscussion.errors';
+import { VoteTheDiscussionError } from './voteOnDiscussion.errors';
 import {
   VoteFor,
   VoteTypes,
@@ -16,7 +16,7 @@ import User from '@modules/user/domain/entities/user.entity';
 import { VoteRepository } from '../../repositories/vote.repository';
 import { Vote } from '@modules/discussion/domain/entities/vote/vote.entity';
 
-export class VoteTheDiscussion
+export class VoteOnDiscussion
   implements UseCase<VoteTheDiscussionInput, VoteTheDiscussionOutput>
 {
   constructor(
@@ -59,17 +59,7 @@ export class VoteTheDiscussion
     });
 
     //TODO: Necessario transaction aqui
-    //TODO: precisa testar esse logica abaixo
-    /**
-     * Regras
-     * Se usuario nao tiver votado:
-     *  - criar voto
-     *  - adicionar voto em discussao
-     *
-     * Se usuario tiver votado
-     *  - Se o votoType for igual ao voto votado, remover voto e remover da discussao
-     *  - se o voteType não for igual, trocar voteType do voto e dos votos da discussão
-     */
+
     if (existingVote) {
       if (existingVote.props.voteType === input.vote) {
         discussion.removeVote(existingVote);

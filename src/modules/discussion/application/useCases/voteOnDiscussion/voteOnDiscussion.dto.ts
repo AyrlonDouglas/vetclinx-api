@@ -1,7 +1,7 @@
 import { Either } from '@common/core/either';
 import { InspetorError } from '@common/core/inspetor';
 import { VoteTypes } from '@modules/discussion/domain/component/voteManager.component';
-import { VoteTheDiscussionError } from './voteTheDiscussion.errors';
+import { VoteTheDiscussionError } from './voteOnDiscussion.errors';
 
 export type VoteTheDiscussionInput = {
   discussionId: string;

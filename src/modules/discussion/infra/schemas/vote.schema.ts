@@ -22,8 +22,8 @@ export class VoteModel {
   @Prop({ type: String, enum: Object.values(VoteFor), required: true })
   voteFor: keyof typeof VoteFor;
 
-  @Prop({ type: String })
-  voteForReferency: string;
+  @Prop({ type: Types.ObjectId, required: true })
+  voteForReferency: Types.ObjectId;
 
   @Prop({ type: Date, required: true })
   createdAt: Date;

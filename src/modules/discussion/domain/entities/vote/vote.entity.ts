@@ -11,6 +11,8 @@ export class Vote {
     private voteType: keyof typeof VoteTypes,
     private readonly voteFor: keyof typeof VoteFor,
     private readonly voteForReferency: string,
+    private readonly createdAt: Date = new Date(),
+    private readonly updatedAt: Date = new Date(),
     private readonly id?: string,
   ) {}
 
@@ -20,6 +22,8 @@ export class Vote {
       voteFor: this.voteFor,
       voteType: this.voteType,
       voteForReferency: this.voteForReferency,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
       id: this.id,
     };
   }
@@ -45,6 +49,8 @@ export class Vote {
       input.voteType,
       input.voteFor,
       input.voteForReferency,
+      input.createdAt,
+      input.updatedAt,
       input.id,
     );
     return right(vote);
@@ -57,6 +63,9 @@ type VoteProps = {
   voteType: keyof typeof VoteTypes;
   voteFor: keyof typeof VoteFor;
   voteForReferency: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
-type VoteCreateInput = VoteProps;
+type VoteCreateInput = Partial<VoteProps> &
+  Pick<VoteProps, 'user' | 'voteFor' | 'voteForReferency' | 'voteType'>;

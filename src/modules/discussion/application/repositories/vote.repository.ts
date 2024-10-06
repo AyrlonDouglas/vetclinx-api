@@ -3,10 +3,12 @@ import { VoteFor } from '@modules/discussion/domain/component/voteManager.compon
 
 export abstract class VoteRepository {
   abstract save(vote: Vote): Promise<string>;
-  abstract findOneByFilter(filter: {
-    user?: string;
-    voteFor?: keyof typeof VoteFor;
-    voteForReferency?: string;
-  }): Promise<Vote>;
+  abstract findOneByFilter(filter: findOneByFilterInput): Promise<Vote>;
   abstract deleteById(id: string): Promise<number>;
 }
+
+export type findOneByFilterInput = {
+  user?: string;
+  voteFor?: keyof typeof VoteFor;
+  voteForReferency?: string;
+};
