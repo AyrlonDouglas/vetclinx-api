@@ -4,10 +4,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { DiscussionModel } from '../schemas/discussion.schema';
 import { DiscussionMapper } from '../mapper/discussion.mapper';
-import { CommentModel } from '../schemas/comment.schema';
 import { CommentMapper } from '../mapper/comment.mapper';
-import { TransactionService } from '@modules/shared/domain/transaction.service';
 import { Injectable } from '@nestjs/common';
+import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
 @Injectable()
 export class DiscussionMongooseRepository implements DiscussionRepository {
   discussionMapper = new DiscussionMapper();
@@ -16,18 +15,19 @@ export class DiscussionMongooseRepository implements DiscussionRepository {
   constructor(
     @InjectModel(DiscussionModel.name)
     private readonly discussionModel: Model<DiscussionModel>,
-
-    @InjectModel(CommentModel.name)
-    private readonly commentModel: Model<CommentModel>,
-
-    private readonly transactionService: TransactionService,
+    private readonly context: ContextStorageService,
   ) {}
 
   async deleteById(id: string): Promise<number> {
     const isValidId = Types.ObjectId.isValid(id);
     if (!isValidId) return 0;
 
-    const discussionRemoved = await this.discussionModel.deleteOne({ _id: id });
+    const session = this.context.get('session');
+
+    const discussionRemoved = await this.discussionModel.deleteOne(
+      { _id: id },
+      { session },
+    );
 
     return discussionRemoved.deletedCount;
   }
@@ -41,8 +41,11 @@ export class DiscussionMongooseRepository implements DiscussionRepository {
   }
 
   async create(discussion: Discussion): Promise<string> {
-    const discussionCreated = await this.discussionModel.create(
-      this.discussionMapper.toPersistense(discussion),
+    const session = this.context.get('session');
+
+    const [discussionCreated] = await this.discussionModel.create(
+      [this.discussionMapper.toPersistense(discussion)],
+      { session },
     );
 
     return discussionCreated.id;
@@ -52,9 +55,12 @@ export class DiscussionMongooseRepository implements DiscussionRepository {
     id: string,
     discussion: Discussion,
   ): Promise<string | null> {
+    const session = this.context.get('session');
+
     const updated = await this.discussionModel.findByIdAndUpdate(
       id,
       this.discussionMapper.toPersistense(discussion),
+      { session },
     );
 
     return updated.id;

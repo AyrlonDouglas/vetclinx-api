@@ -12,6 +12,7 @@ import { ContextStorageService } from '@modules/shared/domain/contextStorage.ser
 import { VoteOnCommentError } from './voteOnComment.errors';
 import User from '@modules/user/domain/entities/user.entity';
 import { Vote } from '@modules/discussion/domain/entities/vote/vote.entity';
+import { TransactionService } from '@modules/shared/domain/transaction.service';
 
 export class VoteOnComment
   implements UseCase<VoteOnCommentInput, VoteOnCommentOutput>
@@ -20,6 +21,7 @@ export class VoteOnComment
     private readonly commentRepository: CommentRepository,
     private readonly voteRepository: VoteRepository,
     private readonly context: ContextStorageService,
+    private readonly transactionService: TransactionService,
   ) {}
 
   async perform(input?: VoteOnCommentInput): Promise<VoteOnCommentOutput> {
@@ -60,9 +62,8 @@ export class VoteOnComment
       voteForReferency: comment.props.id,
     });
 
-    console.log('existingVotex', existingVote);
+    await this.transactionService.startTransaction();
 
-    // TODO: colocar transacao aqui
     if (existingVote) {
       if (existingVote.props.voteType === input.voteType) {
         comment.removeVote(existingVote);

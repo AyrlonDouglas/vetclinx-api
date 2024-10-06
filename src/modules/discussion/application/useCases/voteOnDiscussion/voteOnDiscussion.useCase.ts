@@ -15,6 +15,7 @@ import { ContextStorageService } from '@modules/shared/domain/contextStorage.ser
 import User from '@modules/user/domain/entities/user.entity';
 import { VoteRepository } from '../../repositories/vote.repository';
 import { Vote } from '@modules/discussion/domain/entities/vote/vote.entity';
+import { TransactionService } from '@modules/shared/domain/transaction.service';
 
 export class VoteOnDiscussion
   implements UseCase<VoteTheDiscussionInput, VoteTheDiscussionOutput>
@@ -23,6 +24,7 @@ export class VoteOnDiscussion
     private readonly discussionRepository: DiscussionRepository,
     private readonly context: ContextStorageService,
     private readonly voteRepository: VoteRepository,
+    private readonly transactionService: TransactionService,
   ) {}
 
   async perform(
@@ -61,6 +63,8 @@ export class VoteOnDiscussion
     if (discussion.props.authorId === currentUser.props.id) {
       return left(new VoteOnDiscussionError.CreatorCannotVoteYourDiscussion());
     }
+
+    await this.transactionService.startTransaction();
 
     const existingVote = await this.voteRepository.findOneByFilter({
       user: currentUser.props.id,

@@ -38,9 +38,9 @@ export class TransactionInterceptor implements NestInterceptor {
         catchError(async (error) => {
           const hasTransaction = !!this.transactionService.getTransaction();
 
-          if (!hasTransaction) throw error;
-
-          await this.transactionService.abortTransaction();
+          if (hasTransaction) {
+            await this.transactionService.abortTransaction();
+          }
 
           throw error;
         }),
@@ -48,9 +48,10 @@ export class TransactionInterceptor implements NestInterceptor {
     } catch (error) {
       const hasTransaction = !!this.transactionService.getTransaction();
 
-      if (!hasTransaction) throw error;
+      if (hasTransaction) {
+        await this.transactionService.abortTransaction();
+      }
 
-      await this.transactionService.abortTransaction();
       throw error;
     }
   }

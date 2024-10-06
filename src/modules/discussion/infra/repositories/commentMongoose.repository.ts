@@ -1,11 +1,11 @@
 import { CommentRepository } from '@modules/discussion/application/repositories/comment.repository';
 import { Comment } from '@modules/discussion/domain/entities/comment/comment.entity';
-import { TransactionService } from '@modules/shared/domain/transaction.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { CommentModel } from '../schemas/comment.schema';
 import { Model, Types } from 'mongoose';
 import { CommentMapper } from '../mapper/comment.mapper';
 import { Injectable } from '@nestjs/common';
+import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
 
 @Injectable()
 export class CommentMongooseRepository implements CommentRepository {
@@ -14,16 +14,20 @@ export class CommentMongooseRepository implements CommentRepository {
   constructor(
     @InjectModel(CommentModel.name)
     private readonly commentModel: Model<CommentModel>,
-    private readonly transactionService: TransactionService,
+    private readonly context: ContextStorageService,
   ) {}
 
   async deleteByDiscussionId(discussionId: string): Promise<number> {
     const isValidId = Types.ObjectId.isValid(discussionId);
     if (!isValidId) return 0;
 
-    const commentsRemoveds = await this.commentModel.deleteMany({
-      discussion: new Types.ObjectId(discussionId),
-    });
+    const session = this.context.get('session');
+    const commentsRemoveds = await this.commentModel.deleteMany(
+      {
+        discussion: new Types.ObjectId(discussionId),
+      },
+      { session },
+    );
 
     return commentsRemoveds.deletedCount;
   }
@@ -32,9 +36,13 @@ export class CommentMongooseRepository implements CommentRepository {
     const isValidId = Types.ObjectId.isValid(parentCommentId);
     if (!isValidId) return 0;
 
-    const commentsRemoveds = await this.commentModel.deleteMany({
-      parentCommentId: new Types.ObjectId(parentCommentId),
-    });
+    const session = this.context.get('session');
+    const commentsRemoveds = await this.commentModel.deleteMany(
+      {
+        parentCommentId: new Types.ObjectId(parentCommentId),
+      },
+      { session },
+    );
 
     return commentsRemoveds.deletedCount;
   }
@@ -56,7 +64,11 @@ export class CommentMongooseRepository implements CommentRepository {
     const isValidId = Types.ObjectId.isValid(id);
     if (!isValidId) return 0;
 
-    const commentRemoved = await this.commentModel.deleteOne({ _id: id });
+    const session = this.context.get('session');
+    const commentRemoved = await this.commentModel.deleteOne(
+      { _id: id },
+      { session },
+    );
     return commentRemoved.deletedCount;
   }
 

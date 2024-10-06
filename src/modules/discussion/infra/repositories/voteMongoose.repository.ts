@@ -8,6 +8,7 @@ import { VoteModel } from '../schemas/vote.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model, Types } from 'mongoose';
 import { VoteMapper } from '../mapper/vote.mapper';
+import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
 
 @Injectable()
 export class VoteMongooseRepository implements VoteRepository {
@@ -15,6 +16,7 @@ export class VoteMongooseRepository implements VoteRepository {
   constructor(
     @InjectModel(VoteModel.name)
     private readonly voteModel: Model<VoteModel>,
+    private readonly context: ContextStorageService,
   ) {}
 
   async findOneByFilter(filter: findOneByFilterInput): Promise<Vote> {
@@ -54,24 +56,33 @@ export class VoteMongooseRepository implements VoteRepository {
   async deleteById(id: string): Promise<number> {
     const isValidId = Types.ObjectId.isValid(id);
     if (!isValidId) return 0;
-
-    const voteRemoved = await this.voteModel.deleteOne({ _id: id });
+    const session = this.context.get('session');
+    const voteRemoved = await this.voteModel.deleteOne(
+      { _id: id },
+      { session },
+    );
 
     return voteRemoved.deletedCount;
   }
 
   private async update(vote: Vote): Promise<string | null> {
+    const session = this.context.get('session');
+
     const updated = await this.voteModel.findByIdAndUpdate(
       vote.props.id,
       this.voteMapper.toPersistense(vote),
+      { session },
     );
 
     return updated.id;
   }
 
   private async create(vote: Vote): Promise<string> {
-    const voteCreated = await this.voteModel.create(
-      this.voteMapper.toPersistense(vote),
+    const session = this.context.get('session');
+
+    const [voteCreated] = await this.voteModel.create(
+      [this.voteMapper.toPersistense(vote)],
+      { session },
     );
 
     return voteCreated.id;

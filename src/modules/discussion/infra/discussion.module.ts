@@ -20,6 +20,7 @@ import { VoteOnDiscussion } from '../application/useCases/voteOnDiscussion/voteO
 import { VoteRepository } from '../application/repositories/vote.repository';
 import { VoteMongooseRepository } from './repositories/voteMongoose.repository';
 import { VoteOnComment } from '../application/useCases/voteOnComment/voteOnComment.useCase';
+import { TransactionService } from '@modules/shared/domain/transaction.service';
 
 @Module({
   controllers: [DiscussionController],
@@ -112,21 +113,45 @@ import { VoteOnComment } from '../application/useCases/voteOnComment/voteOnComme
     { provide: VoteRepository, useClass: VoteMongooseRepository },
     {
       provide: VoteOnDiscussion,
-      inject: [DiscussionRepository, ContextStorageService, VoteRepository],
+      inject: [
+        DiscussionRepository,
+        ContextStorageService,
+        VoteRepository,
+        TransactionService,
+      ],
       useFactory: (
         discussionRepository: DiscussionRepository,
         context: ContextStorageService,
         voteRepository: VoteRepository,
-      ) => new VoteOnDiscussion(discussionRepository, context, voteRepository),
+        transactionService: TransactionService,
+      ) =>
+        new VoteOnDiscussion(
+          discussionRepository,
+          context,
+          voteRepository,
+          transactionService,
+        ),
     },
     {
       provide: VoteOnComment,
-      inject: [CommentRepository, VoteRepository, ContextStorageService],
+      inject: [
+        CommentRepository,
+        VoteRepository,
+        ContextStorageService,
+        TransactionService,
+      ],
       useFactory: (
         commentRepository: CommentRepository,
         voteRepository: VoteRepository,
         context: ContextStorageService,
-      ) => new VoteOnComment(commentRepository, voteRepository, context),
+        transactionService: TransactionService,
+      ) =>
+        new VoteOnComment(
+          commentRepository,
+          voteRepository,
+          context,
+          transactionService,
+        ),
     },
     {
       provide: DiscussionUseCases,
