@@ -5,6 +5,7 @@ import { RemoveComment } from './removeComment/removeComment.useCase';
 import { RemoveDiscussion } from './removeDiscussion/removeDiscussion.useCase';
 import { UpdateComment } from './updateComment/updateComment.useCase';
 import { UpdateDiscussionUseCase } from './updateDiscussion/updateDiscussion.useCase';
+import { VoteOnComment } from './voteOnComment/voteOnComment.useCase';
 import { VoteOnDiscussion } from './voteOnDiscussion/voteOnDiscussion.useCase';
 
 export class DiscussionUseCases {
@@ -16,7 +17,8 @@ export class DiscussionUseCases {
     private readonly updateCommentUseCase: UpdateComment,
     private readonly removeCommentUseCase: RemoveComment,
     private readonly removeDiscussionUseCase: RemoveDiscussion,
-    private readonly voteTheDiscussionUseCase: VoteOnDiscussion,
+    private readonly voteOnDiscussionUseCase: VoteOnDiscussion,
+    private readonly voteOnCommentUseCase: VoteOnComment,
   ) {}
 
   get createDiscussion() {
@@ -48,6 +50,10 @@ export class DiscussionUseCases {
   }
 
   get voteOnDiscussion() {
-    return this.voteTheDiscussionUseCase;
+    return this.voteOnDiscussionUseCase;
+  }
+
+  get voteOnComment() {
+    return this.voteOnCommentUseCase;
   }
 }

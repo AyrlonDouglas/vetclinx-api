@@ -1,35 +1,30 @@
 import { UseCase } from '@common/core/useCase';
-import {
-  VoteTheDiscussionInput,
-  VoteTheDiscussionOutput,
-} from './voteOnDiscussion.dto';
+import { VoteOnCommentInput, VoteOnCommentOutput } from './voteOnComment.dto';
 import Inspetor from '@common/core/inspetor';
 import { left, right } from '@common/core/either';
-import { DiscussionRepository } from '../../repositories/discussion.repository';
-import { VoteOnDiscussionError } from './voteOnDiscussion.errors';
 import {
   VoteFor,
   VoteTypes,
 } from '@modules/discussion/domain/component/voteManager.component';
-import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
-import User from '@modules/user/domain/entities/user.entity';
+import { CommentRepository } from '../../repositories/comment.repository';
 import { VoteRepository } from '../../repositories/vote.repository';
+import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
+import { VoteOnCommentError } from './voteOnComment.errors';
+import User from '@modules/user/domain/entities/user.entity';
 import { Vote } from '@modules/discussion/domain/entities/vote/vote.entity';
 
-export class VoteOnDiscussion
-  implements UseCase<VoteTheDiscussionInput, VoteTheDiscussionOutput>
+export class VoteOnComment
+  implements UseCase<VoteOnCommentInput, VoteOnCommentOutput>
 {
   constructor(
-    private readonly discussionRepository: DiscussionRepository,
-    private readonly context: ContextStorageService,
+    private readonly commentRepository: CommentRepository,
     private readonly voteRepository: VoteRepository,
+    private readonly context: ContextStorageService,
   ) {}
 
-  async perform(
-    input: VoteTheDiscussionInput,
-  ): Promise<VoteTheDiscussionOutput> {
+  async perform(input?: VoteOnCommentInput): Promise<VoteOnCommentOutput> {
     const inputOrFail = Inspetor.againstFalsyBulk([
-      { argument: input.discussionId, argumentName: 'discussionId' },
+      { argument: input.commentId, argumentName: 'commentId' },
       { argument: input.voteType, argumentName: 'voteType' },
     ]);
 
@@ -47,46 +42,44 @@ export class VoteOnDiscussion
       return left(isOneOfOrFail.value);
     }
 
-    const discussion = await this.discussionRepository.findById(
-      input.discussionId,
-    );
+    const comment = await this.commentRepository.findById(input.commentId);
 
-    if (!discussion) {
-      return left(
-        new VoteOnDiscussionError.DiscussionNotFoundError(input.discussionId),
-      );
+    if (!comment) {
+      return left(new VoteOnCommentError.CommentNotFoundError(input.commentId));
     }
+
     const currentUser = this.context.get('currentUser') as User;
 
-    if (discussion.props.authorId === currentUser.props.id) {
-      return left(new VoteOnDiscussionError.CreatorCannotVoteYourDiscussion());
+    if (comment.props.authorId === currentUser.props.id) {
+      return left(new VoteOnCommentError.CreatorCannotVoteYourComment());
     }
 
     const existingVote = await this.voteRepository.findOneByFilter({
       user: currentUser.props.id,
-      voteFor: VoteFor.discussion,
-      voteForReferency: discussion.props.id,
+      voteFor: VoteFor.comment,
+      voteForReferency: comment.props.id,
     });
 
-    //TODO: Necessario transaction aqui
+    console.log('existingVotex', existingVote);
 
+    // TODO: colocar transacao aqui
     if (existingVote) {
       if (existingVote.props.voteType === input.voteType) {
-        discussion.removeVote(existingVote);
+        comment.removeVote(existingVote);
         await this.voteRepository.deleteById(existingVote.props.id);
       } else {
         const from = existingVote.props.voteType;
         const to = from === VoteTypes.down ? VoteTypes.up : VoteTypes.down;
-        discussion.exchangeVote(from, to);
+        comment.exchangeVote(from, to);
         existingVote.setVoteType(to);
         await this.voteRepository.save(existingVote);
       }
     } else {
       const newVote = Vote.create({
         user: currentUser.props.id,
-        voteFor: VoteFor.discussion,
+        voteFor: VoteFor.comment,
         voteType: input.voteType,
-        voteForReferency: discussion.props.id,
+        voteForReferency: comment.props.id,
       });
 
       if (newVote.isLeft()) {
@@ -96,14 +89,14 @@ export class VoteOnDiscussion
       }
 
       if (input.voteType === VoteTypes.up) {
-        discussion.upvote();
+        comment.upvote();
       } else {
-        discussion.downvote();
+        comment.downvote();
       }
     }
 
-    const discussionUpdated = await this.discussionRepository.save(discussion);
+    const commentUpdated = await this.commentRepository.save(comment);
 
-    return right({ id: discussionUpdated });
+    return right({ id: commentUpdated });
   }
 }

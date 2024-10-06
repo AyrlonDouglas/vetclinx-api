@@ -15,7 +15,7 @@ class CreatorCannotVoteYourDiscussion extends BaseError {
   }
 }
 
-export const VoteTheDiscussionError = {
+export const VoteOnDiscussionError = {
   DiscussionNotFoundError,
   CreatorCannotVoteYourDiscussion,
 };

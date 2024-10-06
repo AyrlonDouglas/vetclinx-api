@@ -54,21 +54,21 @@ export class DiscussionController {
     return result.value;
   }
 
-  @Patch(':id/upvote')
+  @Post(':id/upvote')
   async upvote(@Param('id') id: string) {
     const result = await this.discussionUseCases.voteOnDiscussion.perform({
       discussionId: id,
-      vote: VoteTypes.up,
+      voteType: VoteTypes.up,
     });
     if (result.isLeft()) throw result.value;
     return result.value;
   }
 
-  @Patch(':id/downvote')
+  @Post(':id/downvote')
   async downvote(@Param('id') id: string) {
     const result = await this.discussionUseCases.voteOnDiscussion.perform({
       discussionId: id,
-      vote: VoteTypes.down,
+      voteType: VoteTypes.down,
     });
     if (result.isLeft()) throw result.value;
     return result.value;
@@ -93,6 +93,27 @@ export class DiscussionController {
     const result = await this.discussionUseCases.addComment.perform({
       ...addCommentDTO,
       discussionId: id,
+    });
+
+    if (result.isLeft()) throw result.value;
+    return result.value;
+  }
+  @Post(':id/comment/:commentId/upvote')
+  async upvoteOnComment(@Param('commentId') commentId: string) {
+    const result = await this.discussionUseCases.voteOnComment.perform({
+      commentId,
+      voteType: VoteTypes.up,
+    });
+
+    if (result.isLeft()) throw result.value;
+    return result.value;
+  }
+
+  @Post(':id/comment/:commentId/downvote')
+  async downvoteOnComment(@Param('commentId') commentId: string) {
+    const result = await this.discussionUseCases.voteOnComment.perform({
+      commentId,
+      voteType: VoteTypes.down,
     });
 
     if (result.isLeft()) throw result.value;

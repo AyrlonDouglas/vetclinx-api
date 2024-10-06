@@ -33,15 +33,10 @@ export class Vote {
   }
 
   static create(input: VoteCreateInput): Either<InspetorError, Vote> {
-    const inputOrFail = Inspetor.againstFalsyBulk([
-      { argument: input.user, argumentName: 'user' },
-      { argument: input.voteType, argumentName: 'voteType' },
-      { argument: input.voteFor, argumentName: 'voteFor' },
-      { argument: input.voteForReferency, argumentName: 'voteForReferency' },
-    ]);
+    const validate = this.validateCreateInput(input);
 
-    if (inputOrFail.isLeft()) {
-      return left(inputOrFail.value);
+    if (validate.isLeft()) {
+      return left(validate.value);
     }
 
     const vote = new Vote(
@@ -54,6 +49,43 @@ export class Vote {
       input.id,
     );
     return right(vote);
+  }
+
+  static validateCreateInput(
+    input: VoteCreateInput,
+  ): Either<InspetorError, boolean> {
+    const inputOrFail = Inspetor.againstFalsyBulk([
+      { argument: input.user, argumentName: 'user' },
+      { argument: input.voteType, argumentName: 'voteType' },
+      { argument: input.voteFor, argumentName: 'voteFor' },
+      { argument: input.voteForReferency, argumentName: 'voteForReferency' },
+    ]);
+
+    if (inputOrFail.isLeft()) {
+      return left(inputOrFail.value);
+    }
+
+    const isOneOfVoteTypesOrFail = Inspetor.isOneOf(
+      input.voteType,
+      Object.values(VoteTypes),
+      'voteType',
+    );
+
+    if (isOneOfVoteTypesOrFail.isLeft()) {
+      return left(isOneOfVoteTypesOrFail.value);
+    }
+
+    const isOneOfVoteForOrFail = Inspetor.isOneOf(
+      input.voteFor,
+      Object.values(VoteFor),
+      'voteFor',
+    );
+
+    if (isOneOfVoteForOrFail.isLeft()) {
+      return left(isOneOfVoteForOrFail.value);
+    }
+
+    return right(true);
   }
 }
 

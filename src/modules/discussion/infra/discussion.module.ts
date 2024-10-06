@@ -19,6 +19,7 @@ import { RemoveDiscussion } from '../application/useCases/removeDiscussion/remov
 import { VoteOnDiscussion } from '../application/useCases/voteOnDiscussion/voteOnDiscussion.useCase';
 import { VoteRepository } from '../application/repositories/vote.repository';
 import { VoteMongooseRepository } from './repositories/voteMongoose.repository';
+import { VoteOnComment } from '../application/useCases/voteOnComment/voteOnComment.useCase';
 
 @Module({
   controllers: [DiscussionController],
@@ -119,6 +120,15 @@ import { VoteMongooseRepository } from './repositories/voteMongoose.repository';
       ) => new VoteOnDiscussion(discussionRepository, context, voteRepository),
     },
     {
+      provide: VoteOnComment,
+      inject: [CommentRepository, VoteRepository, ContextStorageService],
+      useFactory: (
+        commentRepository: CommentRepository,
+        voteRepository: VoteRepository,
+        context: ContextStorageService,
+      ) => new VoteOnComment(commentRepository, voteRepository, context),
+    },
+    {
       provide: DiscussionUseCases,
       inject: [
         CreateDiscussionUseCase,
@@ -129,6 +139,7 @@ import { VoteMongooseRepository } from './repositories/voteMongoose.repository';
         RemoveComment,
         RemoveDiscussion,
         VoteOnDiscussion,
+        VoteOnComment,
       ],
       useFactory: (
         createDiscussionUseCase: CreateDiscussionUseCase,
@@ -139,6 +150,7 @@ import { VoteMongooseRepository } from './repositories/voteMongoose.repository';
         removeComment: RemoveComment,
         removeDiscussion: RemoveDiscussion,
         voteOnDiscussion: VoteOnDiscussion,
+        voteOnComment: VoteOnComment,
       ) =>
         new DiscussionUseCases(
           createDiscussionUseCase,
@@ -149,6 +161,7 @@ import { VoteMongooseRepository } from './repositories/voteMongoose.repository';
           removeComment,
           removeDiscussion,
           voteOnDiscussion,
+          voteOnComment,
         ),
     },
   ],
