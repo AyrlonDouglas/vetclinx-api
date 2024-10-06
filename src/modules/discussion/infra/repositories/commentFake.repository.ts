@@ -1,9 +1,16 @@
-import { CommentRepository } from '@modules/discussion/application/repositories/comment.repository';
+import {
+  CommentRepository,
+  findByFilterInput,
+} from '@modules/discussion/application/repositories/comment.repository';
 import { Comment } from '@modules/discussion/domain/entities/comment/comment.entity';
 import { randomUUID } from 'crypto';
 
 export class CommentFakeRepository implements CommentRepository {
   constructor(private commentList: Comment[] = []) {}
+  findByFilter(filter: findByFilterInput): Promise<Comment[]> {
+    filter;
+    throw new Error('Method not implemented.');
+  }
   deleteByDiscussionId(discussionId: string): Promise<number> {
     discussionId;
     throw new Error('Method not implemented.');

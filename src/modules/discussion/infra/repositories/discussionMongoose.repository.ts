@@ -70,7 +70,9 @@ export class DiscussionMongooseRepository implements DiscussionRepository {
     const isValidId = Types.ObjectId.isValid(id);
     if (!isValidId) return null;
 
-    const discussion = await this.discussionModel.findById(id);
+    const discussion = await this.discussionModel.findById(
+      new Types.ObjectId(id),
+    );
     if (!discussion) return null;
 
     return this.discussionMapper.toDomain(discussion);

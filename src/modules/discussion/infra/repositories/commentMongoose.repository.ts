@@ -1,8 +1,11 @@
-import { CommentRepository } from '@modules/discussion/application/repositories/comment.repository';
+import {
+  CommentRepository,
+  findByFilterInput,
+} from '@modules/discussion/application/repositories/comment.repository';
 import { Comment } from '@modules/discussion/domain/entities/comment/comment.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { CommentModel } from '../schemas/comment.schema';
-import { Model, Types } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 import { CommentMapper } from '../mapper/comment.mapper';
 import { Injectable } from '@nestjs/common';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
@@ -16,6 +19,17 @@ export class CommentMongooseRepository implements CommentRepository {
     private readonly commentModel: Model<CommentModel>,
     private readonly context: ContextStorageService,
   ) {}
+
+  async findByFilter(filter: findByFilterInput): Promise<Comment[]> {
+    const { discussionId } = filter;
+    const filterQuery: FilterQuery<CommentModel> = {
+      discussion: discussionId ? new Types.ObjectId(discussionId) : undefined,
+    };
+
+    const comments = await this.commentModel.find(filterQuery);
+
+    return comments.map((comment) => this.commentMapper.toDomain(comment));
+  }
 
   async deleteByDiscussionId(discussionId: string): Promise<number> {
     const isValidId = Types.ObjectId.isValid(discussionId);
@@ -83,15 +97,19 @@ export class CommentMongooseRepository implements CommentRepository {
   }
 
   async save(comment: Comment): Promise<string> {
+    const session = this.context.get('session');
+
     if (comment.props.id) {
       const commentUpdated = await this.commentModel.findByIdAndUpdate(
         comment.props.id,
         this.commentMapper.toPersistense(comment),
+        { session },
       );
       return commentUpdated.id;
     } else {
-      const commentCreated = await this.commentModel.create(
-        this.commentMapper.toPersistense(comment),
+      const [commentCreated] = await this.commentModel.create(
+        [this.commentMapper.toPersistense(comment)],
+        { session },
       );
       return commentCreated.id;
     }

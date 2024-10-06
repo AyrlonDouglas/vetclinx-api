@@ -19,6 +19,32 @@ export class VoteMongooseRepository implements VoteRepository {
     private readonly context: ContextStorageService,
   ) {}
 
+  async deleteByVoteForReferency(
+    voteForReferencyList: string[],
+  ): Promise<number> {
+    if (!voteForReferencyList) return 0;
+
+    if (
+      Array.isArray(voteForReferencyList) &&
+      (!voteForReferencyList.length ||
+        !voteForReferencyList.every(Types.ObjectId.isValid))
+    ) {
+      return 0;
+    }
+
+    const session = this.context.get('session');
+    const votesDeleteds = await this.voteModel.deleteMany(
+      {
+        voteForReferency: voteForReferencyList.map(
+          (voteForReferency) => new Types.ObjectId(voteForReferency),
+        ),
+      },
+      { session },
+    );
+
+    return votesDeleteds.deletedCount;
+  }
+
   async findOneByFilter(filter: findOneByFilterInput): Promise<Vote> {
     const { user, voteFor, voteForReferency } = filter;
 
@@ -56,6 +82,7 @@ export class VoteMongooseRepository implements VoteRepository {
   async deleteById(id: string): Promise<number> {
     const isValidId = Types.ObjectId.isValid(id);
     if (!isValidId) return 0;
+
     const session = this.context.get('session');
     const voteRemoved = await this.voteModel.deleteOne(
       { _id: id },

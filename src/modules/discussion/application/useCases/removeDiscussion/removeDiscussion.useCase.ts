@@ -10,6 +10,8 @@ import { CommentRepository } from '../../repositories/comment.repository';
 import { RemoveDiscussionErrors } from './removeDiscussion.errors';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
 import User from '@modules/user/domain/entities/user.entity';
+import { VoteRepository } from '../../repositories/vote.repository';
+import { TransactionService } from '@modules/shared/domain/transaction.service';
 
 export class RemoveDiscussion
   implements UseCase<RemoveDiscussionInput, RemoveDiscussionOutput>
@@ -18,6 +20,8 @@ export class RemoveDiscussion
     private readonly discussionRepository: DiscussionRepository,
     private readonly commentRepository: CommentRepository,
     private readonly context: ContextStorageService,
+    private readonly voteRepository: VoteRepository,
+    private readonly transactionService: TransactionService,
   ) {}
 
   async perform(
@@ -48,17 +52,29 @@ export class RemoveDiscussion
       return left(new RemoveDiscussionErrors.OnlyCreatorCanDeleteError());
     }
 
+    await this.transactionService.startTransaction();
+
     const discussionDeleted = await this.discussionRepository.deleteById(
-      input.discussionId,
+      discussion.props.id,
     );
 
+    const comments = await this.commentRepository.findByFilter({
+      discussionId: discussion.props.id,
+    });
+
     const commentsDeleteds = await this.commentRepository.deleteByDiscussionId(
-      input.discussionId,
+      discussion.props.id,
     );
+
+    const votesDeleteds = await this.voteRepository.deleteByVoteForReferency([
+      discussion.props.id,
+      ...comments.map((comment) => comment.props.id),
+    ]);
 
     return right({
       deleted: !!discussionDeleted,
       commentDeletedCount: commentsDeleteds,
+      voteDeletedCount: votesDeleteds,
     });
   }
 }

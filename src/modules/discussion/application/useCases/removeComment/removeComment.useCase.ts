@@ -7,6 +7,8 @@ import { ContextStorageService } from '@modules/shared/domain/contextStorage.ser
 import { RemoveCommentErrors } from './removeComment.errors';
 import User from '@modules/user/domain/entities/user.entity';
 import { DiscussionRepository } from '../../repositories/discussion.repository';
+import { VoteRepository } from '../../repositories/vote.repository';
+import { TransactionService } from '@modules/shared/domain/transaction.service';
 
 export class RemoveComment
   implements UseCase<RemoveCommentInput, RemoveCommentOutput>
@@ -15,12 +17,13 @@ export class RemoveComment
     private readonly commentRepository: CommentRepository,
     private readonly context: ContextStorageService,
     private readonly discussionRepository: DiscussionRepository,
+    private readonly voteRepository: VoteRepository,
+    private readonly transactionService: TransactionService,
   ) {}
 
   async perform(input?: RemoveCommentInput): Promise<RemoveCommentOutput> {
     const inputOrFail = Inspetor.againstFalsyBulk([
       { argument: input.commentId, argumentName: 'commentId' },
-      { argument: input.discussionId, argumentName: 'discussionId' },
     ]);
 
     if (inputOrFail.isLeft()) {
@@ -40,16 +43,17 @@ export class RemoveComment
     if (comment.props.authorId !== currentUser.props.id) {
       return left(new RemoveCommentErrors.OnlyCreatorCanRemoveError());
     }
+    await this.transactionService.startTransaction();
 
     const deleteCount = await this.commentRepository.deleteById(
-      input.commentId,
+      comment.props.id,
     );
 
     let childrenDeleteCount = 0;
 
     if (deleteCount) {
       const discussion = await this.discussionRepository.findById(
-        input.discussionId,
+        comment.props.discussionId,
       );
 
       discussion.decrementCommentCount();
@@ -68,9 +72,14 @@ export class RemoveComment
         await this.commentRepository.deleteByParentCommentId(input.commentId);
     }
 
+    const voteDeletedCount = await this.voteRepository.deleteByVoteForReferency(
+      [comment.props.id],
+    );
+
     return right({
       deleted: !!deleteCount,
       count: childrenDeleteCount + deleteCount,
+      voteDeletedCount,
     });
   }
 }

@@ -30,11 +30,11 @@ export const MongoDBModule = [
       connectionFactory: (conn) => {
         const appConfig = configService.get<AppConfig>(ConfigKey.app);
         if (appConfig.env === Environment.dev) {
-          mongoose.set('debug', (collectionName, method, query, doc) => {
+          mongoose.set('debug', (collectionName, method, query /**doc */) => {
             console.log(
               `${collectionName}.${method}`,
               JSON.stringify(query),
-              doc,
+              // doc,
             );
           });
         }

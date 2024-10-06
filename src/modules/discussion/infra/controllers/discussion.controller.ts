@@ -141,7 +141,6 @@ export class DiscussionController {
   ) {
     const result = await this.discussionUseCases.removeComment.perform({
       commentId,
-      discussionId,
     });
 
     if (result.isLeft()) throw result.value;

@@ -9,4 +9,9 @@ export abstract class CommentRepository {
   abstract findChildrenCommentsByCommentId(
     id: string,
   ): Promise<Comment[] | null>;
+  abstract findByFilter(filter: findByFilterInput): Promise<Comment[]>;
 }
+
+export type findByFilterInput = {
+  discussionId: string;
+};

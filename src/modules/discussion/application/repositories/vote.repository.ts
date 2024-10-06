@@ -5,7 +5,9 @@ export abstract class VoteRepository {
   abstract save(vote: Vote): Promise<string>;
   abstract findOneByFilter(filter: findOneByFilterInput): Promise<Vote>;
   abstract deleteById(id: string): Promise<number>;
-  abstract deleteByVoteForReferency(voteForFerecency: string): Promise<number>;
+  abstract deleteByVoteForReferency(
+    voteForReferencyList: string[],
+  ): Promise<number>;
 }
 
 export type findOneByFilterInput = {

@@ -8,5 +8,5 @@ export type RemoveDiscussionOutput = Either<
   | InspetorError
   | InstanceType<(typeof RemoveDiscussionErrors)['DiscussionNotFoundError']>
   | InstanceType<(typeof RemoveDiscussionErrors)['OnlyCreatorCanDeleteError']>,
-  { deleted: boolean; commentDeletedCount: number }
+  { deleted: boolean; commentDeletedCount: number; voteDeletedCount: number }
 >;
