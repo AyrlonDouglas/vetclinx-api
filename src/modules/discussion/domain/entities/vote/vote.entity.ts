@@ -29,6 +29,16 @@ export class Vote {
   }
 
   setVoteType(voteType: keyof typeof VoteTypes) {
+    const isOneOfVoteTypesOrCancel = Inspetor.isOneOf(
+      voteType,
+      [VoteTypes.down, VoteTypes.up],
+      'voteType',
+    );
+
+    if (isOneOfVoteTypesOrCancel.isLeft()) {
+      return;
+    }
+
     this.voteType = voteType;
   }
 
