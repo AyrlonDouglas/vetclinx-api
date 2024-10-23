@@ -1,6 +1,7 @@
 import {
   voteGradeScale,
   VoteManager,
+  VoteTypes,
 } from '@modules/discussion/domain/component/voteManager.component';
 
 describe('VoteManager', () => {
@@ -29,6 +30,14 @@ describe('VoteManager', () => {
       sut.upvote();
       sut.upvote();
       expect(sut.balance).toEqual(3);
+    });
+
+    test('Should return 0 when the sum of upvote and downvotes be 0', () => {
+      const sut = new VoteManager(123, 123);
+
+      const result = sut.balance;
+
+      expect(result).toEqual(0);
     });
   });
 
@@ -108,6 +117,101 @@ describe('VoteManager', () => {
       expect(result1).toEqual(voteGradeScale.veryPositive);
       expect(result2).toEqual(voteGradeScale.veryPositive);
       expect(result3).toEqual(voteGradeScale.veryPositive);
+    });
+  });
+
+  describe('VoteManager.exchangeVote', () => {
+    const makeSut = () => {
+      return { sut: new VoteManager(5, 3) };
+    };
+
+    test('Should decrement upvotes and increment downvotes when changing from up to down', () => {
+      const { sut } = makeSut();
+
+      sut.exchangeVote(VoteTypes.up, VoteTypes.down);
+
+      expect(sut.props.upvotes).toBe(4);
+      expect(sut.props.downvotes).toBe(4);
+    });
+
+    test('Should increment upvotes and decrement downvotes when changing from down to up', () => {
+      const { sut } = makeSut();
+
+      sut.exchangeVote(VoteTypes.down, VoteTypes.up);
+
+      expect(sut.props.upvotes).toBe(6);
+      expect(sut.props.downvotes).toBe(2);
+    });
+
+    test('Should not change votes if changing from up to up', () => {
+      const { sut } = makeSut();
+
+      sut.exchangeVote(VoteTypes.up, VoteTypes.up);
+
+      expect(sut.props.upvotes).toBe(5);
+      expect(sut.props.downvotes).toBe(3);
+    });
+
+    test('Should not change votes if changing from down to down', () => {
+      const { sut } = makeSut();
+
+      sut.exchangeVote(VoteTypes.down, VoteTypes.down);
+
+      expect(sut.props.upvotes).toBe(5);
+      expect(sut.props.downvotes).toBe(3);
+    });
+
+    test('Should handle multiple exchanges correctly', () => {
+      const { sut } = makeSut();
+
+      sut.exchangeVote(VoteTypes.up, VoteTypes.down);
+      sut.exchangeVote(VoteTypes.down, VoteTypes.up);
+
+      expect(sut.props.upvotes).toBe(5);
+      expect(sut.props.downvotes).toBe(3);
+    });
+  });
+
+  describe('VoteManager.removeVote', () => {
+    const makeSut = () => {
+      return { sut: new VoteManager(5, 3) };
+    };
+
+    test('Should decrement downvotes when removing a downvote', () => {
+      const { sut } = makeSut();
+
+      sut.removeVote(VoteTypes.down);
+
+      expect(sut.props.upvotes).toBe(5);
+      expect(sut.props.downvotes).toBe(2);
+    });
+
+    test('Should ddecrement upvotes when removing an upvote', () => {
+      const { sut } = makeSut();
+
+      sut.removeVote(VoteTypes.up);
+
+      expect(sut.props.upvotes).toBe(4);
+      expect(sut.props.downvotes).toBe(3);
+    });
+
+    test('Should not decrement anything if invalid vote type is passed', () => {
+      const { sut } = makeSut();
+
+      sut.removeVote('invalid' as keyof typeof VoteTypes);
+
+      expect(sut.props.upvotes).toBe(5);
+      expect(sut.props.downvotes).toBe(3);
+    });
+
+    test('Should should handle multiple removals correctly', () => {
+      const { sut } = makeSut();
+
+      sut.removeVote(VoteTypes.up);
+      sut.removeVote(VoteTypes.down);
+
+      expect(sut.props.upvotes).toBe(4);
+      expect(sut.props.downvotes).toBe(2);
     });
   });
 });
