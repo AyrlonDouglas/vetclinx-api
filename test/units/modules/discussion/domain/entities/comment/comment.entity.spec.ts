@@ -1,9 +1,13 @@
 import { InspetorError } from '@common/core/inspetor';
-import { voteGradeScale } from '@modules/discussion/domain/component/voteManager.component';
+import {
+  voteGradeScale,
+  VoteTypes,
+} from '@modules/discussion/domain/component/voteManager.component';
 import {
   Comment,
   CommentCreateInput,
 } from '@modules/discussion/domain/entities/comment/comment.entity';
+import { Vote } from '@modules/discussion/domain/entities/vote/vote.entity';
 
 describe('Comment', () => {
   const makeSut = () => {
@@ -18,6 +22,8 @@ describe('Comment', () => {
       authorId: '123',
       content: 'animal was sick',
       discussionId: '123123',
+      commentCount: 0,
+      id: '369852147',
     };
 
     const commentMock = Comment.create(commentCreateInput);
@@ -25,7 +31,33 @@ describe('Comment', () => {
       throw new Error('commentMock fail');
     }
 
-    return { sut, inputBase, commentMock: commentMock.value };
+    const commentUpVote = Vote.create({
+      user: '123',
+      voteFor: 'comment',
+      voteForReferency: commentMock.value.props.id,
+      voteType: VoteTypes.up,
+      createdAt: new Date(),
+      id: '123',
+      updatedAt: new Date(),
+    }).value as Vote;
+
+    const commentDownVote = Vote.create({
+      user: '123',
+      voteFor: 'comment',
+      voteForReferency: commentMock.value.props.id,
+      voteType: VoteTypes.down,
+      createdAt: new Date(),
+      id: '123',
+      updatedAt: new Date(),
+    }).value as Vote;
+
+    return {
+      sut,
+      inputBase,
+      commentMock: commentMock.value,
+      commentUpVote,
+      commentDownVote,
+    };
   };
 
   describe('Comment.create()', () => {
@@ -120,6 +152,127 @@ describe('Comment', () => {
       const result = sut.getVoteGrade();
 
       expect(result).toEqual(voteGradeScale.neutral);
+    });
+  });
+
+  describe('Comment.editComment()', () => {
+    test('should edit the content of the comment', () => {
+      const { commentMock: sut } = makeSut();
+
+      sut.editComment('New content for the comment');
+
+      expect(sut.props.content).toBe('New content for the comment');
+    });
+  });
+
+  describe('Comment.incrementCommentCount()', () => {
+    test('Should increment the comment count by 1', () => {
+      const { commentMock: sut } = makeSut();
+
+      sut.incrementCommentCount();
+      expect(sut.props.commentCount).toBe(1);
+    });
+  });
+
+  describe('Comment.decrementCommentCount()', () => {
+    test('should decrement the comment count by 1 but not below 0', () => {
+      const { commentMock: sut } = makeSut();
+
+      sut.incrementCommentCount(); // Increment first so we have something to decrement
+      sut.decrementCommentCount();
+      expect(sut.props.commentCount).toBe(0); // Back to 0
+
+      sut.decrementCommentCount(); // Try to decrement again (should stay at 0)
+      expect(sut.props.commentCount).toBe(0);
+    });
+  });
+
+  describe('Comment.removeVote()', () => {
+    test('should remove an upvote', () => {
+      const { commentMock: sut, commentUpVote } = makeSut();
+      sut.upvote();
+
+      sut.removeVote(commentUpVote);
+
+      expect(sut.props.upvotes).toBe(0);
+    });
+
+    test('should remove a downvote', () => {
+      const { commentMock: sut, commentDownVote } = makeSut();
+      sut.downvote();
+
+      sut.removeVote(commentDownVote);
+      expect(sut.props.downvotes).toBe(0);
+    });
+  });
+
+  describe('Comment.exchangeVote()', () => {
+    test('should exchange an upvote for a downvote', () => {
+      const { commentMock: sut } = makeSut();
+      sut.upvote();
+      sut.upvote();
+      sut.upvote();
+      sut.upvote();
+      sut.upvote();
+      sut.downvote();
+      sut.downvote();
+      sut.downvote();
+
+      sut.exchangeVote(VoteTypes.up, VoteTypes.down);
+
+      expect(sut.props.upvotes).toBe(4); // Decrement upvotes
+      expect(sut.props.downvotes).toBe(4); // Increment downvotes
+    });
+
+    test('should exchange a downvote for an upvote', () => {
+      const { commentMock: sut } = makeSut();
+      sut.upvote();
+      sut.upvote();
+      sut.upvote();
+      sut.upvote();
+      sut.upvote();
+      sut.downvote();
+      sut.downvote();
+      sut.downvote();
+
+      sut.exchangeVote(VoteTypes.down, VoteTypes.up);
+
+      expect(sut.props.upvotes).toBe(6); // Increment upvotes
+      expect(sut.props.downvotes).toBe(2); // Decrement downvotes
+    });
+
+    test('should not change votes if the vote type remains the same (up to up)', () => {
+      const { commentMock: sut } = makeSut();
+      sut.upvote();
+      sut.upvote();
+      sut.upvote();
+      sut.upvote();
+      sut.upvote();
+      sut.downvote();
+      sut.downvote();
+      sut.downvote();
+
+      sut.exchangeVote(VoteTypes.up, VoteTypes.up);
+
+      expect(sut.props.upvotes).toBe(5); // No change
+      expect(sut.props.downvotes).toBe(3); // No change
+    });
+
+    test('should not change votes if the vote type remains the same (down to down)', () => {
+      const { commentMock: sut } = makeSut();
+      sut.upvote();
+      sut.upvote();
+      sut.upvote();
+      sut.upvote();
+      sut.upvote();
+      sut.downvote();
+      sut.downvote();
+      sut.downvote();
+
+      sut.exchangeVote(VoteTypes.down, VoteTypes.down);
+
+      expect(sut.props.upvotes).toBe(5); // No change
+      expect(sut.props.downvotes).toBe(3); // No change
     });
   });
 });

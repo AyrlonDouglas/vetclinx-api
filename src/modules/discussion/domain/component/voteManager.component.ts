@@ -36,11 +36,11 @@ export class VoteManager {
 
   removeVote(from: keyof typeof VoteTypes) {
     if (from === VoteTypes.down) {
-      this.downvotes--;
+      this.downvotes = Math.max(0, this.downvotes - 1);
     }
 
     if (from === VoteTypes.up) {
-      this.upvotes--;
+      this.upvotes = Math.max(0, this.upvotes - 1);
     }
   }
 
