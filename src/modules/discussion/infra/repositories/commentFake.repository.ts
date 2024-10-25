@@ -7,23 +7,37 @@ import { randomUUID } from 'crypto';
 
 export class CommentFakeRepository implements CommentRepository {
   constructor(private commentList: Comment[] = []) {}
-  findByFilter(filter: findByFilterInput): Promise<Comment[]> {
-    filter;
-    throw new Error('Method not implemented.');
-  }
-  deleteByDiscussionId(discussionId: string): Promise<number> {
-    discussionId;
-    throw new Error('Method not implemented.');
+  async findByFilter(filter: findByFilterInput): Promise<Comment[]> {
+    return this.commentList.filter(
+      (commentEl) => filter.discussionId === commentEl.props.discussionId,
+    );
   }
 
-  deleteByParentCommentId(parentCommentId: string): Promise<number> {
-    parentCommentId;
-    throw new Error('Method not implemented.');
+  async deleteByDiscussionId(discussionId: string): Promise<number> {
+    const newList = this.commentList.filter(
+      (commentEl) => commentEl.props.discussionId !== discussionId,
+    );
+
+    const countDeleted = this.commentList.length - newList.length;
+    this.commentList = newList;
+    return countDeleted;
   }
 
-  findChildrenCommentsByCommentId(id: string): Promise<Comment[] | null> {
-    id;
-    throw new Error('Method not implemented.');
+  async deleteByParentCommentId(parentCommentId: string): Promise<number> {
+    const newList = this.commentList.filter(
+      (commentEl) => commentEl.props.parentCommentId !== parentCommentId,
+    );
+
+    const countDeleted = this.commentList.length - newList.length;
+    this.commentList = newList;
+    return countDeleted;
+  }
+
+  async findChildrenCommentsByCommentId(id: string): Promise<Comment[] | null> {
+    const found = this.commentList.filter(
+      (commentEl) => commentEl.props.parentCommentId === id,
+    );
+    return found.length ? found : null;
   }
 
   async deleteById(id: string): Promise<number> {
@@ -38,12 +52,13 @@ export class CommentFakeRepository implements CommentRepository {
   async findById(id: string): Promise<Comment | null> {
     return this.commentList.find((el) => el.props.id === id);
   }
+
   async save(comment: Comment): Promise<string> {
     const newComment = Comment.create({
       authorId: comment.props.authorId,
       content: comment.props.content,
       discussionId: comment.props.discussionId,
-      id: randomUUID(),
+      id: randomUUID().toString(),
     }).value as Comment;
 
     this.commentList.push(newComment);

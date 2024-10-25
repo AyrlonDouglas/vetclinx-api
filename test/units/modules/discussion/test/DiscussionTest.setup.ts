@@ -19,6 +19,10 @@ import User from '@modules/user/domain/entities/user.entity';
 import { UserTestSetup } from '@modulesTest/user/test/userTest.setup';
 import { AsyncLocalStorage } from 'async_hooks';
 import { randomUUID } from 'crypto';
+import { RemoveComment } from '@modules/discussion/application/useCases/removeComment/removeComment.useCase';
+import { VoteRepository } from '@modules/discussion/application/repositories/vote.repository';
+import { VoteFakeRepository } from '@modules/discussion/infra/repositories/voteFake.repository';
+import { Comment } from '@modules/discussion/domain/entities/comment/comment.entity';
 
 export class DiscussionTestSetup {
   asyncLocalStorage: AsyncLocalStorage<Context>;
@@ -32,6 +36,9 @@ export class DiscussionTestSetup {
   discusssionMock: Discussion;
   getDiscussionByIdUseCase: GetDiscussionByIdUseCase;
   addCommentUseCase: AddCommentUseCase;
+  removeCommentUseCase: RemoveComment;
+  voteRepository: VoteRepository;
+  commentMock: Comment;
 
   constructor() {}
 
@@ -62,7 +69,20 @@ export class DiscussionTestSetup {
       discusssionMock.value,
     ]);
 
-    this.commentRepository = new CommentFakeRepository();
+    const commentMock = Comment.create({
+      authorId: userMock.props.id,
+      content: 'some content',
+      discussionId: discusssionMock.value.props.id,
+      id: '123',
+    });
+
+    if (commentMock.isLeft()) {
+      throw new Error('commentMock fail');
+    }
+
+    this.commentMock = commentMock.value;
+
+    this.commentRepository = new CommentFakeRepository([this.commentMock]);
 
     this.asyncLocalStorage = {} as AsyncLocalStorage<Context>;
     this.contextStorageService = new ContextStorageService(
@@ -89,6 +109,16 @@ export class DiscussionTestSetup {
       this.discussionRepository,
       this.contextStorageService,
       this.commentRepository,
+    );
+
+    this.voteRepository = new VoteFakeRepository([]);
+
+    this.removeCommentUseCase = new RemoveComment(
+      this.commentRepository,
+      this.contextStorageService,
+      this.discussionRepository,
+      this.voteRepository,
+      this.transactionService,
     );
 
     return this;
