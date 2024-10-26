@@ -30,6 +30,7 @@ import {
 } from '@modules/discussion/domain/component/voteManager.component';
 import { UpdateComment } from '@modules/discussion/application/useCases/updateComment/updateComment.useCase';
 import { RemoveDiscussion } from '@modules/discussion/application/useCases/removeDiscussion/removeDiscussion.useCase';
+import { VoteOnComment } from '@modules/discussion/application/useCases/voteOnComment/voteOnComment.useCase';
 
 export class DiscussionTestSetup {
   asyncLocalStorage: AsyncLocalStorage<Context>;
@@ -49,6 +50,7 @@ export class DiscussionTestSetup {
   commentWithParentCommentMock: Comment;
   updateCommentUseCase: UpdateComment;
   removeDiscussionUseCase: RemoveDiscussion;
+  voteOnCommentUseCase: VoteOnComment;
 
   constructor() {}
 
@@ -165,6 +167,13 @@ export class DiscussionTestSetup {
       this.commentRepository,
       this.contextStorageService,
       this.voteRepository,
+      this.transactionService,
+    );
+
+    this.voteOnCommentUseCase = new VoteOnComment(
+      this.commentRepository,
+      this.voteRepository,
+      this.contextStorageService,
       this.transactionService,
     );
 
