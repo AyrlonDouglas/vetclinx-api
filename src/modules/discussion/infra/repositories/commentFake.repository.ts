@@ -54,15 +54,47 @@ export class CommentFakeRepository implements CommentRepository {
   }
 
   async save(comment: Comment): Promise<string> {
-    const newComment = Comment.create({
-      authorId: comment.props.authorId,
-      content: comment.props.content,
-      discussionId: comment.props.discussionId,
-      id: randomUUID().toString(),
-    }).value as Comment;
+    let commentId = comment.props.id;
 
-    this.commentList.push(newComment);
+    if (!comment.props.id) {
+      const newComment = Comment.create({
+        authorId: comment.props.authorId,
+        content: comment.props.content,
+        discussionId: comment.props.discussionId,
+        id: randomUUID().toString(),
+      }).value as Comment;
 
-    return newComment.props.id;
+      commentId = newComment.props.id;
+      this.commentList.push(newComment);
+    } else {
+      const existingComment = await this.findById(comment.props.id);
+
+      if (existingComment) {
+        const updateComment = Comment.create({
+          authorId: comment.props.authorId ?? existingComment.props.authorId,
+          content: comment.props.content ?? existingComment.props.content,
+          discussionId:
+            comment.props.discussionId ?? existingComment.props.discussionId,
+          commentCount:
+            comment.props.commentCount ?? existingComment.props.commentCount,
+          createdAt: comment.props.createdAt ?? existingComment.props.createdAt,
+          downvotes: comment.props.downvotes ?? existingComment.props.downvotes,
+          id: comment.props.id ?? existingComment.props.id,
+          parentCommentId:
+            comment.props.parentCommentId ??
+            existingComment.props.parentCommentId,
+          updatedAt: comment.props.updatedAt ?? existingComment.props.updatedAt,
+          upvotes: comment.props.upvotes ?? existingComment.props.upvotes,
+        }).value as Comment;
+
+        this.commentList = this.commentList.filter(
+          (el) => el.props.id !== existingComment.props.id,
+        );
+
+        this.commentList.push(updateComment);
+      }
+    }
+
+    return commentId;
   }
 }
