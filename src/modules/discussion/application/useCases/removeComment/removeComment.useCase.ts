@@ -43,6 +43,7 @@ export class RemoveComment
     if (comment.props.authorId !== currentUser.props.id) {
       return left(new RemoveCommentErrors.OnlyCreatorCanRemoveError());
     }
+
     await this.transactionService.startTransaction();
 
     const deleteCount = await this.commentRepository.deleteById(
@@ -70,6 +71,8 @@ export class RemoveComment
 
       childrenDeleteCount =
         await this.commentRepository.deleteByParentCommentId(input.commentId);
+
+      // TODO: precisa apagar os votos dos comentários filhos!!! adicionar a remoção em uma fila ?
     }
 
     const voteDeletedCount = await this.voteRepository.deleteByVoteForReferency(

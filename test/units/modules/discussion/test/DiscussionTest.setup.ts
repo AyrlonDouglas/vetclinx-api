@@ -23,6 +23,11 @@ import { RemoveComment } from '@modules/discussion/application/useCases/removeCo
 import { VoteRepository } from '@modules/discussion/application/repositories/vote.repository';
 import { VoteFakeRepository } from '@modules/discussion/infra/repositories/voteFake.repository';
 import { Comment } from '@modules/discussion/domain/entities/comment/comment.entity';
+import { Vote } from '@modules/discussion/domain/entities/vote/vote.entity';
+import {
+  VoteFor,
+  VoteTypes,
+} from '@modules/discussion/domain/component/voteManager.component';
 
 export class DiscussionTestSetup {
   asyncLocalStorage: AsyncLocalStorage<Context>;
@@ -39,6 +44,7 @@ export class DiscussionTestSetup {
   removeCommentUseCase: RemoveComment;
   voteRepository: VoteRepository;
   commentMock: Comment;
+  commentWithParentCommentMock: Comment;
 
   constructor() {}
 
@@ -73,16 +79,42 @@ export class DiscussionTestSetup {
       authorId: userMock.props.id,
       content: 'some content',
       discussionId: discusssionMock.value.props.id,
-      id: '123',
+      id: '1',
     });
 
     if (commentMock.isLeft()) {
       throw new Error('commentMock fail');
     }
 
-    this.commentMock = commentMock.value;
+    const commentWithParentCommentMock = Comment.create({
+      authorId: userMock.props.id,
+      content: 'some content',
+      discussionId: discusssionMock.value.props.id,
+      id: '2',
+      parentCommentId: commentMock.value.props.id,
+    });
 
-    this.commentRepository = new CommentFakeRepository([this.commentMock]);
+    if (commentWithParentCommentMock.isLeft()) {
+      throw new Error('commentWithParentCommentMock fail');
+    }
+
+    this.commentMock = commentMock.value;
+    this.commentWithParentCommentMock = commentWithParentCommentMock.value;
+
+    const voteMock = Vote.create({
+      user: userMock.props.id,
+      voteFor: VoteFor.comment,
+      voteForReferency: commentMock.value.props.id,
+      voteType: VoteTypes.up,
+      id: '123',
+    }).value as Vote;
+
+    this.voteRepository = new VoteFakeRepository([voteMock]);
+
+    this.commentRepository = new CommentFakeRepository([
+      this.commentMock,
+      this.commentWithParentCommentMock,
+    ]);
 
     this.asyncLocalStorage = {} as AsyncLocalStorage<Context>;
     this.contextStorageService = new ContextStorageService(
@@ -110,8 +142,6 @@ export class DiscussionTestSetup {
       this.contextStorageService,
       this.commentRepository,
     );
-
-    this.voteRepository = new VoteFakeRepository([]);
 
     this.removeCommentUseCase = new RemoveComment(
       this.commentRepository,
