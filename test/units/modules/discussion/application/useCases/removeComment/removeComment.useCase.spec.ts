@@ -12,7 +12,7 @@ describe('RemoveComment', () => {
       contextStorageService,
       userMock,
       commentWithParentCommentMock,
-    } = (await new DiscussionTestSetup().prepare()) as DiscussionTestSetup;
+    } = await new DiscussionTestSetup().prepare();
 
     const sut = removeCommentUseCase;
 
