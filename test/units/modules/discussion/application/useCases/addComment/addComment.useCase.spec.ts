@@ -11,6 +11,7 @@ describe('AddCommentUseCase', () => {
       discussionRepository,
       discusssionMock,
       contextStorageService,
+      commentMock,
     } = (await new DiscussionTestSetup().prepare()) as DiscussionTestSetup;
 
     jest
@@ -22,6 +23,7 @@ describe('AddCommentUseCase', () => {
       discussionRepository,
       discusssionMock,
       contextStorageService,
+      commentMock,
     };
   };
 
@@ -79,6 +81,36 @@ describe('AddCommentUseCase', () => {
     const result = await sut.perform({
       content: 'content test',
       discussionId: discusssionMock.props.id,
+    });
+
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value).toBeDefined();
+    }
+  });
+
+  test('SHould return left containing ParentCommentNorFOundError when parentComment not found', async () => {
+    const { sut, discusssionMock } = await makeSut();
+
+    const result = await sut.perform({
+      content: 'some comment',
+      discussionId: discusssionMock.props.id,
+      parentCommentId: '9878987987',
+    });
+
+    expect(result.isLeft()).toBe(true);
+    expect(result.value).toBeInstanceOf(
+      AddCommentErrors.ParentCommentNotFoundError,
+    );
+  });
+
+  test('Shoul return new comment id when comment was add in discussion and have parent comment', async () => {
+    const { sut, discusssionMock, commentMock } = await makeSut();
+
+    const result = await sut.perform({
+      content: 'some comment',
+      discussionId: discusssionMock.props.id,
+      parentCommentId: commentMock.props.id,
     });
 
     expect(result.isRight()).toBe(true);
