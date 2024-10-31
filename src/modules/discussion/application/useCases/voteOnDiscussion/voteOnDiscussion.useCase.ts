@@ -72,8 +72,6 @@ export class VoteOnDiscussion
       voteForReferency: discussion.props.id,
     });
 
-    //TODO: Necessario transaction aqui
-
     if (existingVote) {
       if (existingVote.props.voteType === input.voteType) {
         discussion.removeVote(existingVote);
