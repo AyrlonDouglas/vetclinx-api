@@ -15,6 +15,7 @@ import FakeUserRepository from '@modules/user/infra/repositories/fakeUser.reposi
 
 export class UserTestSetup {
   userMock: User;
+  userMock2: User;
   userRepository: UserRepository;
   userMapper: UserMapper;
   getUserByIdUseCase: GetUserByIdUseCase;
@@ -43,8 +44,27 @@ export class UserTestSetup {
     });
 
     if (userMock.isLeft()) throw new Error('userMock fail');
+    if (userMock.isLeft()) throw new Error('userMock fail');
 
     this.userMock = userMock.value;
+
+    const emailMock2 = Email.create('teste2@teste.com');
+    if (emailMock2.isLeft()) throw new Error('email fail');
+
+    const passwordMock2 = Password.create('SenhaForte54!2');
+    if (passwordMock2.isLeft()) throw new Error('password fail');
+
+    const userMock2 = User.create({
+      name: 'Ayrlon2',
+      email: emailMock2.value,
+      password: passwordMock2.value,
+      username: 'ayrlon2',
+      id: '32',
+    });
+
+    if (userMock2.isLeft()) throw new Error('userMock2 fail');
+
+    this.userMock2 = userMock2.value;
 
     this.userRepository = new FakeUserRepository([this.userMock]);
 

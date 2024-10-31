@@ -40,6 +40,7 @@ export class DiscussionTestSetup {
   contextStorageService: ContextStorageService;
   transactionService: TransactionService;
   userMock: User;
+  userMock2: User;
   updateDiscussionUseCase: UpdateDiscussionUseCase;
   discusssionMock: Discussion;
   getDiscussionByIdUseCase: GetDiscussionByIdUseCase;
@@ -55,8 +56,9 @@ export class DiscussionTestSetup {
   constructor() {}
 
   async prepare() {
-    const { userMock } = new UserTestSetup().prepare();
+    const { userMock, userMock2 } = new UserTestSetup().prepare();
     this.userMock = userMock;
+    this.userMock2 = userMock2;
 
     const store = new Map<
       keyof ContextKeysProps,
@@ -86,6 +88,7 @@ export class DiscussionTestSetup {
       content: 'some content',
       discussionId: discusssionMock.value.props.id,
       id: '1',
+      upvotes: 1,
     });
 
     if (commentMock.isLeft()) {
@@ -108,7 +111,7 @@ export class DiscussionTestSetup {
     this.commentWithParentCommentMock = commentWithParentCommentMock.value;
 
     const voteMock = Vote.create({
-      user: userMock.props.id,
+      user: userMock2.props.id,
       voteFor: VoteFor.comment,
       voteForReferency: commentMock.value.props.id,
       voteType: VoteTypes.up,
