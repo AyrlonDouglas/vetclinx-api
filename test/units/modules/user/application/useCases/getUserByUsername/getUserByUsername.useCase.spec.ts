@@ -1,5 +1,8 @@
 import { InspetorError } from '@common/core/inspetor';
-import User from '@modules/user/domain/entities/user.entity';
+import User, {
+  UserStatus,
+  UserType,
+} from '@modules/user/domain/entities/user.entity';
 import FakeUserRepository from '@modules/user/infra/repositories/fakeUser.repository';
 import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
 import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
@@ -15,6 +18,12 @@ describe('GetUserByUsernameUseCase', () => {
       email: emailMock.value as Email,
       password: passwordMock.value as Password,
       username: 'ayrlon',
+      brithDate: new Date('1996-04-16'),
+      country: 'bra',
+      graduationDate: new Date(),
+      institution: 'UFRPE',
+      status: UserStatus.active,
+      userType: UserType.student,
     });
 
     const userRepository = new FakeUserRepository([userMock.value as User]);

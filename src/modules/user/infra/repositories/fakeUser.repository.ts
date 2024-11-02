@@ -1,4 +1,4 @@
-import User from '../../domain/entities/user.entity';
+import User, { UserStatus, UserType } from '../../domain/entities/user.entity';
 import { UserRepository } from '../../application/repositories/user.repository';
 import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
 import { randomUUID } from 'crypto';
@@ -12,6 +12,12 @@ export default class FakeUserRepository implements UserRepository {
       password: Password.create('SenhaForte12@!').value as Password,
       username: 'ayrlon',
       id: randomUUID().toString(),
+      brithDate: new Date('1996-04-16'),
+      country: 'bra',
+      graduationDate: new Date(),
+      institution: 'UFRPE',
+      status: UserStatus.active,
+      userType: UserType.student,
     }).value as User,
   ];
 
@@ -51,6 +57,12 @@ export default class FakeUserRepository implements UserRepository {
       password: user.props.password,
       username: user.props.username,
       id: randomUUID().toString(),
+      brithDate: new Date('1996-04-16'),
+      country: 'bra',
+      graduationDate: new Date(),
+      institution: 'UFRPE',
+      status: UserStatus.active,
+      userType: UserType.student,
     });
 
     if (userData.isLeft()) {

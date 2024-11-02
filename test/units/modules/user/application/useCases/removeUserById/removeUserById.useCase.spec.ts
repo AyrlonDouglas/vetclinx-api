@@ -1,4 +1,7 @@
-import User from '@modules/user/domain/entities/user.entity';
+import User, {
+  UserStatus,
+  UserType,
+} from '@modules/user/domain/entities/user.entity';
 import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
 import FakeUserRepository from '@modules/user/infra/repositories/fakeUser.repository';
 import { InspetorError } from '@common/core/inspetor';
@@ -16,6 +19,12 @@ describe('RemoveUserByUsernameUseCase', () => {
       password: passwordMock.value as Password,
       username: 'ayrlon',
       id: '156',
+      brithDate: new Date('1996-04-16'),
+      country: 'bra',
+      graduationDate: new Date(),
+      institution: 'UFRPE',
+      status: UserStatus.active,
+      userType: UserType.student,
     }).value as User;
 
     const userRepository = new FakeUserRepository([userMock]);

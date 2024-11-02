@@ -2,21 +2,31 @@ import { EmailError } from '@modules/user/domain/valueObjects/email/email.valueO
 
 import { left } from '@common/core/either';
 import PasswordErrors from '@modules/user/domain/valueObjects/password/password.errors';
-import User from '@modules/user/domain/entities/user.entity';
+import User, {
+  UserStatus,
+  UserType,
+} from '@modules/user/domain/entities/user.entity';
 import { InspetorError } from '@common/core/inspetor';
 import CreateUserErrors from '@modules/user/application/useCases/createUser/createUser.errors';
 import { UserTestSetup } from '@modulesTest/user/test/userTest.setup';
+import { CreateUserDTO } from '@modules/user/application/useCases/createUser/createUser.dto';
 
 describe('CreateUserUseCase', () => {
   const makeSut = () => {
     const { createUserUseCase, userRepository, passwordFactory } =
       new UserTestSetup().prepare();
 
-    const input = {
+    const input: CreateUserDTO = {
       name: 'Ayrlon',
       username: 'ayrlon.vilarim',
       email: 'ayrlon.teste@test.com',
       password: 'SenhaForte12@',
+      brithDate: new Date('1996-04-16'),
+      country: 'bra',
+      graduationDate: new Date(),
+      institution: 'UFRPE',
+      status: UserStatus.active,
+      userType: UserType.student,
     };
 
     return {

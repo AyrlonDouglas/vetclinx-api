@@ -1,5 +1,9 @@
 import { InspetorError } from '@common/core/inspetor';
-import User from '@modules/user/domain/entities/user.entity';
+import User, {
+  UserCreateInput,
+  UserStatus,
+  UserType,
+} from '@modules/user/domain/entities/user.entity';
 import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
 import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
 
@@ -13,11 +17,17 @@ describe('User', () => {
       const password = Password.create('SenhaValida12#$').value as Password;
 
       const email = emailOrFail.value;
-      const inputCreate = {
+      const inputCreate: UserCreateInput = {
         email,
         name: 'a',
         password,
         username: 'aa',
+        brithDate: new Date('1996-04-16'),
+        country: 'bra',
+        graduationDate: new Date(),
+        institution: 'UFRPE',
+        status: UserStatus.active,
+        userType: UserType.student,
       };
 
       const sut = User.create;

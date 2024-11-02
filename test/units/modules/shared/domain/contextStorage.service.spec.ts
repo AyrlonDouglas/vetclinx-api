@@ -2,7 +2,10 @@ import {
   Context,
   ContextStorageService,
 } from '@modules/shared/domain/contextStorage.service';
-import User from '@modules/user/domain/entities/user.entity';
+import User, {
+  UserStatus,
+  UserType,
+} from '@modules/user/domain/entities/user.entity';
 import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
 import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
 import { AsyncLocalStorage } from 'async_hooks';
@@ -16,6 +19,12 @@ describe('ContextStorageService', () => {
       password: Password.create('PassPass@1').value as Password,
       username: 'username test',
       id: '123123',
+      brithDate: new Date('1996-04-16'),
+      country: 'bra',
+      graduationDate: new Date(),
+      institution: 'UFRPE',
+      status: UserStatus.active,
+      userType: UserType.student,
     }).value as User;
 
     store.set('currentUser', userMock);
@@ -67,6 +76,12 @@ describe('ContextStorageService', () => {
           password: Password.create('PassPass@12').value as Password,
           username: 'username2 test',
           id: '321321',
+          brithDate: new Date('1996-04-16'),
+          country: 'bra',
+          graduationDate: new Date(),
+          institution: 'UFRPE',
+          status: UserStatus.active,
+          userType: UserType.student,
         }).value as User;
 
         sut.set('currentUser', userMock2);

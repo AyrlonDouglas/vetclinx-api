@@ -2,7 +2,10 @@ import {
   UserDTO,
   UserMapper,
 } from '@modules/user/application/mappers/user.mapper';
-import User from '@modules/user/domain/entities/user.entity';
+import User, {
+  UserStatus,
+  UserType,
+} from '@modules/user/domain/entities/user.entity';
 import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
 import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
 
@@ -14,6 +17,12 @@ describe('UserMapper', () => {
       username: 'username test',
       password: Password.create('PassValid@1').value as Password,
       id: '123456',
+      brithDate: new Date('1996-04-16'),
+      country: 'bra',
+      graduationDate: new Date(),
+      institution: 'UFRPE',
+      status: UserStatus.active,
+      userType: UserType.student,
     }).value as User;
 
     const sut = new UserMapper();

@@ -1,4 +1,7 @@
-import User from '@modules/user/domain/entities/user.entity';
+import User, {
+  UserStatus,
+  UserType,
+} from '@modules/user/domain/entities/user.entity';
 import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
 import FakeUserRepository from '@modules/user/infra/repositories/fakeUser.repository';
 import { Config } from '@modules/config/ports/config';
@@ -46,6 +49,12 @@ export default class AuthTestSetup {
       email: validEmail.value,
       password: hashedPass.value,
       username: 'ayrlon',
+      brithDate: new Date('1996-04-16'),
+      country: 'bra',
+      graduationDate: new Date(),
+      institution: 'UFRPE',
+      status: UserStatus.active,
+      userType: UserType.student,
     });
 
     this.userRepository = new FakeUserRepository();
