@@ -11,7 +11,7 @@ export interface CreateUserDTO {
   password: string;
   status: keyof typeof UserStatus;
   phoneNumber?: string;
-  brithDate: Date;
+  birthDate: Date;
   userType: keyof typeof UserType;
   institution: string;
   graduationDate: Date;

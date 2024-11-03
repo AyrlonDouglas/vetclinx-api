@@ -22,7 +22,7 @@ describe('User', () => {
         name: 'a',
         password,
         username: 'aa',
-        brithDate: new Date('1996-04-16'),
+        birthDate: new Date('1996-04-16'),
         country: 'bra',
         graduationDate: new Date(),
         institution: 'UFRPE',

@@ -1,7 +1,7 @@
-import { UserMapper } from '@modules/user/application/mappers/user.mapper';
 import { CreateUserDTO } from '@modules/user/application/useCases/createUser/createUser.dto';
 import UserUseCases from '@modules/user/application/useCases/user.useCases';
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { UserMapper } from '../mapper/user.mapper';
 
 @Controller('user')
 export class UserController {
@@ -24,7 +24,7 @@ export class UserController {
     });
 
     if (result.isLeft()) throw result.value;
-    return this.userMapper.toDTO(result.value);
+    return result.value ? this.userMapper.toDTO(result.value) : null;
   }
 
   @Get('/:id')

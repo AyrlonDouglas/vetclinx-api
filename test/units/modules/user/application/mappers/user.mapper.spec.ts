@@ -1,13 +1,15 @@
-import {
-  UserDTO,
-  UserMapper,
-} from '@modules/user/application/mappers/user.mapper';
+// import {
+//   UserDTO,
+//   UserMapper,
+// } from '@modules/user/application/mappers/user.mapper';
 import User, {
   UserStatus,
   UserType,
 } from '@modules/user/domain/entities/user.entity';
 import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
 import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
+import { UserDTO, UserMapper } from '@modules/user/infra/mapper/user.mapper';
+import { Types } from 'mongoose';
 
 describe('UserMapper', () => {
   const makeSut = () => {
@@ -16,10 +18,10 @@ describe('UserMapper', () => {
       name: 'name teste',
       username: 'username test',
       password: Password.create('PassValid@1').value as Password,
-      id: '123456',
-      brithDate: new Date('1996-04-16'),
+      id: '6703105ec83be2bc35b970c6',
+      birthDate: new Date('1996-04-16'),
       country: 'bra',
-      graduationDate: new Date(),
+      graduationDate: new Date('2021-08-17'),
       institution: 'UFRPE',
       status: UserStatus.active,
       userType: UserType.student,
@@ -41,6 +43,15 @@ describe('UserMapper', () => {
         name: userMock.props.name,
         username: userMock.props.username,
         password: userMock.props.password.value,
+        birthDate: userMock.props.birthDate,
+        country: userMock.props.country,
+        graduationDate: userMock.props.graduationDate,
+        institution: userMock.props.institution,
+        status: userMock.props.status,
+        userType: userMock.props.userType,
+        phoneNumber: userMock.props.phoneNumber,
+        professionalRegistration: userMock.props.professionalRegistration,
+        specialization: userMock.props.specialization,
       });
     });
   });
@@ -50,13 +61,23 @@ describe('UserMapper', () => {
       const { sut, userMock } = makeSut();
 
       const result = sut.toDomain({
+        _id: new Types.ObjectId(userMock.props.id),
+        birthDate: userMock.props.birthDate,
+        country: userMock.props.country,
         email: userMock.props.email.value,
-        id: userMock.props.id,
+        graduationDate: userMock.props.graduationDate,
+        institution: userMock.props.institution,
         name: userMock.props.name,
         password: userMock.props.password.value,
+        status: userMock.props.status,
         username: userMock.props.username,
+        userType: userMock.props.userType,
+        phoneNumber: userMock.props.phoneNumber,
+        professionalRegistration: userMock.props.professionalRegistration,
+        specialization: userMock.props.specialization,
       });
-
+      console.log(result.props.graduationDate);
+      console.log(userMock.props.graduationDate);
       expect(result).toEqual(userMock);
     });
   });

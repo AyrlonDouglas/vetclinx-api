@@ -12,8 +12,8 @@ import RemoveUserByIdUseCase from '../application/useCases/removeUserById/remove
 import { SharedModule } from '@modules/shared/infra/shared.module';
 import PasswordFactory from '../domain/valueObjects/password/password.factory';
 import HashService from '@modules/shared/domain/hash.service';
-import { UserMapper } from '../application/mappers/user.mapper';
 import { DatabaseModule } from '@modules/database/infra/database.module';
+import { UserMapper } from './mapper/user.mapper';
 
 @Module({
   controllers: [UserController],

@@ -10,7 +10,7 @@ export default class User {
     private email: Email,
     private password: Password,
     private status: keyof typeof UserStatus,
-    private brithDate: Date,
+    private birthDate: Date,
     private userType: keyof typeof UserType,
     private institution: string,
     private graduationDate: Date,
@@ -30,7 +30,7 @@ export default class User {
       id: this.id,
       status: this.status,
       phoneNumber: this.phoneNumber,
-      brithDate: this.brithDate,
+      birthDate: this.birthDate,
       userType: this.userType,
       institution: this.institution,
       graduationDate: this.graduationDate,
@@ -46,10 +46,36 @@ export default class User {
       { argument: input.name, argumentName: 'name' },
       { argument: input.username, argumentName: 'username' },
       { argument: input.password, argumentName: 'password' },
+      { argument: input.country, argumentName: 'country' },
+      { argument: input.birthDate, argumentName: 'birthDate' },
+      { argument: input.userType, argumentName: 'userType' },
+      { argument: input.institution, argumentName: 'institution' },
+      { argument: input.status, argumentName: 'status' },
+      { argument: input.graduationDate, argumentName: 'graduationDate' },
     ]);
 
     if (inputOrFail.isLeft()) {
       return left(inputOrFail.value);
+    }
+
+    const userTypeOrFail = Inspetor.isOneOf(
+      input.userType,
+      Object.values(UserType),
+      'userType',
+    );
+
+    if (userTypeOrFail.isLeft()) {
+      return left(userTypeOrFail.value);
+    }
+
+    const userStatusOrFail = Inspetor.isOneOf(
+      input.status,
+      Object.values(UserStatus),
+      'status',
+    );
+
+    if (userStatusOrFail.isLeft()) {
+      return left(userStatusOrFail.value);
     }
 
     const user = new User(
@@ -58,7 +84,7 @@ export default class User {
       input.email,
       input.password,
       input.status,
-      input.brithDate,
+      input.birthDate,
       input.userType,
       input.institution,
       input.graduationDate,
@@ -78,16 +104,16 @@ interface UserProps {
   username: string;
   email: Email;
   password: Password;
-  id?: string;
-  status: keyof typeof UserStatus;
-  phoneNumber?: string;
-  brithDate: Date;
+  country: (typeof countries)[number]['alpha3'];
+  birthDate: Date;
   userType: keyof typeof UserType;
   institution: string;
+  status: keyof typeof UserStatus;
+  id?: string;
+  phoneNumber?: string;
   graduationDate: Date;
   specialization?: string[];
   professionalRegistration?: string;
-  country: (typeof countries)[number]['alpha3'];
 }
 
 export interface UserCreateInput extends UserProps {}

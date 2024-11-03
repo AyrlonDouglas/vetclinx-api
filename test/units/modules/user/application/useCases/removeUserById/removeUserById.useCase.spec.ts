@@ -19,7 +19,7 @@ describe('RemoveUserByUsernameUseCase', () => {
       password: passwordMock.value as Password,
       username: 'ayrlon',
       id: '156',
-      brithDate: new Date('1996-04-16'),
+      birthDate: new Date('1996-04-16'),
       country: 'bra',
       graduationDate: new Date(),
       institution: 'UFRPE',

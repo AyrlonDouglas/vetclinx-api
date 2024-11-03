@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserDocument, UserModel } from '../schemas/user.schema';
-import { UserMapper } from '../../application/mappers/user.mapper';
+import { UserMapper } from '../mapper/user.mapper';
 
 @Injectable()
 export default class UserMongooseRepository implements UserRepository {
@@ -31,23 +31,24 @@ export default class UserMongooseRepository implements UserRepository {
     if (!isValidId) return null;
     const user = await this.userModel.findById(id);
     if (!user) return null;
-    return this.mapper.toDomain(this.mongooseToDomain(user));
+    return this.mapper.toDomain(user);
   }
 
   async findByUsername(username: string): Promise<User | null> {
     const user = await this.userModel.findOne({ username });
     if (!user) return null;
-    return this.mapper.toDomain(this.mongooseToDomain(user));
+    return this.mapper.toDomain(user);
   }
 
   async findByEmail(email: string): Promise<User | null> {
     const user = await this.userModel.findOne({ email });
     if (!user) return null;
-    return this.mapper.toDomain(this.mongooseToDomain(user));
+    return this.mapper.toDomain(user);
   }
 
   async save(user: User): Promise<string> {
     const userToPersistence = this.mapper.toPersistense(user);
+    console.log(userToPersistence);
     const createdUser = new this.userModel(userToPersistence);
     const savedUser = await createdUser.save();
     return savedUser._id.toString();
