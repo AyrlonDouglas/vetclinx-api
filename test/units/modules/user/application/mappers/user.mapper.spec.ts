@@ -76,8 +76,6 @@ describe('UserMapper', () => {
         professionalRegistration: userMock.props.professionalRegistration,
         specialization: userMock.props.specialization,
       });
-      console.log(result.props.graduationDate);
-      console.log(userMock.props.graduationDate);
       expect(result).toEqual(userMock);
     });
   });
