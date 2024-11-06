@@ -66,7 +66,7 @@ describe('RemoveDiscussion', () => {
       expect(result.value).toEqual({
         deleted: true,
         commentDeletedCount: 2,
-        voteDeletedCount: 1,
+        voteDeletedCount: 2,
       });
     }
   });
