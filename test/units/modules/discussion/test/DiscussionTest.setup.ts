@@ -31,6 +31,7 @@ import {
 import { UpdateComment } from '@modules/discussion/application/useCases/updateComment/updateComment.useCase';
 import { RemoveDiscussion } from '@modules/discussion/application/useCases/removeDiscussion/removeDiscussion.useCase';
 import { VoteOnComment } from '@modules/discussion/application/useCases/voteOnComment/voteOnComment.useCase';
+import { VoteOnDiscussion } from '@modules/discussion/application/useCases/voteOnDiscussion/voteOnDiscussion.useCase';
 
 export class DiscussionTestSetup {
   asyncLocalStorage: AsyncLocalStorage<Context>;
@@ -52,6 +53,7 @@ export class DiscussionTestSetup {
   updateCommentUseCase: UpdateComment;
   removeDiscussionUseCase: RemoveDiscussion;
   voteOnCommentUseCase: VoteOnComment;
+  voteOnDiscussionUseCase: VoteOnDiscussion;
 
   constructor() {}
 
@@ -177,6 +179,13 @@ export class DiscussionTestSetup {
       this.commentRepository,
       this.voteRepository,
       this.contextStorageService,
+      this.transactionService,
+    );
+
+    this.voteOnDiscussionUseCase = new VoteOnDiscussion(
+      this.discussionRepository,
+      this.contextStorageService,
+      this.voteRepository,
       this.transactionService,
     );
 
