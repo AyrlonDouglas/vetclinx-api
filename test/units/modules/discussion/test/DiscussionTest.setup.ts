@@ -32,6 +32,7 @@ import { UpdateComment } from '@modules/discussion/application/useCases/updateCo
 import { RemoveDiscussion } from '@modules/discussion/application/useCases/removeDiscussion/removeDiscussion.useCase';
 import { VoteOnComment } from '@modules/discussion/application/useCases/voteOnComment/voteOnComment.useCase';
 import { VoteOnDiscussion } from '@modules/discussion/application/useCases/voteOnDiscussion/voteOnDiscussion.useCase';
+import { DiscussionUseCases } from '@modules/discussion/application/useCases/discussion.useCases';
 
 export class DiscussionTestSetup {
   asyncLocalStorage: AsyncLocalStorage<Context>;
@@ -54,6 +55,7 @@ export class DiscussionTestSetup {
   removeDiscussionUseCase: RemoveDiscussion;
   voteOnCommentUseCase: VoteOnComment;
   voteOnDiscussionUseCase: VoteOnDiscussion;
+  discussionUseCases: DiscussionUseCases;
 
   constructor() {}
 
@@ -74,6 +76,7 @@ export class DiscussionTestSetup {
       title: 'title test',
       authorId: userMock.props.id,
       id: randomUUID(),
+      upvotes: 1,
     });
 
     if (discusssionMock.isLeft()) {
@@ -195,6 +198,18 @@ export class DiscussionTestSetup {
       this.contextStorageService,
       this.voteRepository,
       this.transactionService,
+    );
+
+    this.discussionUseCases = new DiscussionUseCases(
+      this.createDiscussionUseCase,
+      this.updateDiscussionUseCase,
+      this.getDiscussionByIdUseCase,
+      this.addCommentUseCase,
+      this.updateCommentUseCase,
+      this.removeCommentUseCase,
+      this.removeDiscussionUseCase,
+      this.voteOnDiscussionUseCase,
+      this.voteOnCommentUseCase,
     );
 
     return this;
