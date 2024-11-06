@@ -120,7 +120,15 @@ export class DiscussionTestSetup {
       id: '123',
     }).value as Vote;
 
-    this.voteRepository = new VoteFakeRepository([voteMock]);
+    const voteMock2 = Vote.create({
+      user: userMock2.props.id,
+      voteFor: VoteFor.discussion,
+      voteForReferency: discusssionMock.value.props.id,
+      voteType: VoteTypes.up,
+      id: '123',
+    }).value as Vote;
+
+    this.voteRepository = new VoteFakeRepository([voteMock, voteMock2]);
 
     this.commentRepository = new CommentFakeRepository([
       this.commentMock,
