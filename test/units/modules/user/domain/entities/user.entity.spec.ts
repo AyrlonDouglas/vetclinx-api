@@ -47,6 +47,14 @@ describe('User', () => {
         expect(result.value.props.name).toBe(inputCreate.name);
         expect(result.value.props.password).toBe(inputCreate.password);
         expect(result.value.props.username).toBe(inputCreate.username);
+        expect(result.value.props.birthDate).toBe(inputCreate.birthDate);
+        expect(result.value.props.country).toBe(inputCreate.country);
+        expect(result.value.props.graduationDate).toBe(
+          inputCreate.graduationDate,
+        );
+        expect(result.value.props.institution).toBe(inputCreate.institution);
+        expect(result.value.props.status).toBe(inputCreate.status);
+        expect(result.value.props.userType).toBe(inputCreate.userType);
       }
     });
 
@@ -54,6 +62,30 @@ describe('User', () => {
       const { inputCreate, sut } = makeSut();
 
       const result = sut({ ...inputCreate, email: null });
+
+      expect(result.isLeft()).toBe(true);
+      expect(result.value).toBeInstanceOf(InspetorError);
+    });
+
+    test('Should return left when userType not to be some UserType valid', () => {
+      const { inputCreate, sut } = makeSut();
+
+      const result = sut({
+        ...inputCreate,
+        userType: 'invalidUserTye' as keyof typeof UserType,
+      });
+
+      expect(result.isLeft()).toBe(true);
+      expect(result.value).toBeInstanceOf(InspetorError);
+    });
+
+    test('Should return left when status not to be some userStatus valid', () => {
+      const { inputCreate, sut } = makeSut();
+
+      const result = sut({
+        ...inputCreate,
+        status: 'invalidStatus' as keyof typeof UserStatus,
+      });
 
       expect(result.isLeft()).toBe(true);
       expect(result.value).toBeInstanceOf(InspetorError);
