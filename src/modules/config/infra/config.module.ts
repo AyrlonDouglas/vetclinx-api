@@ -7,7 +7,7 @@ import { configProvider } from './config.provider';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `src/modules/config/envs/${process.env.NODE_ENV}.env`,
+      envFilePath: `src/modules/config/envs/.env.${process.env.NODE_ENV}`,
       load: [...configurations],
     }),
   ],
