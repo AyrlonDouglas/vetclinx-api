@@ -8,12 +8,13 @@ import Token, { TokenError } from '../../valueObjects/token/token.valueObject';
 import { Config } from '@modules/config/ports/config';
 import AuthenticationErros from './authentication.errors';
 import HashService from '@modules/shared/domain/hash.service';
+import User from '@modules/user/domain/entities/user.entity';
 
 type signInResponse = Either<
   | TokenError
   | InstanceType<(typeof AuthenticationErros)['InvalidCredentialError']>
   | null,
-  Token
+  { token: Token; user: User }
 >;
 
 export default class AuthenticationService {
@@ -58,6 +59,6 @@ export default class AuthenticationService {
       return left(tokenOrError.value);
     }
 
-    return right(tokenOrError.value);
+    return right({ token: tokenOrError.value, user });
   }
 }

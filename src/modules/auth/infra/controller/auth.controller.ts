@@ -10,6 +10,6 @@ export class AuthController {
   async signIn(@Body() signInDTO: SignInDTO) {
     const result = await this.authUseCases.signIn.perform(signInDTO);
     if (result.isLeft()) throw result.value;
-    return result.value;
+    return { token: result.value.token.props.token };
   }
 }

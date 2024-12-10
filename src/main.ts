@@ -10,7 +10,7 @@ async function bootstrap() {
   const appConfig = config.get<AppConfig>(ConfigKey.app);
 
   app.useGlobalFilters(new AllExceptionsFilter(config));
-
+  app.enableCors();
   await app.listen(appConfig.port, () => {
     console.info('🚀 On Fire!!');
   });

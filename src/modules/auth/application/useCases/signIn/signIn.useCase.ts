@@ -11,12 +11,13 @@ import { SignInDTO } from './signIn.dto';
 import SignInError from './signIn.errors';
 import PasswordErrors from '@modules/user/domain/valueObjects/password/password.errors';
 import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
+import User from '@modules/user/domain/entities/user.entity';
 
 type Response = Either<
   | InspetorError
   | EmailError
   | InstanceType<(typeof PasswordErrors)['InvalidPasswordError']>,
-  Token
+  { token: Token; user: User }
 >;
 
 export default class SignInUseCase implements UseCase<SignInDTO, Response> {
@@ -50,6 +51,9 @@ export default class SignInUseCase implements UseCase<SignInDTO, Response> {
       return left(new SignInError.UnauthorizedError());
     }
 
-    return right(signInOrError.value);
+    return right({
+      token: signInOrError.value.token,
+      user: signInOrError.value.user,
+    });
   }
 }

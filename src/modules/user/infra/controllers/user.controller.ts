@@ -2,12 +2,15 @@ import { CreateUserDTO } from '@modules/user/application/useCases/createUser/cre
 import UserUseCases from '@modules/user/application/useCases/user.useCases';
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { UserMapper } from '../mapper/user.mapper';
+import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
+import User from '@modules/user/domain/entities/user.entity';
 
 @Controller('user')
 export class UserController {
   constructor(
     private readonly userUseCases: UserUseCases,
     private readonly userMapper: UserMapper,
+    private readonly context: ContextStorageService,
   ) {}
 
   @Post()
@@ -23,6 +26,17 @@ export class UserController {
       username,
     });
 
+    if (result.isLeft()) throw result.value;
+    return result.value ? this.userMapper.toDTO(result.value) : null;
+  }
+
+  @Get('/me')
+  async findOneByMe() {
+    const user = this.context.get('currentUser') as User;
+
+    const result = await this.userUseCases.getUserById.perform({
+      id: user.props.id,
+    });
     if (result.isLeft()) throw result.value;
     return result.value ? this.userMapper.toDTO(result.value) : null;
   }
