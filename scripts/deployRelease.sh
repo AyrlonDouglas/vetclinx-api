@@ -1,39 +1,69 @@
 #!/bin/bash
 
 # Configura o script para parar em caso de erro
-# set -e
+set -e
 
-echo "Iniciando processo de criação de release";
-echo "**********************************";
+# Função para reverter o processo em caso de erro
+rollback() {
+  echo "Erro detectado! Revertendo todas as alterações..."
+  
+  # Desfazendo alterações não commitadas
+  git reset --hard
+  
+  # Desfazendo quaisquer commits e alterações de fluxo (caso tenha começado)
+  if git rev-parse --verify "release/$versao" >/dev/null 2>&1; then
+    echo "Cancelando release do git flow..."
+    git flow release finish $versao
+  fi
+  
+  # Restauro do stash, caso tenha sido feito
+  echo "Restaurando alterações do git stash..."
+  git stash apply || echo "Nada para restaurar do git stash."
 
-echo "Guardando mudanças";
-git stash;
+  echo "Rollback concluído. O script será encerrado."
+  exit 1
+}
 
-echo "Trocando branch para develop";
-git checkout develop;
+# Definindo a captura de erro para chamar a função de rollback
+trap 'rollback' ERR
 
-echo "Atualizando branch develop";
-git pull origin develop;
+echo "Iniciando processo de criação de release"
+echo "**********************************"
 
-echo "Forneça o número da versão da release a ser criada (exemplo: 1.2.3):"; read versao;
+echo "Guardando mudanças"
+git stash
 
-echo "Iniciando git flow";
-git flow init;
+echo "Trocando branch para develop"
+git checkout develop
+
+echo "Atualizando branch develop"
+git pull origin develop
+
+echo "Forneça o número da versão da release a ser criada (exemplo: 1.2.3):"
+read versao
+
+echo "Iniciando git flow"
+git flow init -d
 
 echo "Iniciando release"
-git flow release start $versao;
+git flow release start $versao
 
-echo "Atualize a versão do package.json para $versao, salve e pressione enter"; read dummy;
+echo "Atualize a versão do package.json para $versao, salve e pressione enter"
+read dummy
 
-echo "Atualize a versão no VERSION para $versao, salve e pressione enter"; read dummy;
+echo "Atualize a versão no VERSION para $versao, salve e pressione enter"
+read dummy
 
-echo "Atualize a versão no CHANGELOG.mg para $versao, salve e pressione enter"; read dummy;
+echo "Atualize a versão no CHANGELOG.md para $versao, salve e pressione enter"
+read dummy
 
-git add .;
+git add .
 
-git commit -m $versao;
+git commit -m "$versao"
 
-git flow release finish $versao -Fp;
+echo "Finalizando o release com git flow"
+git flow release finish $versao -F -p
 
 echo "**********************************"
-echo Script finalizado, o deploy iniciaŕa em instantes. Acompanhe o processo pelas pipelines no azure devops; read dummy;
+echo "Script finalizado. O deploy iniciará em instantes. Acompanhe o processo pelas pipelines no Azure DevOps."
+read dummy
