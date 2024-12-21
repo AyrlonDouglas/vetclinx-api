@@ -35,8 +35,10 @@ git pull origin develop
 echo "Forneça o número da versão da release a ser criada (exemplo: 1.2.3):"
 read versao
 
-echo "Iniciando git flow"
-git flow init -d
+echo "Iniciando git flow" 
+git flow init -d || {
+  echo "Git flow inicializado anteriormente"
+}
 
 echo "Iniciando release"
 git flow release start $versao
