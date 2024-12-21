@@ -15,10 +15,6 @@ rollback() {
     echo "Cancelando release do git flow..."
     git flow release finish $versao
   fi
-  
-  # Restauro do stash, caso tenha sido feito
-  echo "Restaurando alterações do git stash..."
-  git stash apply || echo "Nada para restaurar do git stash."
 
   echo "Rollback concluído. O script será encerrado."
   exit 1
@@ -29,9 +25,6 @@ trap 'rollback' ERR
 
 echo "Iniciando processo de criação de release"
 echo "**********************************"
-
-echo "Guardando mudanças"
-git stash
 
 echo "Trocando branch para develop"
 git checkout develop
