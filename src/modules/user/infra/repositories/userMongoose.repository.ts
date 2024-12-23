@@ -48,7 +48,6 @@ export default class UserMongooseRepository implements UserRepository {
 
   async save(user: User): Promise<string> {
     const userToPersistence = this.mapper.toPersistense(user);
-    console.log(userToPersistence);
     const createdUser = new this.userModel(userToPersistence);
     const savedUser = await createdUser.save();
     return savedUser._id.toString();

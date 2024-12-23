@@ -1,4 +1,3 @@
-import { Either, left, right } from '@common/core/either';
 import BaseError from '@common/errors/baseError.error';
 import { HttpStatusCode } from '@common/http/httpStatusCode';
 import { User as UserPostgre } from '@modules/database/infra/posgreSQL/entities/user.db.entity';
@@ -15,21 +14,20 @@ export class UserPostgreRepository implements UserRepository {
     private userRepository: Repository<UserPostgre>,
   ) {}
 
-  findById(id: string): Promise<User | null> {
-    id;
-    throw new Error('Method not implemented.');
+  async findById(id: string): Promise<User | null> {
+    const user = await this.userRepository.findOneBy({ id: +id });
+
+    if (!user) return null;
+
+    return this.toDomain(user);
   }
+
   async findByUsername(username: string): Promise<User | null> {
     const user = await this.userRepository.findOneBy({ username });
 
     if (!user) return null;
 
-    const userDomainOrFail = this.toDomain(user);
-    if (userDomainOrFail.isLeft()) {
-      throw userDomainOrFail.value;
-    }
-
-    return userDomainOrFail.value;
+    return this.toDomain(user);
   }
 
   async findByEmail(email: string): Promise<User | null> {
@@ -37,41 +35,40 @@ export class UserPostgreRepository implements UserRepository {
 
     if (!user) return null;
 
-    const userDomainOrFail = this.toDomain(user);
-    if (userDomainOrFail.isLeft()) {
-      throw userDomainOrFail.value;
-    }
-
-    return userDomainOrFail.value;
+    return this.toDomain(user);
   }
 
   async save(user: User): Promise<string> {
-    const userToSave = this.toEntity(user);
+    const userToSave = this.toEntityPostgre(user);
 
     await userToSave.save();
 
     return userToSave.id.toString();
   }
-  removeById(id: string): Promise<string | null> {
-    id;
-    throw new Error('Method not implemented.');
+
+  async removeById(id: string): Promise<string | null> {
+    const userDeleted = await this.userRepository.delete({ id: +id });
+
+    if (!userDeleted.affected) return null;
+
+    return id;
   }
-  findAll(): Promise<User[]> {
+
+  async findAll(): Promise<User[]> {
     throw new Error('Method not implemented.');
   }
 
-  toDomain(userPostgre: UserPostgre): Either<BaseError, User> {
+  toDomain(userPostgre: UserPostgre): User {
     const emailOrFail = Email.create(userPostgre.email);
     if (emailOrFail.isLeft()) {
-      return left(
-        new BaseError(['Some Error in email'], HttpStatusCode.CONFLICT),
-      );
+      throw new BaseError(['Some Error to map email'], HttpStatusCode.CONFLICT);
     }
 
     const passwordOrFail = Password.create(userPostgre.password, false);
     if (passwordOrFail.isLeft()) {
-      return left(
-        new BaseError(['Some error in password'], HttpStatusCode.CONFLICT),
+      throw new BaseError(
+        ['Some error to map password'],
+        HttpStatusCode.CONFLICT,
       );
     }
 
@@ -93,31 +90,29 @@ export class UserPostgreRepository implements UserRepository {
     });
 
     if (user.isLeft()) {
-      return left(
-        new BaseError(['Some error in user'], HttpStatusCode.CONFLICT),
-      );
+      throw new BaseError(['Some error to map user'], HttpStatusCode.CONFLICT);
     }
 
-    return right(user.value);
+    return user.value;
   }
 
-  toEntity(user: User): UserPostgre {
-    const userPlain = user.toPlain();
+  toEntityPostgre(user: User): UserPostgre {
+    const userPlained = user.toPlain();
 
     const userToSave = new UserPostgre();
-    userToSave.birthDate = userPlain.birthDate;
-    userToSave.country = userPlain.country;
-    userToSave.email = userPlain.email;
-    userToSave.graduationDate = userPlain.graduationDate;
-    userToSave.id = userPlain.id ? +userPlain.id : undefined;
-    userToSave.institution = userPlain.institution;
-    userToSave.name = userPlain.name;
-    userToSave.password = userPlain.password;
-    userToSave.phoneNumber = userPlain.phoneNumber;
-    userToSave.professionalRegistration = userPlain.professionalRegistration;
-    userToSave.status = userPlain.status;
-    userToSave.userType = userPlain.userType;
-    userToSave.username = userPlain.username;
+    userToSave.birthDate = userPlained.birthDate;
+    userToSave.country = userPlained.country;
+    userToSave.email = userPlained.email;
+    userToSave.graduationDate = userPlained.graduationDate;
+    userToSave.id = userPlained.id ? +userPlained.id : undefined;
+    userToSave.institution = userPlained.institution;
+    userToSave.name = userPlained.name;
+    userToSave.password = userPlained.password;
+    userToSave.phoneNumber = userPlained.phoneNumber;
+    userToSave.professionalRegistration = userPlained.professionalRegistration;
+    userToSave.status = userPlained.status;
+    userToSave.userType = userPlained.userType;
+    userToSave.username = userPlained.username;
 
     return userToSave;
   }

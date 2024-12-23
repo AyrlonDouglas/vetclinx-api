@@ -20,7 +20,7 @@ export class UserController {
     return result.value;
   }
 
-  @Get('by-username/:username')
+  @Get('username/:username')
   async findOneByUsername(@Param('username') username: string) {
     const result = await this.userUseCases.getUserByUsername.perform({
       username,
