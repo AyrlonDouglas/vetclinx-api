@@ -4,4 +4,5 @@ export abstract class Config {
   abstract getAppConfig: () => AppConfig;
   abstract getDatabaseConfig: () => DatabaseConfig;
   abstract getAuthenticationConfig: () => AuthConfig;
+  abstract startSwagger: (app: unknown) => void;
 }

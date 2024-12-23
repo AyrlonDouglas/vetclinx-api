@@ -9,6 +9,8 @@ async function bootstrap() {
   const config = app.get(Config);
   const appConfig = config.getAppConfig();
 
+  config.startSwagger(app);
+
   app.useGlobalFilters(new AllExceptionsFilter(config));
   app.enableCors();
   app.use(helmet());
