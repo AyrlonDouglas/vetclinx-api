@@ -5,7 +5,7 @@ import User, {
 import { Mapper } from '@common/infra/Mapper';
 import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
 import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
-import { UserModel } from '../schemas/user.schema';
+import { UserModel } from '../repositories/entities/userMongoose.schema';
 import { Types } from 'mongoose';
 import { countries } from '@common/constants/countries';
 

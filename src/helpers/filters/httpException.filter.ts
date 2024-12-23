@@ -1,8 +1,5 @@
-import {
-  AppConfig,
-  ConfigKey,
-  Environment,
-} from '@modules/config/config.interface';
+import { Environment } from '@modules/config/config.interface';
+import { Config } from '@modules/config/ports/config';
 import {
   ExceptionFilter,
   Catch,
@@ -11,11 +8,10 @@ import {
   HttpStatus,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 
 @Catch()
 export default class AllExceptionsFilter implements ExceptionFilter {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: Config) {}
 
   catch(exception: InternalServerErrorException | any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -41,7 +37,7 @@ export default class AllExceptionsFilter implements ExceptionFilter {
       description?: string,
       errorMessages?: string | string[],
     ) => {
-      const appConfig = this.configService.get<AppConfig>(ConfigKey.app);
+      const appConfig = this.configService.getAppConfig();
       const showStack = appConfig.env === Environment.dev;
       const errorResponse = {
         statusCode: _status,

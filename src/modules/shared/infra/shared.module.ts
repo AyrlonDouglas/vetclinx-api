@@ -9,8 +9,9 @@ import {
 } from '../domain/contextStorage.service';
 import { AsyncLocalStorage } from 'async_hooks';
 import { TransactionService } from '../domain/transaction.service';
-import { MongooseTransactionService } from './transaction/mongooseTransaction.service';
+// import { MongooseTransactionService } from './transaction/mongooseTransaction.service';
 import { DatabaseModule } from '@modules/database/infra/database.module';
+import { FakeTransactionService } from './transaction/fakeTransaction.service';
 
 @Module({
   providers: [
@@ -23,10 +24,10 @@ import { DatabaseModule } from '@modules/database/infra/database.module';
         new ContextStorageService(asyncLocalStorage),
       inject: [AsyncLocalStorage],
     },
-    MongooseTransactionService,
+    // MongooseTransactionService,
     {
       provide: TransactionService,
-      useClass: MongooseTransactionService,
+      useClass: FakeTransactionService, //TODO: implementar não fake
     },
   ],
   exports: [

@@ -97,6 +97,25 @@ export default class User {
 
     return right(user);
   }
+
+  toPlain() {
+    return {
+      name: this.name,
+      username: this.username,
+      email: this.email.value,
+      password: this.password.value,
+      country: this.country,
+      birthDate: this.birthDate,
+      userType: this.userType,
+      institution: this.institution,
+      status: this.status,
+      id: this.id,
+      phoneNumber: this.phoneNumber,
+      graduationDate: this.graduationDate,
+      specialization: this.specialization,
+      professionalRegistration: this.professionalRegistration,
+    };
+  }
 }
 
 interface UserProps {

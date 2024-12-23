@@ -5,9 +5,6 @@ import CreateUserUseCase from '@modules/user/application/useCases/createUser/cre
 import GetUserByUsernameUseCase from '@modules/user/application/useCases/getUserByUsername/getUserByUsername.useCase';
 import GetUserByIdUseCase from '@modules/user/application/useCases/getUserById/getUserById.useCase';
 import UserUseCases from '@modules/user/application/useCases/user.useCases';
-// import { MongooseModule } from '@nestjs/mongoose';
-// import { UserModel, UserSchema } from './schemas/user.schema';
-import UserMongooseRepository from './repositories/UserMongoose.repository';
 import RemoveUserByIdUseCase from '../application/useCases/removeUserById/removeUserById.useCase';
 import { SharedModule } from '@modules/shared/infra/shared.module';
 import PasswordFactory from '../domain/valueObjects/password/password.factory';
@@ -19,8 +16,6 @@ import { UserMapper } from './mapper/user.mapper';
   controllers: [UserController],
   imports: [SharedModule, DatabaseModule],
   providers: [
-    UserMongooseRepository,
-    { provide: UserRepository, useClass: UserMongooseRepository },
     {
       provide: PasswordFactory,
       useFactory: (hashService: HashService) =>
@@ -82,6 +77,6 @@ import { UserMapper } from './mapper/user.mapper';
       ],
     },
   ],
-  exports: [UserRepository, PasswordFactory],
+  exports: [PasswordFactory],
 })
 export class UserModule {}

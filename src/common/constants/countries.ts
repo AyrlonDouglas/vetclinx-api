@@ -1,3 +1,58 @@
+interface Country {
+  id: number;
+  alpha2: string;
+  alpha3: string;
+  name: string;
+}
+export class CountriesUtil {
+  private static instance: CountriesUtil;
+  private countries: Country[] = countries;
+  private contriesMapperByAlpha3 = new Map<string, Country>();
+  private countriesMapperByName = new Map<string, Country>();
+  private allAlpha3: string[] = [];
+  private allNames: string[] = [];
+
+  private constructor() {
+    this.countries.forEach((country) => {
+      this.contriesMapperByAlpha3.set(country.alpha3, country);
+      this.countriesMapperByName.set(country.name, country);
+      this.allNames.push(country.name);
+      this.allAlpha3.push(country.alpha3);
+    });
+  }
+
+  public static getInstance(): CountriesUtil {
+    if (!CountriesUtil.instance) {
+      CountriesUtil.instance = new CountriesUtil();
+    }
+    return CountriesUtil.instance;
+  }
+
+  getAllAlpha3() {
+    return this.allAlpha3;
+  }
+
+  getAllNames() {
+    return this.allNames;
+  }
+
+  getAlpha3ByName(name: string) {
+    return this.countriesMapperByName.get(name)?.alpha3;
+  }
+
+  getNameByAlpha3(alpha3: string) {
+    return this.contriesMapperByAlpha3.get(alpha3)?.name;
+  }
+
+  isValidAlpha3(alpha3: string) {
+    return !!this.contriesMapperByAlpha3.get(alpha3);
+  }
+
+  getCountries() {
+    return this.countries;
+  }
+}
+
 export const countries = [
   { id: 4, alpha2: 'af', alpha3: 'afg', name: 'Afeganistão' },
   { id: 710, alpha2: 'za', alpha3: 'zaf', name: 'África do Sul' },
@@ -227,4 +282,4 @@ export const countries = [
   { id: 704, alpha2: 'vn', alpha3: 'vnm', name: 'Vietname' },
   { id: 894, alpha2: 'zm', alpha3: 'zmb', name: 'Zâmbia' },
   { id: 716, alpha2: 'zw', alpha3: 'zwe', name: 'Zimbábue' },
-] as const;
+];

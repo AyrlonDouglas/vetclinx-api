@@ -20,6 +20,13 @@ const DatabaseConfig = registerAs(
   ConfigKey.db,
   (): DatabaseConfig => ({
     mongoDB: { uri: process.env.DATABASE_MONGODB_CONNECT_URL },
+    postgreSQL: {
+      database: process.env.DATABASE_POSTGRE_DATABASE,
+      host: process.env.DATABASE_POSTGRE_HOST,
+      port: process.env.DATABASE_POSTGRE_PORT,
+      username: process.env.DATABASE_POSTGRE_USERNAME,
+      password: process.env.DATABASE_POSTGRE_PASSWORD,
+    },
   }),
 );
 

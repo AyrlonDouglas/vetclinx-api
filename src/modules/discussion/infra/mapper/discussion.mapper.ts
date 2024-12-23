@@ -6,7 +6,7 @@ import {
 } from '../schemas/discussion.schema';
 import { Types } from 'mongoose';
 import User from '@modules/user/domain/entities/user.entity';
-import { UserDocument } from '@modules/user/infra/schemas/user.schema';
+import { UserDocument } from '@modules/user/infra/repositories/entities/userMongoose.schema';
 import { UserMapper } from '@modules/user/infra/mapper/user.mapper';
 
 export class DiscussionMapper implements Mapper<Discussion> {

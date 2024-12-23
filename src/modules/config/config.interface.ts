@@ -6,6 +6,13 @@ export interface AppConfig {
 
 export interface DatabaseConfig {
   mongoDB: { uri: string };
+  postgreSQL: {
+    host: string;
+    port: string;
+    username: string;
+    password: string;
+    database: string;
+  };
 }
 
 export interface AuthConfig {

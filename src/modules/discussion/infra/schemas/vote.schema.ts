@@ -1,7 +1,7 @@
 import {
   UserDocument,
   UserModel,
-} from '@modules/user/infra/schemas/user.schema';
+} from '@modules/user/infra/repositories/entities/userMongoose.schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 import {

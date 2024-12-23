@@ -6,11 +6,11 @@ import AuthenticationService from '../domain/services/authentication/authenticat
 import { UserRepository } from '@modules/user/application/repositories/user.repository';
 import { Config } from '@modules/config/ports/config';
 import TokenService from '../../shared/domain/token.service';
-import { UserModule } from '@modules/user/infra/user.module';
 import JWTTokenService from '../../shared/infra/token/jwtToken.service';
 import { ConfigsModule } from '@modules/config/infra/config.module';
 import { SharedModule } from '@modules/shared/infra/shared.module';
 import HashService from '@modules/shared/domain/hash.service';
+import { DatabaseModule } from '@modules/database/infra/database.module';
 
 @Module({
   controllers: [AuthController],
@@ -46,6 +46,6 @@ import HashService from '@modules/shared/domain/hash.service';
     },
   ],
   exports: [],
-  imports: [UserModule, ConfigsModule, SharedModule],
+  imports: [ConfigsModule, SharedModule, DatabaseModule],
 })
 export default class AuthModule {}

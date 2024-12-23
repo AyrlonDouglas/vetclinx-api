@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:17
+    container_name: vetclinx_postgres_container
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=vetclinx-local
+    volumes:
+      - postgres_vetclinx_data:/var/lib/postgresql/data
+    ports:
+      - '5003:5432'
+    networks:
+      - db_network
+    # restart: unless-stopped
+
+volumes:
+  postgres_vetclinx_data:
+
+networks:
+  db_network:
+    driver: bridge

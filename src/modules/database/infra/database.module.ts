@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
-import { MongoDBModule } from './mongoDB.module';
+import { postgreSQLModule } from './posgreSQL/postgreSQL.module';
+import { UserRepository } from '@modules/user/application/repositories/user.repository';
+import { UserPostgreRepository } from '@modules/user/infra/repositories/userPostgre.repository';
 
 @Module({
-  imports: [...MongoDBModule],
-  exports: [...MongoDBModule],
+  imports: [...postgreSQLModule],
+  exports: [...postgreSQLModule, UserRepository],
+  providers: [{ provide: UserRepository, useClass: UserPostgreRepository }],
 })
 export class DatabaseModule {}

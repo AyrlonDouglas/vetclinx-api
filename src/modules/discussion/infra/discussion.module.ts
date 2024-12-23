@@ -7,35 +7,38 @@ import { ContextStorageService } from '@modules/shared/domain/contextStorage.ser
 import { DiscussionRepository } from '../application/repositories/discussion.repository';
 import { SharedModule } from '@modules/shared/infra/shared.module';
 import { GetDiscussionByIdUseCase } from '../application/useCases/getDiscussionById/getDiscussionById.useCase';
-import { DiscussionMongooseRepository } from './repositories/discussionMongoose.repository';
+// import { DiscussionMongooseRepository } from './repositories/discussionMongoose.repository';
 import { AddCommentUseCase } from '../application/useCases/addComment/addComment.useCase';
 import { DatabaseModule } from '@modules/database/infra/database.module';
 import { DiscussionMapper } from './mapper/discussion.mapper';
 import { CommentRepository } from '../application/repositories/comment.repository';
-import { CommentMongooseRepository } from './repositories/commentMongoose.repository';
+// import { CommentMongooseRepository } from './repositories/commentMongoose.repository';
 import { UpdateComment } from '../application/useCases/updateComment/updateComment.useCase';
 import { RemoveComment } from '../application/useCases/removeComment/removeComment.useCase';
 import { RemoveDiscussion } from '../application/useCases/removeDiscussion/removeDiscussion.useCase';
 import { VoteOnDiscussion } from '../application/useCases/voteOnDiscussion/voteOnDiscussion.useCase';
 import { VoteRepository } from '../application/repositories/vote.repository';
-import { VoteMongooseRepository } from './repositories/voteMongoose.repository';
+// import { VoteMongooseRepository } from './repositories/voteMongoose.repository';
 import { VoteOnComment } from '../application/useCases/voteOnComment/voteOnComment.useCase';
 import { TransactionService } from '@modules/shared/domain/transaction.service';
+import { DiscussionFakeRepository } from './repositories/discussionFakeRepository';
+import { CommentFakeRepository } from './repositories/commentFake.repository';
+import { VoteFakeRepository } from './repositories/voteFake.repository';
 
 @Module({
   controllers: [DiscussionController],
   imports: [SharedModule, DatabaseModule],
   providers: [
     DiscussionMapper,
-    DiscussionMongooseRepository,
+    // DiscussionMongooseRepository,
     {
       provide: DiscussionRepository,
-      useClass: DiscussionMongooseRepository,
+      useClass: DiscussionFakeRepository, //TODO: implementar não fake
     },
-    CommentMongooseRepository,
+    // CommentMongooseRepository,
     {
       provide: CommentRepository,
-      useClass: CommentMongooseRepository,
+      useClass: CommentFakeRepository, //TODO: implementar não fake
     },
     {
       provide: UpdateDiscussionUseCase,
@@ -129,8 +132,8 @@ import { TransactionService } from '@modules/shared/domain/transaction.service';
         TransactionService,
       ],
     },
-    VoteMongooseRepository,
-    { provide: VoteRepository, useClass: VoteMongooseRepository },
+    // VoteMongooseRepository,
+    { provide: VoteRepository, useClass: VoteFakeRepository }, //TODO: implementar não fake
     {
       provide: VoteOnDiscussion,
       inject: [

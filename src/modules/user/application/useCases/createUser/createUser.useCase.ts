@@ -36,7 +36,6 @@ export default class CreateUserUseCase
     if (passwordOrError.isLeft()) {
       return left(passwordOrError.value);
     }
-
     if (await this.userRepository.findByUsername(request.username)) {
       return left(new CreateUserErrors.UsernameTakenError(request.username));
     }

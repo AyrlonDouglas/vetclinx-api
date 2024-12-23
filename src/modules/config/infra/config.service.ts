@@ -17,7 +17,7 @@ export default class ConfigService implements Config {
   }
 
   getDatabaseConfig() {
-    return this.configServiceNest.get<DatabaseConfig>(ConfigKey.app);
+    return this.configServiceNest.get<DatabaseConfig>(ConfigKey.db);
   }
 
   getAuthenticationConfig() {
