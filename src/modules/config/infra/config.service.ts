@@ -33,7 +33,7 @@ export default class ConfigService implements Config {
   startSwagger(app: INestApplication) {
     const config = new DocumentBuilder()
       .setTitle('VetClinix')
-      .setDescription('Comunity for Veterinarians')
+      .setDescription('Community for Veterinarians')
       .setVersion('1.0')
       .addBearerAuth()
       .build();
