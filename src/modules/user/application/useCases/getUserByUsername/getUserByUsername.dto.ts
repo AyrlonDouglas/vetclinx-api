@@ -1,3 +1,3 @@
-export interface GetUserByUsernameDTO {
+export class GetUserByUsernameDTO {
   username: string;
 }

@@ -1,3 +1,3 @@
-export interface GetUserByIdDTO {
+export class GetUserByIdDTO {
   id: string;
 }

@@ -14,7 +14,9 @@ import {
 import { DiscussionMapper } from '../mapper/discussion.mapper';
 import { UpdateCommentInput } from '@modules/discussion/application/useCases/updateComment/updateComment.dto';
 import { VoteTypes } from '@modules/discussion/domain/component/voteManager.component';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('discussion')
 export class DiscussionController {
   constructor(

@@ -1,4 +1,4 @@
-export interface SignInDTO {
+export class SignInDTO {
   password: string;
   email: string;
 }

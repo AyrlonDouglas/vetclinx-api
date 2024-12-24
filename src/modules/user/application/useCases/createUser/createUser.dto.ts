@@ -4,7 +4,7 @@ import {
   UserType,
 } from '@modules/user/domain/entities/user.entity';
 
-export interface CreateUserDTO {
+export class CreateUserDTO {
   name: string;
   username: string;
   email: string;

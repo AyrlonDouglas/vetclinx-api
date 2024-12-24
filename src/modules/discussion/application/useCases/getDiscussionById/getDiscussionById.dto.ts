@@ -1,1 +1,3 @@
-export type getDiscussionByIdDTO = { id: string };
+export class getDiscussionByIdDTO {
+  id: string;
+}

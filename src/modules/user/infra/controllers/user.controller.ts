@@ -4,7 +4,9 @@ import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { UserMapper } from '../mapper/user.mapper';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
 import User from '@modules/user/domain/entities/user.entity';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('user')
 export class UserController {
   constructor(

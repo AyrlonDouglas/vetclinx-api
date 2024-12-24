@@ -30,9 +30,11 @@ export class AuthMiddleware implements NestMiddleware {
       throw new UnauthorizedError();
     }
 
+    const authConfig = this.config.getAuthenticationConfig();
+
     const payloadOrError = await this.tokenService.verifyAsync({
       token: accessToken,
-      secretKey: this.config.getAuthenticationConfig().secretKey,
+      secretKey: authConfig.secretKey,
     });
 
     if (payloadOrError.isLeft()) {
