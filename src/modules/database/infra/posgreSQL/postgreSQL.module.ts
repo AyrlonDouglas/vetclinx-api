@@ -1,8 +1,13 @@
 import { Environment } from '@modules/config/config.interface';
 import { ConfigsModule } from '@modules/config/infra/config.module';
 import { Config } from '@modules/config/ports/config';
-import { User } from '@modules/database/infra/posgreSQL/entities/user.db.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Discussion } from './entities/discussion.db.entity';
+import { User } from './entities/user.db.entity';
+import { Comment } from './entities/comment.db.entity';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { CommentVote } from './entities/commentVote.db.entity';
+import { DiscussionVote } from './entities/discussionVote.db';
 
 export const postgreSQLModule = [
   TypeOrmModule.forRootAsync({
@@ -22,9 +27,15 @@ export const postgreSQLModule = [
         synchronize: true,
         autoLoadEntities: true,
         logging: isDev,
+        namingStrategy: new SnakeNamingStrategy(),
+        useUTC: true,
       };
     },
     inject: [Config],
   }),
   TypeOrmModule.forFeature([User]),
+  TypeOrmModule.forFeature([Discussion]),
+  TypeOrmModule.forFeature([DiscussionVote]),
+  TypeOrmModule.forFeature([Comment]),
+  TypeOrmModule.forFeature([CommentVote]),
 ];
