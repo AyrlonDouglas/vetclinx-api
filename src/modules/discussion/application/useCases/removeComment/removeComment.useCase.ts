@@ -5,7 +5,6 @@ import { left, right } from '@common/core/either';
 import { CommentRepository } from '../../repositories/comment.repository';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
 import { RemoveCommentErrors } from './removeComment.errors';
-import User from '@modules/user/domain/entities/user.entity';
 import { DiscussionRepository } from '../../repositories/discussion.repository';
 import { VoteRepository } from '../../repositories/vote.repository';
 import { TransactionService } from '@modules/shared/domain/transaction.service';
@@ -38,7 +37,7 @@ export class RemoveComment
       );
     }
 
-    const currentUser = this.context.get('currentUser') as User;
+    const currentUser = this.context.currentUser;
 
     if (comment.props.authorId !== currentUser.props.id) {
       return left(new RemoveCommentErrors.OnlyCreatorCanRemoveError());

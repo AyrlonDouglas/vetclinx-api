@@ -9,7 +9,6 @@ import { DiscussionRepository } from '../../repositories/discussion.repository';
 import { CommentRepository } from '../../repositories/comment.repository';
 import { RemoveDiscussionErrors } from './removeDiscussion.errors';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
-import User from '@modules/user/domain/entities/user.entity';
 import { VoteRepository } from '../../repositories/vote.repository';
 import { TransactionService } from '@modules/shared/domain/transaction.service';
 
@@ -46,7 +45,7 @@ export class RemoveDiscussion
       );
     }
 
-    const currentUser = this.context.get('currentUser') as User;
+    const currentUser = this.context.currentUser;
 
     if (discussion.props.authorId !== currentUser.props.id) {
       return left(new RemoveDiscussionErrors.OnlyCreatorCanDeleteError());

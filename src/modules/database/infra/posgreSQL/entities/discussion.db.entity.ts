@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { BaseEntity } from './baseEntity.db';
 import { User } from './user.db.entity';
 import { Comment } from './comment.db.entity';
@@ -7,9 +7,16 @@ import { DiscussionVote } from './discussionVote.db';
 @Entity()
 export class Discussion extends BaseEntity {
   @Column()
+  title: string;
+
+  @Column()
   description: string;
 
+  @Column()
+  authorId: number;
+
   @ManyToOne(() => User, (user) => user.discussions)
+  @JoinColumn()
   author: User;
 
   @Column()

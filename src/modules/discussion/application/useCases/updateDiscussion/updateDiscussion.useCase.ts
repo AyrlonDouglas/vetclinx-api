@@ -46,7 +46,7 @@ export class UpdateDiscussionUseCase
       );
     }
 
-    const userId = this.context.get('currentUser').props.id;
+    const userId = this.context.currentUser.props.id;
 
     const authorId = discussion.props.authorId;
 

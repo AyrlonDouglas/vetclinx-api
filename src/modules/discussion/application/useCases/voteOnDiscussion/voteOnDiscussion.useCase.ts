@@ -12,7 +12,6 @@ import {
   VoteTypes,
 } from '@modules/discussion/domain/component/voteManager.component';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
-import User from '@modules/user/domain/entities/user.entity';
 import { VoteRepository } from '../../repositories/vote.repository';
 import { Vote } from '@modules/discussion/domain/entities/vote/vote.entity';
 import { TransactionService } from '@modules/shared/domain/transaction.service';
@@ -58,7 +57,7 @@ export class VoteOnDiscussion
         new VoteOnDiscussionError.DiscussionNotFoundError(input.discussionId),
       );
     }
-    const currentUser = this.context.get('currentUser') as User;
+    const currentUser = this.context.currentUser;
 
     if (discussion.props.authorId === currentUser.props.id) {
       return left(new VoteOnDiscussionError.CreatorCannotVoteYourDiscussion());

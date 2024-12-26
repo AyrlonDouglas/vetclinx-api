@@ -33,7 +33,7 @@ export class UpdateComment
       );
     }
 
-    const userId = this.context.get('currentUser').props.id;
+    const userId = this.context.currentUser.props.id;
 
     const authorId = comment.props.authorId;
 

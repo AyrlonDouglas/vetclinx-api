@@ -5,8 +5,8 @@ import { CreateDiscussionUseCase } from '@modules/discussion/application/useCase
 import { GetDiscussionByIdUseCase } from '@modules/discussion/application/useCases/getDiscussionById/getDiscussionById.useCase';
 import { UpdateDiscussionUseCase } from '@modules/discussion/application/useCases/updateDiscussion/updateDiscussion.useCase';
 import { Discussion } from '@modules/discussion/domain/entities/discussion/discussion.entity';
-import { DiscussionFakeRepository } from '@modules/discussion/infra/repositories/discussionFakeRepository';
-import { CommentFakeRepository } from '@modules/discussion/infra/repositories/commentFake.repository';
+import { DiscussionFakeRepository } from '@modules/discussion/infra/repositories/discussion/discussionFakeRepository';
+import { CommentFakeRepository } from '@modules/discussion/infra/repositories/comment/commentFake.repository';
 import {
   Context,
   ContextKeysProps,

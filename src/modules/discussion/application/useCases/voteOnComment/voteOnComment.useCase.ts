@@ -10,7 +10,6 @@ import { CommentRepository } from '../../repositories/comment.repository';
 import { VoteRepository } from '../../repositories/vote.repository';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
 import { VoteOnCommentError } from './voteOnComment.errors';
-import User from '@modules/user/domain/entities/user.entity';
 import { Vote } from '@modules/discussion/domain/entities/vote/vote.entity';
 import { TransactionService } from '@modules/shared/domain/transaction.service';
 
@@ -50,7 +49,7 @@ export class VoteOnComment
       return left(new VoteOnCommentError.CommentNotFoundError(input.commentId));
     }
 
-    const currentUser = this.context.get('currentUser') as User;
+    const currentUser = this.context.currentUser;
 
     if (comment.props.authorId === currentUser.props.id) {
       return left(new VoteOnCommentError.CreatorCannotVoteYourComment());

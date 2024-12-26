@@ -16,7 +16,7 @@ export class CreateDiscussionUseCase
   ) {}
 
   async perform(request: CreateDiscussionDTO): Promise<Response> {
-    const authorId = this.context.get('currentUser').props.id;
+    const authorId = this.context.currentUser.props.id;
 
     const discussionOrFail = Discussion.create({
       authorId,

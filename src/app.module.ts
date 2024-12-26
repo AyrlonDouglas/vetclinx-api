@@ -14,6 +14,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TransactionInterceptor } from '@common/interceptors/transaction.interceptor';
 import { InitContextStoreMiddleware } from '@common/middleware/initContextStore.middleware';
 import { AuthMiddleware } from '@common/middleware/auth.middleware';
+import { QueryRunnerMiddleware } from '@common/middleware/queryRunner.midleware';
 
 @Module({
   imports: [
@@ -35,11 +36,11 @@ import { AuthMiddleware } from '@common/middleware/auth.middleware';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(InitContextStoreMiddleware).forRoutes('');
-
+    consumer.apply(QueryRunnerMiddleware).forRoutes('');
     consumer
       .apply(AuthMiddleware)
       .exclude({ path: '/auth', method: RequestMethod.POST })
-      .exclude({ path: '/user', method: RequestMethod.POST }) // remover em prod
+      .exclude({ path: '/user', method: RequestMethod.POST })
       .forRoutes('');
   }
 }

@@ -11,18 +11,18 @@ export class MongooseTransactionService implements TransactionService {
     private readonly contextService: ContextStorageService,
   ) {}
 
-  async startTransaction(): Promise<unknown> {
-    const contextSession = this.contextService.get('session');
+  async startTransaction(): Promise<void> {
+    const contextSession = this.contextService.session;
     const hasSession = !!contextSession;
 
     if (hasSession) {
       return;
     }
-    const session: ClientSession = await this.connection.startSession();
+
+    const session = await this.connection.startSession();
 
     session.startTransaction();
-    this.contextService.set('session', session); // Armazenar a sessão no contexto
-    return session;
+    this.contextService.session = session; // Armazenar a sessão no contexto
   }
 
   async commitTransaction(): Promise<void> {
@@ -42,6 +42,10 @@ export class MongooseTransactionService implements TransactionService {
   }
 
   getTransaction(): ClientSession | undefined {
-    return this.contextService.get('session'); // Retorna a sessão armazenada no contexto atual
+    return this.contextService.session; // Retorna a sessão armazenada no contexto atual
+  }
+
+  getEntityManager(): unknown {
+    throw new Error('Method not suported for mongoose. Use getTransaction');
   }
 }

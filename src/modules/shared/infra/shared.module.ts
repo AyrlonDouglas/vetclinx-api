@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import HashService from '../domain/hash.service';
 import BcryptHashService from './hash/bcrytHash.service';
 import JWTTokenService from './token/jwtToken.service';
@@ -9,10 +9,10 @@ import {
 } from '../domain/contextStorage.service';
 import { AsyncLocalStorage } from 'async_hooks';
 import { TransactionService } from '../domain/transaction.service';
-// import { MongooseTransactionService } from './transaction/mongooseTransaction.service';
 import { DatabaseModule } from '@modules/database/infra/database.module';
-import { FakeTransactionService } from './transaction/fakeTransaction.service';
+import { PostgreTransactionService } from './transaction/postgreTransaction.service';
 
+@Global()
 @Module({
   providers: [
     { provide: HashService, useClass: BcryptHashService },
@@ -24,10 +24,10 @@ import { FakeTransactionService } from './transaction/fakeTransaction.service';
         new ContextStorageService(asyncLocalStorage),
       inject: [AsyncLocalStorage],
     },
-    // MongooseTransactionService,
+    PostgreTransactionService,
     {
       provide: TransactionService,
-      useClass: FakeTransactionService, //TODO: implementar não fake
+      useClass: PostgreTransactionService,
     },
   ],
   exports: [

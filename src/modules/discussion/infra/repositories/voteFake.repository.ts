@@ -6,7 +6,7 @@ import { Vote } from '@modules/discussion/domain/entities/vote/vote.entity';
 import { randomUUID } from 'crypto';
 
 export class VoteFakeRepository implements VoteRepository {
-  constructor(private votes: Vote[]) {}
+  constructor(private votes: Vote[] = []) {}
 
   async save(vote: Vote): Promise<string> {
     if (vote.props.id) {

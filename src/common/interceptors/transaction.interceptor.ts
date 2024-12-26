@@ -27,30 +27,18 @@ export class TransactionInterceptor implements NestInterceptor {
        */
       return next.handle().pipe(
         tap(async (result: Either<any, any> | any) => {
-          const hasTransaction = !!this.transactionService.getTransaction();
-
-          if (!hasTransaction) return result;
-
           await this.transactionService.commitTransaction();
 
           return result;
         }),
         catchError(async (error) => {
-          const hasTransaction = !!this.transactionService.getTransaction();
-
-          if (hasTransaction) {
-            await this.transactionService.abortTransaction();
-          }
+          await this.transactionService.abortTransaction();
 
           throw error;
         }),
       );
     } catch (error) {
-      const hasTransaction = !!this.transactionService.getTransaction();
-
-      if (hasTransaction) {
-        await this.transactionService.abortTransaction();
-      }
+      await this.transactionService.abortTransaction();
 
       throw error;
     }

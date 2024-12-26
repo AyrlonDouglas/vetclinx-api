@@ -32,7 +32,7 @@ export class VoteMongooseRepository implements VoteRepository {
       return 0;
     }
 
-    const session = this.context.get('session');
+    const session = this.context.session;
     const votesDeleteds = await this.voteModel.deleteMany(
       {
         voteForReferency: voteForReferencyList.map(
@@ -83,7 +83,7 @@ export class VoteMongooseRepository implements VoteRepository {
     const isValidId = Types.ObjectId.isValid(id);
     if (!isValidId) return 0;
 
-    const session = this.context.get('session');
+    const session = this.context.session;
     const voteRemoved = await this.voteModel.deleteOne(
       { _id: id },
       { session },
@@ -93,7 +93,7 @@ export class VoteMongooseRepository implements VoteRepository {
   }
 
   private async update(vote: Vote): Promise<string | null> {
-    const session = this.context.get('session');
+    const session = this.context.session;
 
     const updated = await this.voteModel.findByIdAndUpdate(
       vote.props.id,
@@ -105,7 +105,7 @@ export class VoteMongooseRepository implements VoteRepository {
   }
 
   private async create(vote: Vote): Promise<string> {
-    const session = this.context.get('session');
+    const session = this.context.session;
 
     const [voteCreated] = await this.voteModel.create(
       [this.voteMapper.toPersistense(vote)],

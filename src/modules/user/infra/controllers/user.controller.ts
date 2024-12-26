@@ -3,7 +3,6 @@ import UserUseCases from '@modules/user/application/useCases/user.useCases';
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { UserMapper } from '../mapper/user.mapper';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
-import User from '@modules/user/domain/entities/user.entity';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiBearerAuth()
@@ -34,7 +33,7 @@ export class UserController {
 
   @Get('/me')
   async findOneByMe() {
-    const user = this.context.get('currentUser') as User;
+    const user = this.context.currentUser;
 
     const result = await this.userUseCases.getUserById.perform({
       id: user.props.id,

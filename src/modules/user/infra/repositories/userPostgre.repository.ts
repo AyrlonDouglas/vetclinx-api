@@ -1,21 +1,20 @@
 import BaseError from '@common/errors/baseError.error';
 import { HttpStatusCode } from '@common/http/httpStatusCode';
 import { User as UserPostgre } from '@modules/database/infra/posgreSQL/entities/user.db.entity';
+import { TransactionService } from '@modules/shared/domain/transaction.service';
 import { UserRepository } from '@modules/user/application/repositories/user.repository';
 import User from '@modules/user/domain/entities/user.entity';
 import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
 import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { EntityManager } from 'typeorm';
 
+@Injectable()
 export class UserPostgreRepository implements UserRepository {
-  constructor(
-    @InjectRepository(UserPostgre)
-    private userRepository: Repository<UserPostgre>,
-  ) {}
+  constructor(private readonly transactionService: TransactionService) {}
 
   async findById(id: string): Promise<User | null> {
-    const user = await this.userRepository.findOneBy({ id: +id });
+    const user = await this.getRepository().findOneBy({ id: +id });
 
     if (!user) return null;
 
@@ -23,7 +22,7 @@ export class UserPostgreRepository implements UserRepository {
   }
 
   async findByUsername(username: string): Promise<User | null> {
-    const user = await this.userRepository.findOneBy({ username });
+    const user = await this.getRepository().findOneBy({ username });
 
     if (!user) return null;
 
@@ -31,7 +30,7 @@ export class UserPostgreRepository implements UserRepository {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    const user = await this.userRepository.findOneBy({ email });
+    const user = await this.getRepository().findOneBy({ email });
 
     if (!user) return null;
 
@@ -40,16 +39,16 @@ export class UserPostgreRepository implements UserRepository {
 
   async save(user: User): Promise<string> {
     const userToSave = this.toEntityPostgre(user);
-
-    await userToSave.save();
+    const repository = this.getRepository();
+    await repository.save(userToSave);
 
     return userToSave.id.toString();
   }
 
   async removeById(id: string): Promise<string | null> {
-    const userDeleted = await this.userRepository.delete({ id: +id });
+    const deleteResult = await this.getRepository().delete({ id: +id });
 
-    if (!userDeleted.affected) return null;
+    if (!deleteResult.affected) return null;
 
     return id;
   }
@@ -58,7 +57,7 @@ export class UserPostgreRepository implements UserRepository {
     throw new Error('Method not implemented.');
   }
 
-  toDomain(userPostgre: UserPostgre): User {
+  private toDomain(userPostgre: UserPostgre): User {
     const emailOrFail = Email.create(userPostgre.email);
     if (emailOrFail.isLeft()) {
       throw new BaseError(['Some Error to map email'], HttpStatusCode.CONFLICT);
@@ -96,7 +95,7 @@ export class UserPostgreRepository implements UserRepository {
     return user.value;
   }
 
-  toEntityPostgre(user: User): UserPostgre {
+  private toEntityPostgre(user: User): UserPostgre {
     const userPlained = user.toPlain();
 
     const userToSave = new UserPostgre();
@@ -115,5 +114,14 @@ export class UserPostgreRepository implements UserRepository {
     userToSave.username = userPlained.username;
 
     return userToSave;
+  }
+
+  getRepository() {
+    const entityManager =
+      this.transactionService.getEntityManager() as EntityManager;
+
+    return entityManager.withRepository(
+      entityManager.getRepository(UserPostgre),
+    );
   }
 }

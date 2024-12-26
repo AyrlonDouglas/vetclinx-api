@@ -6,7 +6,6 @@ import { Either, left, right } from '@common/core/either';
 import AddCommentErrors from './addComment.errors';
 import { Comment } from '@modules/discussion/domain/entities/comment/comment.entity';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
-import User from '@modules/user/domain/entities/user.entity';
 import { CommentRepository } from '../../repositories/comment.repository';
 // import { TransactionService } from '@modules/shared/domain/transaction.service';
 
@@ -26,7 +25,7 @@ export class AddCommentUseCase implements UseCase<AddCommentDTO, Output> {
 
   async perform(input?: AddCommentDTO): Promise<Output> {
     // await this.transactionService.startTransaction();
-    const author = this.contextStorageService.get('currentUser') as User;
+    const author = this.contextStorageService.currentUser;
 
     const inputOrFail = Inspetor.againstFalsyBulk([
       { argument: author, argumentName: 'author' },

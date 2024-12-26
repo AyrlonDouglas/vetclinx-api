@@ -18,11 +18,8 @@ import { RemoveComment } from '../application/useCases/removeComment/removeComme
 import { RemoveDiscussion } from '../application/useCases/removeDiscussion/removeDiscussion.useCase';
 import { VoteOnDiscussion } from '../application/useCases/voteOnDiscussion/voteOnDiscussion.useCase';
 import { VoteRepository } from '../application/repositories/vote.repository';
-// import { VoteMongooseRepository } from './repositories/voteMongoose.repository';
 import { VoteOnComment } from '../application/useCases/voteOnComment/voteOnComment.useCase';
 import { TransactionService } from '@modules/shared/domain/transaction.service';
-import { DiscussionFakeRepository } from './repositories/discussionFakeRepository';
-import { CommentFakeRepository } from './repositories/commentFake.repository';
 import { VoteFakeRepository } from './repositories/voteFake.repository';
 
 @Module({
@@ -30,16 +27,6 @@ import { VoteFakeRepository } from './repositories/voteFake.repository';
   imports: [SharedModule, DatabaseModule],
   providers: [
     DiscussionMapper,
-    // DiscussionMongooseRepository,
-    {
-      provide: DiscussionRepository,
-      useClass: DiscussionFakeRepository, //TODO: implementar não fake
-    },
-    // CommentMongooseRepository,
-    {
-      provide: CommentRepository,
-      useClass: CommentFakeRepository, //TODO: implementar não fake
-    },
     {
       provide: UpdateDiscussionUseCase,
       inject: [ContextStorageService, DiscussionRepository],
