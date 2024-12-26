@@ -4,6 +4,7 @@ import { left, right } from '@common/core/either';
 import SignInUseCase from '@modules/auth/application/useCases/signIn/signIn.useCase';
 import SignInError from '@modules/auth/application/useCases/signIn/signIn.errors';
 import AuthTestSetup from '@modulesTest/auth/test/AuthTest.setup';
+import User from '@modules/user/domain/entities/user.entity';
 
 describe('SignInUseCase', () => {
   const makeSut = async () => {
@@ -92,7 +93,10 @@ describe('SignInUseCase', () => {
     });
 
     expect(result).toBeDefined();
-    expect(result.isRight()).toEqual(true);
-    expect(result.value).toBeInstanceOf(Token);
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value.token).toBeInstanceOf(Token);
+      expect(result.value.user).toBeInstanceOf(User);
+    }
   });
 });

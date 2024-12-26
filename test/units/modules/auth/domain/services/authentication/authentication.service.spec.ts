@@ -6,6 +6,7 @@ import Credential from '@modules/auth/domain/valueObjects/credential/credential.
 import AuthenticationErrors from '@modules/auth/domain/services/authentication/authentication.errors';
 import Token from '@modules/auth/domain/valueObjects/token/token.valueObject';
 import AuthTestSetup from '@modulesTest/auth/test/AuthTest.setup';
+import User from '@modules/user/domain/entities/user.entity';
 
 describe('AuthenticationService', () => {
   const makeSut = async () => {
@@ -75,10 +76,13 @@ describe('AuthenticationService', () => {
 
       expect(result).toBeDefined();
       expect(result.isRight()).toEqual(true);
-      expect(result.value).toBeInstanceOf(Token);
       if (result.isRight()) {
-        expect(result.value.props.expiresIn).toBeDefined();
-        expect(result.value.props.token).toBeDefined();
+        expect(result.value.token).toBeInstanceOf(Token);
+        expect(result.value.user).toBeInstanceOf(User);
+
+        expect(result.value.token.props.expiresIn).toBeDefined();
+        expect(result.value.token.props.token).toBeDefined();
+        expect(result.value.user.props.id).toBeDefined();
       }
     });
   });
