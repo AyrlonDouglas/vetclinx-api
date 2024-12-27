@@ -29,8 +29,9 @@ export class DiscussionVoteHandler extends BaseVoteHandler<DiscussionVote> {
     const vote = Vote.create({
       user: voteDB.userId.toString(),
       voteFor: VoteFor.discussion,
-      voteForReferency: voteDB.id.toString(),
+      voteForReferency: voteDB.discussionId.toString(),
       voteType: voteDB.voteType,
+      id: voteDB.id.toString(),
     });
 
     if (vote.isLeft()) {

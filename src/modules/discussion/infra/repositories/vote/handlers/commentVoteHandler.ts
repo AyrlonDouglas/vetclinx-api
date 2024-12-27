@@ -30,8 +30,9 @@ export class CommentVoteHandler extends BaseVoteHandler<CommentVote> {
     const vote = Vote.create({
       user: voteDB.userId.toString(),
       voteFor: VoteFor.comment,
-      voteForReferency: voteDB.id.toString(),
+      voteForReferency: voteDB.commentId.toString(),
       voteType: voteDB.voteType,
+      id: voteDB.id.toString(),
     });
 
     if (vote.isLeft()) {

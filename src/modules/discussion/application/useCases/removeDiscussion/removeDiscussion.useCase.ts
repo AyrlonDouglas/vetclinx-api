@@ -54,17 +54,16 @@ export class RemoveDiscussion
 
     await this.transactionService.startTransaction();
 
-    const discussionDeleted = await this.discussionRepository.deleteById(
-      discussion.props.id,
-    );
-
     const comments = await this.commentRepository.findByFilter({
       discussionId: discussion.props.id,
     });
 
-    const commentsDeleteds = await this.commentRepository.deleteByDiscussionId(
-      discussion.props.id,
-    );
+    const commentVotesDeleteds = comments.length
+      ? await this.voteRepository.deleteByVoteForReferency(
+          comments.map((comment) => comment.props.id),
+          VoteFor.comment,
+        )
+      : 0;
 
     const discussionVotesDeleteds =
       await this.voteRepository.deleteByVoteForReferency(
@@ -72,11 +71,13 @@ export class RemoveDiscussion
         VoteFor.discussion,
       );
 
-    const commentVotesDeleteds =
-      await this.voteRepository.deleteByVoteForReferency(
-        comments.map((comment) => comment.props.id),
-        VoteFor.comment,
-      );
+    const commentsDeleteds = await this.commentRepository.deleteByDiscussionId(
+      discussion.props.id,
+    );
+
+    const discussionDeleted = await this.discussionRepository.deleteById(
+      discussion.props.id,
+    );
 
     return right({
       deleted: !!discussionDeleted,

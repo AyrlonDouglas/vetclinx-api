@@ -36,7 +36,9 @@ export abstract class BaseVoteHandler<T> {
     const repository = this.getRepository(entityManager);
     const entity = await repository.findOneBy({
       userId: filter.user ? +filter.user : undefined,
-      id: filter.voteForReferency ? +filter.voteForReferency : undefined,
+      discussionId: filter.voteForReferency
+        ? +filter.voteForReferency
+        : undefined,
     } as any);
 
     return entity;
