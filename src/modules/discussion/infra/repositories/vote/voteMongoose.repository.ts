@@ -4,11 +4,11 @@ import {
 } from '@modules/discussion/application/repositories/vote.repository';
 import { Vote } from '@modules/discussion/domain/entities/vote/vote.entity';
 import { Injectable } from '@nestjs/common';
-import { VoteModel } from '../schemas/vote.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model, Types } from 'mongoose';
-import { VoteMapper } from '../mapper/vote.mapper';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
+import { VoteMapper } from '../../mapper/vote.mapper';
+import { VoteModel } from '../../schemas/vote.schema';
 
 @Injectable()
 export class VoteMongooseRepository implements VoteRepository {

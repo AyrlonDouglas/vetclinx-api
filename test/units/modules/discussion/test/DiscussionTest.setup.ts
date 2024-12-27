@@ -21,7 +21,7 @@ import { AsyncLocalStorage } from 'async_hooks';
 import { randomUUID } from 'crypto';
 import { RemoveComment } from '@modules/discussion/application/useCases/removeComment/removeComment.useCase';
 import { VoteRepository } from '@modules/discussion/application/repositories/vote.repository';
-import { VoteFakeRepository } from '@modules/discussion/infra/repositories/voteFake.repository';
+import { VoteFakeRepository } from '@modules/discussion/infra/repositories/vote/voteFake.repository';
 import { Comment } from '@modules/discussion/domain/entities/comment/comment.entity';
 import { Vote } from '@modules/discussion/domain/entities/vote/vote.entity';
 import {

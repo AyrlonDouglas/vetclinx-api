@@ -74,13 +74,16 @@ export class VoteOnDiscussion
     if (existingVote) {
       if (existingVote.props.voteType === input.voteType) {
         discussion.removeVote(existingVote);
-        await this.voteRepository.deleteById(existingVote.props.id);
+        await this.voteRepository.deleteById(
+          existingVote.props.id,
+          VoteFor.discussion,
+        );
       } else {
         const from = existingVote.props.voteType;
         const to = from === VoteTypes.down ? VoteTypes.up : VoteTypes.down;
         discussion.exchangeVote(from, to);
         existingVote.setVoteType(to);
-        await this.voteRepository.save(existingVote);
+        await this.voteRepository.save(existingVote, VoteFor.discussion);
       }
     } else {
       const newVote = Vote.create({
@@ -93,7 +96,7 @@ export class VoteOnDiscussion
       if (newVote.isLeft()) {
         return left(newVote.value);
       } else {
-        await this.voteRepository.save(newVote.value);
+        await this.voteRepository.save(newVote.value, VoteFor.discussion);
       }
 
       if (input.voteType === VoteTypes.up) {

@@ -11,6 +11,7 @@ import { RemoveDiscussionErrors } from './removeDiscussion.errors';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
 import { VoteRepository } from '../../repositories/vote.repository';
 import { TransactionService } from '@modules/shared/domain/transaction.service';
+import { VoteFor } from '@modules/discussion/domain/component/voteManager.component';
 
 export class RemoveDiscussion
   implements UseCase<RemoveDiscussionInput, RemoveDiscussionOutput>
@@ -65,15 +66,22 @@ export class RemoveDiscussion
       discussion.props.id,
     );
 
-    const votesDeleteds = await this.voteRepository.deleteByVoteForReferency([
-      discussion.props.id,
-      ...comments.map((comment) => comment.props.id),
-    ]);
+    const discussionVotesDeleteds =
+      await this.voteRepository.deleteByVoteForReferency(
+        [discussion.props.id],
+        VoteFor.discussion,
+      );
+
+    const commentVotesDeleteds =
+      await this.voteRepository.deleteByVoteForReferency(
+        comments.map((comment) => comment.props.id),
+        VoteFor.comment,
+      );
 
     return right({
       deleted: !!discussionDeleted,
       commentDeletedCount: commentsDeleteds,
-      voteDeletedCount: votesDeleteds,
+      voteDeletedCount: discussionVotesDeleteds + commentVotesDeleteds,
     });
   }
 }

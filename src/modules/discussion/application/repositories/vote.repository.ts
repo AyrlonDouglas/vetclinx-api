@@ -1,17 +1,18 @@
 import { Vote } from '@modules/discussion/domain/entities/vote/vote.entity';
-import { VoteFor } from '@modules/discussion/domain/component/voteManager.component';
+import { VoteForType } from '@modules/discussion/domain/component/voteManager.component';
 
 export abstract class VoteRepository {
-  abstract save(vote: Vote): Promise<string>;
+  abstract save(vote: Vote, voteFor: VoteForType): Promise<string>;
   abstract findOneByFilter(filter: findOneByFilterInput): Promise<Vote>;
-  abstract deleteById(id: string): Promise<number>;
+  abstract deleteById(id: string, voteFor: VoteForType): Promise<number>;
   abstract deleteByVoteForReferency(
     voteForReferencyList: string[],
+    voteFor: VoteForType,
   ): Promise<number>;
 }
 
 export type findOneByFilterInput = {
   user?: string;
-  voteFor?: keyof typeof VoteFor;
+  voteFor: VoteForType;
   voteForReferency?: string;
 };

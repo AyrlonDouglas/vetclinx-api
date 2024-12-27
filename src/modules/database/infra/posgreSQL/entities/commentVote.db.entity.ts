@@ -21,5 +21,5 @@ export class CommentVote extends BaseEntity {
   comment: Comment;
 
   @Column({ enum: VoteTypes, type: 'enum' })
-  voteType: string;
+  voteType: keyof typeof VoteTypes;
 }

@@ -7,12 +7,10 @@ import { ContextStorageService } from '@modules/shared/domain/contextStorage.ser
 import { DiscussionRepository } from '../application/repositories/discussion.repository';
 import { SharedModule } from '@modules/shared/infra/shared.module';
 import { GetDiscussionByIdUseCase } from '../application/useCases/getDiscussionById/getDiscussionById.useCase';
-// import { DiscussionMongooseRepository } from './repositories/discussionMongoose.repository';
 import { AddCommentUseCase } from '../application/useCases/addComment/addComment.useCase';
 import { DatabaseModule } from '@modules/database/infra/database.module';
 import { DiscussionMapper } from './mapper/discussion.mapper';
 import { CommentRepository } from '../application/repositories/comment.repository';
-// import { CommentMongooseRepository } from './repositories/commentMongoose.repository';
 import { UpdateComment } from '../application/useCases/updateComment/updateComment.useCase';
 import { RemoveComment } from '../application/useCases/removeComment/removeComment.useCase';
 import { RemoveDiscussion } from '../application/useCases/removeDiscussion/removeDiscussion.useCase';
@@ -20,7 +18,6 @@ import { VoteOnDiscussion } from '../application/useCases/voteOnDiscussion/voteO
 import { VoteRepository } from '../application/repositories/vote.repository';
 import { VoteOnComment } from '../application/useCases/voteOnComment/voteOnComment.useCase';
 import { TransactionService } from '@modules/shared/domain/transaction.service';
-import { VoteFakeRepository } from './repositories/voteFake.repository';
 
 @Module({
   controllers: [DiscussionController],
@@ -119,8 +116,6 @@ import { VoteFakeRepository } from './repositories/voteFake.repository';
         TransactionService,
       ],
     },
-    // VoteMongooseRepository,
-    { provide: VoteRepository, useClass: VoteFakeRepository }, //TODO: implementar não fake
     {
       provide: VoteOnDiscussion,
       inject: [

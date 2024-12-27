@@ -113,3 +113,5 @@ export const VoteFor = {
   discussion: 'discussion',
   comment: 'comment',
 } as const;
+
+export type VoteForType = keyof typeof VoteFor;

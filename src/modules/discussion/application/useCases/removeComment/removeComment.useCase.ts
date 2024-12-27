@@ -8,6 +8,7 @@ import { RemoveCommentErrors } from './removeComment.errors';
 import { DiscussionRepository } from '../../repositories/discussion.repository';
 import { VoteRepository } from '../../repositories/vote.repository';
 import { TransactionService } from '@modules/shared/domain/transaction.service';
+import { VoteFor } from '@modules/discussion/domain/component/voteManager.component';
 
 export class RemoveComment
   implements UseCase<RemoveCommentInput, RemoveCommentOutput>
@@ -76,6 +77,7 @@ export class RemoveComment
 
     const voteDeletedCount = await this.voteRepository.deleteByVoteForReferency(
       [comment.props.id],
+      VoteFor.comment,
     );
 
     return right({

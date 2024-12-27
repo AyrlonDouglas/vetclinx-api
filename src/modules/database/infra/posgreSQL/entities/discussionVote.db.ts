@@ -13,9 +13,13 @@ export class DiscussionVote extends BaseEntity {
   @JoinColumn()
   user: User;
 
+  @Column()
+  discussionId: number;
+
   @ManyToOne(() => Discussion, (discussion) => discussion.votes)
+  @JoinColumn()
   discussion: Discussion;
 
   @Column({ enum: VoteTypes, type: 'enum' })
-  voteType: string;
+  voteType: keyof typeof VoteTypes;
 }

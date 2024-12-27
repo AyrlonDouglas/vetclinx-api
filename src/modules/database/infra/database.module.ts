@@ -6,15 +6,12 @@ import { DiscussionRepository } from '@modules/discussion/application/repositori
 import { DiscussionPostgreRepository } from '@modules/discussion/infra/repositories/discussion/discussionPostgre.repository';
 import { CommentRepository } from '@modules/discussion/application/repositories/comment.repository';
 import { CommentPostgreRepository } from '@modules/discussion/infra/repositories/comment/commentPostgre.repository';
+import { VoteRepository } from '@modules/discussion/application/repositories/vote.repository';
+import { VotePostgreRepository } from '@modules/discussion/infra/repositories/vote/votePostgre.repository';
 
 @Module({
   imports: [...postgreSQLModule],
-  exports: [
-    ...postgreSQLModule,
-    UserRepository,
-    DiscussionRepository,
-    CommentRepository,
-  ],
+
   providers: [
     { provide: UserRepository, useClass: UserPostgreRepository },
     {
@@ -25,6 +22,14 @@ import { CommentPostgreRepository } from '@modules/discussion/infra/repositories
       provide: CommentRepository,
       useClass: CommentPostgreRepository,
     },
+    { provide: VoteRepository, useClass: VotePostgreRepository },
+  ],
+  exports: [
+    ...postgreSQLModule,
+    UserRepository,
+    DiscussionRepository,
+    CommentRepository,
+    VoteRepository,
   ],
 })
 export class DatabaseModule {}

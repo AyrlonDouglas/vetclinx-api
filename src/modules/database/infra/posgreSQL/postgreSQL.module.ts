@@ -33,9 +33,11 @@ export const postgreSQLModule = [
     },
     inject: [Config],
   }),
-  TypeOrmModule.forFeature([User]),
-  TypeOrmModule.forFeature([Discussion]),
-  TypeOrmModule.forFeature([DiscussionVote]),
-  TypeOrmModule.forFeature([Comment]),
-  TypeOrmModule.forFeature([CommentVote]),
+  TypeOrmModule.forFeature([
+    User,
+    Discussion,
+    DiscussionVote,
+    Comment,
+    CommentVote,
+  ]),
 ];
