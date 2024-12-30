@@ -1,11 +1,8 @@
 import { left } from '@common/core/either';
 import { InspetorError } from '@common/core/inspetor';
 import { VoteOnCommentError } from '@modules/discussion/application/useCases/voteOnComment/voteOnComment.errors';
-import {
-  VoteFor,
-  VoteTypes,
-} from '@modules/discussion/domain/component/voteManager.component';
-import { Vote } from '@modules/discussion/domain/entities/vote/vote.entity';
+import { VoteTypes } from '@modules/discussion/domain/component/voteManager.component';
+import { CommentVote } from '@modules/discussion/domain/entities/vote/commentVote.entity';
 import { DiscussionTestSetup } from '@modulesTest/discussion/test/DiscussionTest.setup';
 
 describe('VoteOnComment', () => {
@@ -16,12 +13,12 @@ describe('VoteOnComment', () => {
       userMock,
       userMock2,
       commentMock,
-      voteRepository,
+      commentVoteRepository,
     } = await new DiscussionTestSetup().prepare();
 
     jest
       .spyOn(contextStorageService, 'get')
-      .mockReturnValue({ props: { id: userMock2.props.id } });
+      .mockReturnValue({ props: { id: userMock2.props.id } } as any);
 
     return {
       sut: voteOnCommentUseCase,
@@ -29,7 +26,7 @@ describe('VoteOnComment', () => {
       userMock,
       userMock2,
       commentMock,
-      voteRepository,
+      commentVoteRepository,
     };
   };
 
@@ -68,7 +65,7 @@ describe('VoteOnComment', () => {
       await makeSut();
     jest
       .spyOn(contextStorageService, 'get')
-      .mockReturnValue({ props: { id: userMock.props.id } });
+      .mockReturnValue({ props: { id: userMock.props.id } } as any);
 
     const result = await sut.perform({
       commentId: commentMock.props.id,
@@ -82,7 +79,7 @@ describe('VoteOnComment', () => {
   });
 
   test('Should remove vote when vote already exists and voteType is equal input', async () => {
-    const { sut, commentMock, voteRepository } = await makeSut();
+    const { sut, commentMock, commentVoteRepository } = await makeSut();
 
     const result = await sut.perform({
       commentId: commentMock.props.id,
@@ -94,15 +91,14 @@ describe('VoteOnComment', () => {
     expect(commentMock.props.upvotes).toBe(0);
     expect(commentMock.props.downvotes).toBe(0);
     expect(
-      await voteRepository.findOneByFilter({
-        voteFor: VoteFor.comment,
-        voteForReferency: commentMock.props.id,
+      await commentVoteRepository.findOneByFilter({
+        commentId: commentMock.props.id,
       }),
     ).toBe(undefined);
   });
 
   test('Should exchange vote when vote already exists and voteType is difference input', async () => {
-    const { sut, commentMock, voteRepository } = await makeSut();
+    const { sut, commentMock, commentVoteRepository } = await makeSut();
 
     const result = await sut.perform({
       commentId: commentMock.props.id,
@@ -114,20 +110,19 @@ describe('VoteOnComment', () => {
     expect(commentMock.props.upvotes).toBe(0);
     expect(result.value).toEqual({ id: commentMock.props.id });
     expect(
-      await voteRepository.findOneByFilter({
-        voteFor: VoteFor.comment,
-        voteForReferency: commentMock.props.id,
+      await commentVoteRepository.findOneByFilter({
+        commentId: commentMock.props.id,
       }),
     ).toBeDefined();
   });
 
   test('Should return left when crete vote fails', async () => {
-    const { sut, commentMock, voteRepository } = await makeSut();
+    const { sut, commentMock, commentVoteRepository } = await makeSut();
     jest
-      .spyOn(voteRepository, 'findOneByFilter')
+      .spyOn(commentVoteRepository, 'findOneByFilter')
       .mockReturnValueOnce(undefined);
     jest
-      .spyOn(Vote, 'create')
+      .spyOn(CommentVote, 'create')
       .mockReturnValueOnce(left(new InspetorError('some error')));
 
     const result = await sut.perform({
@@ -140,8 +135,10 @@ describe('VoteOnComment', () => {
   });
 
   test('Should create upvote when vote not exists', async () => {
-    const { sut, commentMock, voteRepository } = await makeSut();
-    jest.spyOn(voteRepository, 'findOneByFilter').mockReturnValue(undefined);
+    const { sut, commentMock, commentVoteRepository } = await makeSut();
+    jest
+      .spyOn(commentVoteRepository, 'findOneByFilter')
+      .mockReturnValue(undefined);
 
     const result = await sut.perform({
       commentId: commentMock.props.id,
@@ -155,8 +152,10 @@ describe('VoteOnComment', () => {
   });
 
   test('Should create downvote when vote not exists', async () => {
-    const { sut, commentMock, voteRepository } = await makeSut();
-    jest.spyOn(voteRepository, 'findOneByFilter').mockReturnValue(undefined);
+    const { sut, commentMock, commentVoteRepository } = await makeSut();
+    jest
+      .spyOn(commentVoteRepository, 'findOneByFilter')
+      .mockReturnValue(undefined);
 
     const result = await sut.perform({
       commentId: commentMock.props.id,

@@ -1,5 +1,4 @@
 import {
-  VoteFor,
   voteGradeScale,
   VoteTypes,
 } from '@modules/discussion/domain/component/voteManager.component';
@@ -11,7 +10,7 @@ import {
   Discussion,
   DiscussionCreateInput,
 } from '@modules/discussion/domain/entities/discussion/discussion.entity';
-import { Vote } from '@modules/discussion/domain/entities/vote/vote.entity';
+import { DiscussionVote } from '@modules/discussion/domain/entities/vote/discussionVote.entity';
 
 describe('Discussion', () => {
   const makeSut = () => {
@@ -38,18 +37,16 @@ describe('Discussion', () => {
       throw new Error('commentMock fail');
     }
 
-    const discussionUpVote = Vote.create({
-      user: '123',
-      voteFor: VoteFor.discussion,
-      voteForReferency: discussionMock.value.props.id,
+    const discussionUpVote = DiscussionVote.create({
+      authorId: '123',
+      discussionId: discussionMock.value.props.id,
       voteType: VoteTypes.up,
-    }).value as Vote;
-    const discussionDownVote = Vote.create({
-      user: '123',
-      voteFor: VoteFor.discussion,
-      voteForReferency: discussionMock.value.props.id,
+    }).value as DiscussionVote;
+    const discussionDownVote = DiscussionVote.create({
+      authorId: '123',
+      discussionId: discussionMock.value.props.id,
       voteType: VoteTypes.down,
-    }).value as Vote;
+    }).value as DiscussionVote;
 
     const sut = Discussion;
 

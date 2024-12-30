@@ -9,30 +9,28 @@ import { DiscussionFakeRepository } from '@modules/discussion/infra/repositories
 import { CommentFakeRepository } from '@modules/discussion/infra/repositories/comment/commentFake.repository';
 import {
   Context,
-  ContextKeysProps,
   ContextStorageService,
 } from '@modules/shared/domain/contextStorage.service';
 import { TransactionService } from '@modules/shared/domain/transaction.service';
 import { FakeTransactionService } from '@modules/shared/infra/transaction/fakeTransaction.service';
-// import { MongooseTransactionService } from '@modules/shared/infra/transaction/mongooseTransaction.service';
 import User from '@modules/user/domain/entities/user.entity';
 import { UserTestSetup } from '@modulesTest/user/test/userTest.setup';
 import { AsyncLocalStorage } from 'async_hooks';
 import { randomUUID } from 'crypto';
 import { RemoveComment } from '@modules/discussion/application/useCases/removeComment/removeComment.useCase';
-import { VoteRepository } from '@modules/discussion/application/repositories/vote.repository';
-import { VoteFakeRepository } from '@modules/discussion/infra/repositories/vote/voteFake.repository';
 import { Comment } from '@modules/discussion/domain/entities/comment/comment.entity';
-import { Vote } from '@modules/discussion/domain/entities/vote/vote.entity';
-import {
-  VoteFor,
-  VoteTypes,
-} from '@modules/discussion/domain/component/voteManager.component';
+import { VoteTypes } from '@modules/discussion/domain/component/voteManager.component';
 import { UpdateComment } from '@modules/discussion/application/useCases/updateComment/updateComment.useCase';
 import { RemoveDiscussion } from '@modules/discussion/application/useCases/removeDiscussion/removeDiscussion.useCase';
 import { VoteOnComment } from '@modules/discussion/application/useCases/voteOnComment/voteOnComment.useCase';
 import { VoteOnDiscussion } from '@modules/discussion/application/useCases/voteOnDiscussion/voteOnDiscussion.useCase';
 import { DiscussionUseCases } from '@modules/discussion/application/useCases/discussion.useCases';
+import { CommentVoteRepository } from '@modules/discussion/application/repositories/commentVote.repository';
+import { DiscussionVoteRepository } from '@modules/discussion/application/repositories/discussionVote.repository';
+import { CommentVote } from '@modules/discussion/domain/entities/vote/commentVote.entity';
+import { DiscussionVote } from '@modules/discussion/domain/entities/vote/discussionVote.entity';
+import { CommentVoteFakeRepository } from '@modules/discussion/infra/repositories/commentVote/commentVoteFake.repository';
+import { DiscussionVoteFakeRepository } from '@modules/discussion/infra/repositories/discussionVote/discussionVoteFake.repository';
 
 export class DiscussionTestSetup {
   asyncLocalStorage: AsyncLocalStorage<Context>;
@@ -48,7 +46,8 @@ export class DiscussionTestSetup {
   getDiscussionByIdUseCase: GetDiscussionByIdUseCase;
   addCommentUseCase: AddCommentUseCase;
   removeCommentUseCase: RemoveComment;
-  voteRepository: VoteRepository;
+  commentVoteRepository: CommentVoteRepository;
+  discussionVoteRepository: DiscussionVoteRepository;
   commentMock: Comment;
   commentWithParentCommentMock: Comment;
   updateCommentUseCase: UpdateComment;
@@ -64,10 +63,7 @@ export class DiscussionTestSetup {
     this.userMock = userMock;
     this.userMock2 = userMock2;
 
-    const store = new Map<
-      keyof ContextKeysProps,
-      ContextKeysProps[keyof ContextKeysProps]
-    >();
+    const store = new Context();
 
     store.set('currentUser', userMock);
 
@@ -115,23 +111,27 @@ export class DiscussionTestSetup {
     this.commentMock = commentMock.value;
     this.commentWithParentCommentMock = commentWithParentCommentMock.value;
 
-    const voteMock = Vote.create({
-      user: userMock2.props.id,
-      voteFor: VoteFor.comment,
-      voteForReferency: commentMock.value.props.id,
+    const commentVoteMock = CommentVote.create({
+      authorId: userMock2.props.id,
+      commentId: commentMock.value.props.id,
       voteType: VoteTypes.up,
       id: '123',
-    }).value as Vote;
+    }).value as CommentVote;
 
-    const voteMock2 = Vote.create({
-      user: userMock2.props.id,
-      voteFor: VoteFor.discussion,
-      voteForReferency: discusssionMock.value.props.id,
+    const discussionVoteMock = DiscussionVote.create({
+      authorId: userMock2.props.id,
+      discussionId: discusssionMock.value.props.id,
       voteType: VoteTypes.up,
       id: '123',
-    }).value as Vote;
+    }).value as DiscussionVote;
 
-    this.voteRepository = new VoteFakeRepository([voteMock, voteMock2]);
+    this.commentVoteRepository = new CommentVoteFakeRepository([
+      commentVoteMock,
+    ]);
+
+    this.discussionVoteRepository = new DiscussionVoteFakeRepository([
+      discussionVoteMock,
+    ]);
 
     this.commentRepository = new CommentFakeRepository([
       this.commentMock,
@@ -163,13 +163,14 @@ export class DiscussionTestSetup {
       this.discussionRepository,
       this.contextStorageService,
       this.commentRepository,
+      this.transactionService,
     );
 
     this.removeCommentUseCase = new RemoveComment(
       this.commentRepository,
       this.contextStorageService,
       this.discussionRepository,
-      this.voteRepository,
+      this.commentVoteRepository,
       this.transactionService,
     );
 
@@ -182,13 +183,14 @@ export class DiscussionTestSetup {
       this.discussionRepository,
       this.commentRepository,
       this.contextStorageService,
-      this.voteRepository,
       this.transactionService,
+      this.commentVoteRepository,
+      this.discussionVoteRepository,
     );
 
     this.voteOnCommentUseCase = new VoteOnComment(
       this.commentRepository,
-      this.voteRepository,
+      this.commentVoteRepository,
       this.contextStorageService,
       this.transactionService,
     );
@@ -196,7 +198,7 @@ export class DiscussionTestSetup {
     this.voteOnDiscussionUseCase = new VoteOnDiscussion(
       this.discussionRepository,
       this.contextStorageService,
-      this.voteRepository,
+      this.discussionVoteRepository,
       this.transactionService,
     );
 

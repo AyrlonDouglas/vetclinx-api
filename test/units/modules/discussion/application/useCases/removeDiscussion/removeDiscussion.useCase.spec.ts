@@ -7,9 +7,9 @@ describe('RemoveDiscussion', () => {
     const { removeDiscussionUseCase, discusssionMock, contextStorageService } =
       await new DiscussionTestSetup().prepare();
 
-    jest
-      .spyOn(contextStorageService, 'get')
-      .mockReturnValue({ props: { id: discusssionMock.props.authorId } });
+    jest.spyOn(contextStorageService, 'get').mockReturnValue({
+      props: { id: discusssionMock.props.authorId },
+    } as any);
 
     return {
       sut: removeDiscussionUseCase,
@@ -42,7 +42,7 @@ describe('RemoveDiscussion', () => {
     const { sut, discusssionMock, contextStorageService } = await makeSut();
     jest
       .spyOn(contextStorageService, 'get')
-      .mockReturnValue({ props: '1212121212' });
+      .mockReturnValue({ props: '1212121212' } as any);
 
     const result = await sut.perform({
       discussionId: discusssionMock.props.id,
@@ -56,7 +56,6 @@ describe('RemoveDiscussion', () => {
 
   test('Should return right when remove discussion is successful', async () => {
     const { sut, discusssionMock } = await makeSut();
-
     const result = await sut.perform({
       discussionId: discusssionMock.props.id,
     });
@@ -66,7 +65,8 @@ describe('RemoveDiscussion', () => {
       expect(result.value).toEqual({
         deleted: true,
         commentDeletedCount: 2,
-        voteDeletedCount: 2,
+        commentVotesDeleteds: 1,
+        discussionVotesDeleteds: 0,
       });
     }
   });

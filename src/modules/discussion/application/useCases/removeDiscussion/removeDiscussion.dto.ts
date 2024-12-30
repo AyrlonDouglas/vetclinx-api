@@ -10,5 +10,8 @@ export type RemoveDiscussionOutput = Either<
   | InstanceType<(typeof RemoveDiscussionErrors)['OnlyCreatorCanDeleteError']>,
   {
     deleted: boolean;
+    commentDeletedCount: number;
+    discussionVotesDeleteds: number;
+    commentVotesDeleteds: number;
   }
 >;

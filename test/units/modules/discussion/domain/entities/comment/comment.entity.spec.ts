@@ -7,7 +7,7 @@ import {
   Comment,
   CommentCreateInput,
 } from '@modules/discussion/domain/entities/comment/comment.entity';
-import { Vote } from '@modules/discussion/domain/entities/vote/vote.entity';
+import { CommentVote } from '@modules/discussion/domain/entities/vote/commentVote.entity';
 
 describe('Comment', () => {
   const makeSut = () => {
@@ -31,25 +31,23 @@ describe('Comment', () => {
       throw new Error('commentMock fail');
     }
 
-    const commentUpVote = Vote.create({
-      user: '123',
-      voteFor: 'comment',
-      voteForReferency: commentMock.value.props.id,
+    const commentUpVote = CommentVote.create({
+      authorId: '123',
+      commentId: commentMock.value.props.id,
       voteType: VoteTypes.up,
       createdAt: new Date(),
       id: '123',
       updatedAt: new Date(),
-    }).value as Vote;
+    }).value as CommentVote;
 
-    const commentDownVote = Vote.create({
-      user: '123',
-      voteFor: 'comment',
-      voteForReferency: commentMock.value.props.id,
+    const commentDownVote = CommentVote.create({
+      authorId: '123',
+      commentId: commentMock.value.props.id,
       voteType: VoteTypes.down,
       createdAt: new Date(),
       id: '123',
       updatedAt: new Date(),
-    }).value as Vote;
+    }).value as CommentVote;
 
     return {
       sut,

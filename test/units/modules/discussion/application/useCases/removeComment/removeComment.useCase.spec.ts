@@ -50,7 +50,7 @@ describe('RemoveComment', () => {
     const { sut, commentMock, contextStorageService } = await makeSut();
     jest
       .spyOn(contextStorageService, 'get')
-      .mockReturnValueOnce({ props: { id: '8987879' } });
+      .mockReturnValueOnce({ props: { id: '8987879' } } as any);
 
     const result = await sut.perform({ commentId: commentMock.props.id });
 

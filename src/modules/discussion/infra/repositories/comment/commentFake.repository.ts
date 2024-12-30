@@ -40,9 +40,15 @@ export class CommentFakeRepository implements CommentRepository {
     return found.length ? found : null;
   }
 
-  async deleteById(id: string): Promise<number> {
+  async deleteById(id: string | string[]): Promise<number> {
     const lengthOld = this.commentList.length;
-    this.commentList = this.commentList.filter((el) => el.props.id !== id);
+    this.commentList = this.commentList.filter((el) => {
+      if (Array.isArray(id)) {
+        return !id.some((id) => id === el.props.id);
+      }
+
+      return el.props.id !== id;
+    });
 
     const lengthNew = this.commentList.length;
 
