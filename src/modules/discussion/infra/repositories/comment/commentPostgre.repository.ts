@@ -4,7 +4,7 @@ import {
 } from '@modules/discussion/application/repositories/comment.repository';
 import { Comment } from '@modules/discussion/domain/entities/comment/comment.entity';
 import { TransactionService } from '@modules/shared/domain/transaction.service';
-import { EntityManager } from 'typeorm';
+import { EntityManager, In } from 'typeorm';
 import { Comment as CommentPostgre } from '@modules/database/infra/posgreSQL/entities/comment.db.entity';
 import BaseError from '@common/errors/baseError.error';
 import { HttpStatusCode } from '@common/http/httpStatusCode';
@@ -17,7 +17,6 @@ export class CommentPostgreRepository implements CommentRepository {
   async save(comment: Comment): Promise<string> {
     const repo = this.getRepository();
     const commentToSave = this.toEntityPostgre(comment);
-
     await repo.save(commentToSave);
 
     return commentToSave.id.toString();
@@ -30,11 +29,19 @@ export class CommentPostgreRepository implements CommentRepository {
     return commentFound ? this.toDomain(commentFound) : null;
   }
 
-  async deleteById(id: string): Promise<number> {
+  async deleteById(id: string | string[]): Promise<number> {
     const repo = this.getRepository();
+    const commentIds = [...(Array.isArray(id) ? id : [id])];
 
-    const deleteResult = await repo.delete({ id: +id });
-    return deleteResult.affected;
+    const deleteResultParents = await repo.delete({
+      parentCommentId: In(commentIds),
+    });
+
+    const deleteResult = await repo.delete({
+      id: In(commentIds),
+    });
+
+    return deleteResult.affected + deleteResultParents.affected;
   }
 
   async deleteByDiscussionId(discussionId: string): Promise<number> {
@@ -80,7 +87,7 @@ export class CommentPostgreRepository implements CommentRepository {
       content: commentPostgre.content,
       discussionId: commentPostgre.discussionId.toString(),
       commentCount: commentPostgre.commentCount,
-      id: commentPostgre.authorId.toString(),
+      id: commentPostgre.id.toString(),
       downvotes: commentPostgre.downvotes,
       parentCommentId: commentPostgre.parentCommentId?.toString(),
       upvotes: commentPostgre.upvotes,
@@ -104,12 +111,16 @@ export class CommentPostgreRepository implements CommentRepository {
     commentPostgre.commentCount = comment.props.commentCount;
     commentPostgre.content = comment.props.content;
     commentPostgre.discussionId = +comment.props.discussionId;
-    commentPostgre.parentCommentId = +comment.props.parentCommentId;
     commentPostgre.upvotes = comment.props.upvotes;
     commentPostgre.downvotes = comment.props.downvotes;
+
+    if (comment.props.parentCommentId) {
+      commentPostgre.parentCommentId = +comment.props.parentCommentId;
+    }
     if (comment.props.id) {
       commentPostgre.id = +comment.props.id;
     }
+
     return commentPostgre;
   }
 
@@ -118,7 +129,7 @@ export class CommentPostgreRepository implements CommentRepository {
       this.transactionService.getEntityManager() as EntityManager;
 
     return entityManager.withRepository(
-      entityManager.getRepository(CommentPostgre),
+      entityManager.getTreeRepository(CommentPostgre),
     );
   }
 }

@@ -54,10 +54,10 @@ export class User extends BaseEntity {
   @OneToMany(() => Comment, (comment) => comment.author)
   comments: Comment[];
 
-  @OneToMany(() => DiscussionVote, (discussionVote) => discussionVote.user)
+  @OneToMany(() => DiscussionVote, (discussionVote) => discussionVote.author)
   discussionVotes: DiscussionVote[];
 
-  @OneToMany(() => CommentVote, (commentVote) => commentVote.user)
+  @OneToMany(() => CommentVote, (commentVote) => commentVote.author)
   commentVotes: CommentVote[];
 
   @BeforeInsert()

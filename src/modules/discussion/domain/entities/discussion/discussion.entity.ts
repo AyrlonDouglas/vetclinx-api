@@ -1,7 +1,7 @@
 import { Either, left, right } from '@common/core/either';
 import Inspetor, { InspetorError } from '@common/core/inspetor';
 import { VoteManager, VoteTypes } from '../../component/voteManager.component';
-import { Vote } from '../vote/vote.entity';
+import { DiscussionVote } from '../vote/discussionVote.entity';
 
 export class Discussion {
   private voteManager: VoteManager;
@@ -84,7 +84,7 @@ export class Discussion {
     this.commentCount = Math.max(0, this.commentCount - 1);
   }
 
-  removeVote(vote: Vote) {
+  removeVote(vote: DiscussionVote) {
     this.voteManager.removeVote(vote.props.voteType);
   }
 

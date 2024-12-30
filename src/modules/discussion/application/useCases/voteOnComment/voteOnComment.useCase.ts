@@ -2,23 +2,20 @@ import { UseCase } from '@common/core/useCase';
 import { VoteOnCommentInput, VoteOnCommentOutput } from './voteOnComment.dto';
 import Inspetor from '@common/core/inspetor';
 import { left, right } from '@common/core/either';
-import {
-  VoteFor,
-  VoteTypes,
-} from '@modules/discussion/domain/component/voteManager.component';
+import { VoteTypes } from '@modules/discussion/domain/component/voteManager.component';
 import { CommentRepository } from '../../repositories/comment.repository';
-import { VoteRepository } from '../../repositories/vote.repository';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
 import { VoteOnCommentError } from './voteOnComment.errors';
-import { Vote } from '@modules/discussion/domain/entities/vote/vote.entity';
 import { TransactionService } from '@modules/shared/domain/transaction.service';
+import { CommentVoteRepository } from '../../repositories/commentVote.repository';
+import { CommentVote } from '@modules/discussion/domain/entities/vote/commentVote.entity';
 
 export class VoteOnComment
   implements UseCase<VoteOnCommentInput, VoteOnCommentOutput>
 {
   constructor(
     private readonly commentRepository: CommentRepository,
-    private readonly voteRepository: VoteRepository,
+    private readonly commentvoteRepository: CommentVoteRepository,
     private readonly context: ContextStorageService,
     private readonly transactionService: TransactionService,
   ) {}
@@ -55,10 +52,9 @@ export class VoteOnComment
       return left(new VoteOnCommentError.CreatorCannotVoteYourComment());
     }
 
-    const existingVote = await this.voteRepository.findOneByFilter({
-      user: currentUser.props.id,
-      voteFor: VoteFor.comment,
-      voteForReferency: comment.props.id,
+    const existingVote = await this.commentvoteRepository.findOneByFilter({
+      authorId: currentUser.props.id,
+      commentId: comment.props.id,
     });
 
     await this.transactionService.startTransaction();
@@ -66,29 +62,25 @@ export class VoteOnComment
     if (existingVote) {
       if (existingVote.props.voteType === input.voteType) {
         comment.removeVote(existingVote);
-        await this.voteRepository.deleteById(
-          existingVote.props.id,
-          VoteFor.comment,
-        );
+        await this.commentvoteRepository.deleteById(existingVote.props.id);
       } else {
         const from = existingVote.props.voteType;
         const to = from === VoteTypes.down ? VoteTypes.up : VoteTypes.down;
         comment.exchangeVote(from, to);
         existingVote.setVoteType(to);
-        await this.voteRepository.save(existingVote, VoteFor.comment);
+        await this.commentvoteRepository.save(existingVote);
       }
     } else {
-      const newVote = Vote.create({
-        user: currentUser.props.id,
-        voteFor: VoteFor.comment,
+      const newVote = CommentVote.create({
+        authorId: currentUser.props.id,
         voteType: input.voteType,
-        voteForReferency: comment.props.id,
+        commentId: comment.props.id,
       });
 
       if (newVote.isLeft()) {
         return left(newVote.value);
       } else {
-        await this.voteRepository.save(newVote.value, VoteFor.comment);
+        await this.commentvoteRepository.save(newVote.value);
       }
 
       if (input.voteType === VoteTypes.up) {

@@ -7,11 +7,11 @@ import { Comment } from './comment.db.entity';
 @Entity()
 export class CommentVote extends BaseEntity {
   @Column()
-  userId: number;
+  authorId: number;
 
   @ManyToOne(() => User, (user) => user.commentVotes)
   @JoinColumn()
-  user: User;
+  author: User;
 
   @Column()
   commentId: number;

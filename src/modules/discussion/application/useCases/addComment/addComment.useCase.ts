@@ -7,11 +7,14 @@ import AddCommentErrors from './addComment.errors';
 import { Comment } from '@modules/discussion/domain/entities/comment/comment.entity';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
 import { CommentRepository } from '../../repositories/comment.repository';
+import { TransactionService } from '@modules/shared/domain/transaction.service';
 // import { TransactionService } from '@modules/shared/domain/transaction.service';
 
 type Output = Either<
   | InspetorError
-  | InstanceType<(typeof AddCommentErrors)['DiscussionNotFoundError']>,
+  | InstanceType<(typeof AddCommentErrors)['DiscussionNotFoundError']>
+  | InstanceType<(typeof AddCommentErrors)['ParentCommentNotFoundError']>
+  | InstanceType<(typeof AddCommentErrors)['ParentCommetMustBeRootError']>,
   { id: string }
 >;
 
@@ -20,11 +23,10 @@ export class AddCommentUseCase implements UseCase<AddCommentDTO, Output> {
     private readonly discussionRepository: DiscussionRepository,
     private readonly contextStorageService: ContextStorageService,
     private readonly commentRepository: CommentRepository,
-    // private readonly transactionService: TransactionService,
+    private readonly transactionService: TransactionService,
   ) {}
 
   async perform(input?: AddCommentDTO): Promise<Output> {
-    // await this.transactionService.startTransaction();
     const author = this.contextStorageService.currentUser;
 
     const inputOrFail = Inspetor.againstFalsyBulk([
@@ -40,7 +42,6 @@ export class AddCommentUseCase implements UseCase<AddCommentDTO, Output> {
     const discussion = await this.discussionRepository.findById(
       input.discussionId,
     );
-
     if (!discussion) {
       return left(
         new AddCommentErrors.DiscussionNotFoundError(input.discussionId),
@@ -59,6 +60,16 @@ export class AddCommentUseCase implements UseCase<AddCommentDTO, Output> {
           ),
         );
       }
+
+      if (parentComment.props.parentCommentId) {
+        return left(new AddCommentErrors.ParentCommetMustBeRootError());
+      }
+
+      if (parentComment.props.discussionId !== input.discussionId) {
+        return left(
+          new AddCommentErrors.ParentCommentDoesNotBelongToTheDiscussionError(),
+        );
+      }
     }
 
     const commentOrFail = Comment.create({
@@ -73,6 +84,8 @@ export class AddCommentUseCase implements UseCase<AddCommentDTO, Output> {
     }
 
     const comment = commentOrFail.value;
+
+    await this.transactionService.startTransaction();
 
     const commentCreated = await this.commentRepository.save(comment);
 

@@ -6,9 +6,8 @@ import { CommentRepository } from '../../repositories/comment.repository';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
 import { RemoveCommentErrors } from './removeComment.errors';
 import { DiscussionRepository } from '../../repositories/discussion.repository';
-import { VoteRepository } from '../../repositories/vote.repository';
 import { TransactionService } from '@modules/shared/domain/transaction.service';
-import { VoteFor } from '@modules/discussion/domain/component/voteManager.component';
+import { CommentVoteRepository } from '../../repositories/commentVote.repository';
 
 export class RemoveComment
   implements UseCase<RemoveCommentInput, RemoveCommentOutput>
@@ -17,7 +16,7 @@ export class RemoveComment
     private readonly commentRepository: CommentRepository,
     private readonly context: ContextStorageService,
     private readonly discussionRepository: DiscussionRepository,
-    private readonly voteRepository: VoteRepository,
+    private readonly commentVoteRepository: CommentVoteRepository,
     private readonly transactionService: TransactionService,
   ) {}
 
@@ -46,11 +45,16 @@ export class RemoveComment
 
     await this.transactionService.startTransaction();
 
+    const childrenDeleteCount =
+      await this.commentRepository.deleteByParentCommentId(input.commentId);
+
+    const voteDeletedCount = await this.commentVoteRepository.deleteByCommentId(
+      [comment.props.id],
+    );
+
     const deleteCount = await this.commentRepository.deleteById(
       comment.props.id,
     );
-
-    let childrenDeleteCount = 0;
 
     if (deleteCount) {
       const discussion = await this.discussionRepository.findById(
@@ -69,16 +73,8 @@ export class RemoveComment
         await this.commentRepository.save(parentComment);
       }
 
-      childrenDeleteCount =
-        await this.commentRepository.deleteByParentCommentId(input.commentId);
-
       // TODO: precisa apagar os votos dos comentários filhos!!! adicionar a remoção em uma fila ?
     }
-
-    const voteDeletedCount = await this.voteRepository.deleteByVoteForReferency(
-      [comment.props.id],
-      VoteFor.comment,
-    );
 
     return right({
       deleted: !!deleteCount,

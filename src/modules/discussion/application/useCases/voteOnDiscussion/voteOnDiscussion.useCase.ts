@@ -7,14 +7,11 @@ import Inspetor from '@common/core/inspetor';
 import { left, right } from '@common/core/either';
 import { DiscussionRepository } from '../../repositories/discussion.repository';
 import { VoteOnDiscussionError } from './voteOnDiscussion.errors';
-import {
-  VoteFor,
-  VoteTypes,
-} from '@modules/discussion/domain/component/voteManager.component';
+import { VoteTypes } from '@modules/discussion/domain/component/voteManager.component';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
-import { VoteRepository } from '../../repositories/vote.repository';
-import { Vote } from '@modules/discussion/domain/entities/vote/vote.entity';
 import { TransactionService } from '@modules/shared/domain/transaction.service';
+import { DiscussionVoteRepository } from '../../repositories/discussionVote.repository';
+import { DiscussionVote } from '@modules/discussion/domain/entities/vote/discussionVote.entity';
 
 export class VoteOnDiscussion
   implements UseCase<VoteTheDiscussionInput, VoteTheDiscussionOutput>
@@ -22,7 +19,7 @@ export class VoteOnDiscussion
   constructor(
     private readonly discussionRepository: DiscussionRepository,
     private readonly context: ContextStorageService,
-    private readonly voteRepository: VoteRepository,
+    private readonly discussionVoteRepository: DiscussionVoteRepository,
     private readonly transactionService: TransactionService,
   ) {}
 
@@ -65,38 +62,33 @@ export class VoteOnDiscussion
 
     await this.transactionService.startTransaction();
 
-    const existingVote = await this.voteRepository.findOneByFilter({
-      user: currentUser.props.id,
-      voteFor: VoteFor.discussion,
-      voteForReferency: discussion.props.id,
+    const existingVote = await this.discussionVoteRepository.findOneByFilter({
+      authorId: currentUser.props.id,
+      discussionId: discussion.props.id,
     });
 
     if (existingVote) {
       if (existingVote.props.voteType === input.voteType) {
         discussion.removeVote(existingVote);
-        await this.voteRepository.deleteById(
-          existingVote.props.id,
-          VoteFor.discussion,
-        );
+        await this.discussionVoteRepository.deleteById(existingVote.props.id);
       } else {
         const from = existingVote.props.voteType;
         const to = from === VoteTypes.down ? VoteTypes.up : VoteTypes.down;
         discussion.exchangeVote(from, to);
         existingVote.setVoteType(to);
-        await this.voteRepository.save(existingVote, VoteFor.discussion);
+        await this.discussionVoteRepository.save(existingVote);
       }
     } else {
-      const newVote = Vote.create({
-        user: currentUser.props.id,
-        voteFor: VoteFor.discussion,
+      const newVote = DiscussionVote.create({
+        authorId: currentUser.props.id,
         voteType: input.voteType,
-        voteForReferency: discussion.props.id,
+        discussionId: discussion.props.id,
       });
 
       if (newVote.isLeft()) {
         return left(newVote.value);
       } else {
-        await this.voteRepository.save(newVote.value, VoteFor.discussion);
+        await this.discussionVoteRepository.save(newVote.value);
       }
 
       if (input.voteType === VoteTypes.up) {

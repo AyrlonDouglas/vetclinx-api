@@ -6,8 +6,10 @@ import { DiscussionRepository } from '@modules/discussion/application/repositori
 import { DiscussionPostgreRepository } from '@modules/discussion/infra/repositories/discussion/discussionPostgre.repository';
 import { CommentRepository } from '@modules/discussion/application/repositories/comment.repository';
 import { CommentPostgreRepository } from '@modules/discussion/infra/repositories/comment/commentPostgre.repository';
-import { VoteRepository } from '@modules/discussion/application/repositories/vote.repository';
-import { VotePostgreRepository } from '@modules/discussion/infra/repositories/vote/votePostgre.repository';
+import { DiscussionVoteRepository } from '@modules/discussion/application/repositories/discussionVote.repository';
+import { DiscussionVotePostgreRepository } from '@modules/discussion/infra/repositories/discussionVote/discussionVotePostgre.repository';
+import { CommentVoteRepository } from '@modules/discussion/application/repositories/commentVote.repository';
+import { CommentVotePostgreRepository } from '@modules/discussion/infra/repositories/commentVote/commentVotePostgre.repository';
 
 @Module({
   imports: [...postgreSQLModule],
@@ -22,14 +24,22 @@ import { VotePostgreRepository } from '@modules/discussion/infra/repositories/vo
       provide: CommentRepository,
       useClass: CommentPostgreRepository,
     },
-    { provide: VoteRepository, useClass: VotePostgreRepository },
+    {
+      provide: DiscussionVoteRepository,
+      useClass: DiscussionVotePostgreRepository,
+    },
+    {
+      provide: CommentVoteRepository,
+      useClass: CommentVotePostgreRepository,
+    },
   ],
   exports: [
     ...postgreSQLModule,
     UserRepository,
     DiscussionRepository,
     CommentRepository,
-    VoteRepository,
+    DiscussionVoteRepository,
+    CommentVoteRepository,
   ],
 })
 export class DatabaseModule {}

@@ -9,9 +9,9 @@ import { DiscussionRepository } from '../../repositories/discussion.repository';
 import { CommentRepository } from '../../repositories/comment.repository';
 import { RemoveDiscussionErrors } from './removeDiscussion.errors';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
-import { VoteRepository } from '../../repositories/vote.repository';
 import { TransactionService } from '@modules/shared/domain/transaction.service';
-import { VoteFor } from '@modules/discussion/domain/component/voteManager.component';
+import { CommentVoteRepository } from '../../repositories/commentVote.repository';
+import { DiscussionVoteRepository } from '../../repositories/discussionVote.repository';
 
 export class RemoveDiscussion
   implements UseCase<RemoveDiscussionInput, RemoveDiscussionOutput>
@@ -20,8 +20,9 @@ export class RemoveDiscussion
     private readonly discussionRepository: DiscussionRepository,
     private readonly commentRepository: CommentRepository,
     private readonly context: ContextStorageService,
-    private readonly voteRepository: VoteRepository,
     private readonly transactionService: TransactionService,
+    private readonly commentVoteRepository: CommentVoteRepository,
+    private readonly discussionVoteRepository: DiscussionVoteRepository,
   ) {}
 
   async perform(
@@ -52,28 +53,24 @@ export class RemoveDiscussion
       return left(new RemoveDiscussionErrors.OnlyCreatorCanDeleteError());
     }
 
-    await this.transactionService.startTransaction();
-
     const comments = await this.commentRepository.findByFilter({
       discussionId: discussion.props.id,
     });
+    const commentsIds = comments.map((comment) => comment.props.id);
 
-    const commentVotesDeleteds = comments.length
-      ? await this.voteRepository.deleteByVoteForReferency(
-          comments.map((comment) => comment.props.id),
-          VoteFor.comment,
-        )
-      : 0;
+    await this.transactionService.startTransaction();
+
+    const commentVotesDeleteds =
+      await this.commentVoteRepository.deleteByCommentId(commentsIds);
+
+    //FIXME: comentário suato referenciaveis da b.o pq quando vai deletar comentario que tem alguma fk na mesma tabela, da erro
+    const commentsDeleteds =
+      await this.commentRepository.deleteById(commentsIds);
 
     const discussionVotesDeleteds =
-      await this.voteRepository.deleteByVoteForReferency(
-        [discussion.props.id],
-        VoteFor.discussion,
-      );
-
-    const commentsDeleteds = await this.commentRepository.deleteByDiscussionId(
-      discussion.props.id,
-    );
+      await this.discussionVoteRepository.deleteByDiscussionId([
+        discussion.props.id,
+      ]);
 
     const discussionDeleted = await this.discussionRepository.deleteById(
       discussion.props.id,
@@ -82,7 +79,8 @@ export class RemoveDiscussion
     return right({
       deleted: !!discussionDeleted,
       commentDeletedCount: commentsDeleteds,
-      voteDeletedCount: discussionVotesDeleteds + commentVotesDeleteds,
+      discussionVotesDeleteds,
+      commentVotesDeleteds,
     });
   }
 }

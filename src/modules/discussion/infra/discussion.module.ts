@@ -15,9 +15,10 @@ import { UpdateComment } from '../application/useCases/updateComment/updateComme
 import { RemoveComment } from '../application/useCases/removeComment/removeComment.useCase';
 import { RemoveDiscussion } from '../application/useCases/removeDiscussion/removeDiscussion.useCase';
 import { VoteOnDiscussion } from '../application/useCases/voteOnDiscussion/voteOnDiscussion.useCase';
-import { VoteRepository } from '../application/repositories/vote.repository';
 import { VoteOnComment } from '../application/useCases/voteOnComment/voteOnComment.useCase';
 import { TransactionService } from '@modules/shared/domain/transaction.service';
+import { CommentVoteRepository } from '../application/repositories/commentVote.repository';
+import { DiscussionVoteRepository } from '../application/repositories/discussionVote.repository';
 
 @Module({
   controllers: [DiscussionController],
@@ -52,13 +53,20 @@ import { TransactionService } from '@modules/shared/domain/transaction.service';
         discussionRepository: DiscussionRepository,
         contextStorageService: ContextStorageService,
         commentRepository: CommentRepository,
+        transactionService: TransactionService,
       ) =>
         new AddCommentUseCase(
           discussionRepository,
           contextStorageService,
           commentRepository,
+          transactionService,
         ),
-      inject: [DiscussionRepository, ContextStorageService, CommentRepository],
+      inject: [
+        DiscussionRepository,
+        ContextStorageService,
+        CommentRepository,
+        TransactionService,
+      ],
     },
     {
       provide: UpdateComment,
@@ -74,22 +82,22 @@ import { TransactionService } from '@modules/shared/domain/transaction.service';
         commentRepository: CommentRepository,
         contextStorageService: ContextStorageService,
         discussionRepository: DiscussionRepository,
-        voteRepository: VoteRepository,
         transactionService: TransactionService,
+        commentVoteRepository: CommentVoteRepository,
       ) =>
         new RemoveComment(
           commentRepository,
           contextStorageService,
           discussionRepository,
-          voteRepository,
+          commentVoteRepository,
           transactionService,
         ),
       inject: [
         CommentRepository,
         ContextStorageService,
         DiscussionRepository,
-        VoteRepository,
         TransactionService,
+        CommentVoteRepository,
       ],
     },
     {
@@ -98,22 +106,25 @@ import { TransactionService } from '@modules/shared/domain/transaction.service';
         discussionRepository: DiscussionRepository,
         commentRepository: CommentRepository,
         contextStorageService: ContextStorageService,
-        voteRepository: VoteRepository,
         transactionService: TransactionService,
+        commentVoteRepository: CommentVoteRepository,
+        discussionVoteRepository: DiscussionVoteRepository,
       ) =>
         new RemoveDiscussion(
           discussionRepository,
           commentRepository,
           contextStorageService,
-          voteRepository,
           transactionService,
+          commentVoteRepository,
+          discussionVoteRepository,
         ),
       inject: [
         DiscussionRepository,
         CommentRepository,
         ContextStorageService,
-        VoteRepository,
         TransactionService,
+        CommentVoteRepository,
+        DiscussionVoteRepository,
       ],
     },
     {
@@ -121,19 +132,19 @@ import { TransactionService } from '@modules/shared/domain/transaction.service';
       inject: [
         DiscussionRepository,
         ContextStorageService,
-        VoteRepository,
+        DiscussionVoteRepository,
         TransactionService,
       ],
       useFactory: (
         discussionRepository: DiscussionRepository,
         context: ContextStorageService,
-        voteRepository: VoteRepository,
+        discussionVoteRepository: DiscussionVoteRepository,
         transactionService: TransactionService,
       ) =>
         new VoteOnDiscussion(
           discussionRepository,
           context,
-          voteRepository,
+          discussionVoteRepository,
           transactionService,
         ),
     },
@@ -141,19 +152,19 @@ import { TransactionService } from '@modules/shared/domain/transaction.service';
       provide: VoteOnComment,
       inject: [
         CommentRepository,
-        VoteRepository,
+        CommentVoteRepository,
         ContextStorageService,
         TransactionService,
       ],
       useFactory: (
         commentRepository: CommentRepository,
-        voteRepository: VoteRepository,
+        commentvoteRepository: CommentVoteRepository,
         context: ContextStorageService,
         transactionService: TransactionService,
       ) =>
         new VoteOnComment(
           commentRepository,
-          voteRepository,
+          commentvoteRepository,
           context,
           transactionService,
         ),

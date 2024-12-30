@@ -7,11 +7,11 @@ import { Discussion } from './discussion.db.entity';
 @Entity()
 export class DiscussionVote extends BaseEntity {
   @Column()
-  userId: number;
+  authorId: number;
 
   @ManyToOne(() => User, (user) => user.discussionVotes)
   @JoinColumn()
-  user: User;
+  author: User;
 
   @Column()
   discussionId: number;
