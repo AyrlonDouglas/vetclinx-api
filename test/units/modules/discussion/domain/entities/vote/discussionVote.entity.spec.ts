@@ -1,38 +1,31 @@
 import { InspetorError } from '@common/core/inspetor';
 import { VoteTypes } from '@modules/discussion/domain/component/voteManager.component';
-import { CommentVote } from '@modules/discussion/domain/entities/vote/commentVote.entity';
+import { DiscussionVote } from '@modules/discussion/domain/entities/vote/discussionVote.entity';
 
-describe('CommentVote', () => {
+describe('DiscussionVote', () => {
   function makeSut() {
     const validInput = {
       authorId: '1',
-      commentId: '1',
+      discussionId: '1',
       voteType: VoteTypes.up,
       createdAt: new Date(),
-      updatedAt: new Date(),
       id: '1',
+      updatedAt: new Date(),
     };
-    const sut = CommentVote;
+    const sut = DiscussionVote;
 
     return { sut, validInput };
   }
 
-  describe('CommentVote.create()', () => {
-    test('Should return rigth containing commentVote when input is valid', () => {
+  describe('DiscussionVote.create()', () => {
+    test('Should return right containing DiscussionVote', () => {
       const { sut, validInput } = makeSut();
 
       const result = sut.create(validInput);
 
       expect(result.isRight()).toBe(true);
-      expect(result.value).toBeInstanceOf(CommentVote);
-      expect((result.value as CommentVote).props).toEqual({
-        authorId: validInput.authorId,
-        voteType: VoteTypes.up,
-        commentId: validInput.commentId,
-        id: validInput.id,
-        createdAt: validInput.createdAt,
-        updatedAt: validInput.updatedAt,
-      });
+      expect(result.value).toBeInstanceOf(DiscussionVote);
+      expect((result.value as DiscussionVote).props).toEqual(validInput);
     });
 
     test('Should return left contaning InspectorError when input is invalid', () => {
@@ -40,7 +33,7 @@ describe('CommentVote', () => {
 
       const result = sut.create({
         authorId: '',
-        commentId: validInput.commentId,
+        discussionId: validInput.discussionId,
         voteType: validInput.voteType,
       });
 
@@ -61,11 +54,11 @@ describe('CommentVote', () => {
     });
   });
 
-  describe('CommentVote.setVoteType()', () => {
+  describe('DiscussionVote.setVoteType()', () => {
     test('Should change voteType when voteType is valid', () => {
       const { sut, validInput } = makeSut();
 
-      const result = sut.create(validInput).value as CommentVote;
+      const result = sut.create(validInput).value as DiscussionVote;
       result.setVoteType(VoteTypes.down);
 
       expect(result.props.voteType).toEqual(VoteTypes.down);
@@ -74,7 +67,7 @@ describe('CommentVote', () => {
     test('Should not change voteType when voteType is invalid', () => {
       const { sut, validInput } = makeSut();
 
-      const result = sut.create(validInput).value as CommentVote;
+      const result = sut.create(validInput).value as DiscussionVote;
       result.setVoteType('invalid' as keyof typeof VoteTypes);
 
       expect(result.props.voteType).toEqual(VoteTypes.up);
@@ -83,7 +76,7 @@ describe('CommentVote', () => {
     test('Should not change voteType when voteType is equal', () => {
       const { sut, validInput } = makeSut();
 
-      const result = sut.create(validInput).value as CommentVote;
+      const result = sut.create(validInput).value as DiscussionVote;
       result.setVoteType(VoteTypes.up);
 
       expect(result.props.voteType).toEqual(VoteTypes.up);
