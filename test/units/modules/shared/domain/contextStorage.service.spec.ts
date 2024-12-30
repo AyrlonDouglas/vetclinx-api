@@ -12,7 +12,7 @@ import { AsyncLocalStorage } from 'async_hooks';
 
 describe('ContextStorageService', () => {
   const makeSut = () => {
-    const store: Context = new Map();
+    const store = new Context();
     const userMock = User.create({
       email: Email.create('teste@teste.com').value as Email,
       name: 'teste name',

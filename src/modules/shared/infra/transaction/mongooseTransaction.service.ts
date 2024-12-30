@@ -12,7 +12,7 @@ export class MongooseTransactionService implements TransactionService {
   ) {}
 
   async startTransaction(): Promise<void> {
-    const contextSession = this.contextService.session;
+    const contextSession = this.contextService.get('session');
     const hasSession = !!contextSession;
 
     if (hasSession) {
@@ -22,7 +22,7 @@ export class MongooseTransactionService implements TransactionService {
     const session = await this.connection.startSession();
 
     session.startTransaction();
-    this.contextService.session = session; // Armazenar a sessão no contexto
+    this.contextService.set('session', session);
   }
 
   async commitTransaction(): Promise<void> {
@@ -42,7 +42,7 @@ export class MongooseTransactionService implements TransactionService {
   }
 
   getTransaction(): ClientSession | undefined {
-    return this.contextService.session; // Retorna a sessão armazenada no contexto atual
+    return this.contextService.get('session'); // Retorna a sessão armazenada no contexto atual
   }
 
   getEntityManager(): unknown {

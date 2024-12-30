@@ -27,7 +27,7 @@ export class AddCommentUseCase implements UseCase<AddCommentDTO, Output> {
   ) {}
 
   async perform(input?: AddCommentDTO): Promise<Output> {
-    const author = this.contextStorageService.currentUser;
+    const author = this.contextStorageService.get('currentUser');
 
     const inputOrFail = Inspetor.againstFalsyBulk([
       { argument: author, argumentName: 'author' },

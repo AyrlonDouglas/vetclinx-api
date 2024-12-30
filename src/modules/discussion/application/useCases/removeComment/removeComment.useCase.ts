@@ -37,7 +37,7 @@ export class RemoveComment
       );
     }
 
-    const currentUser = this.context.currentUser;
+    const currentUser = this.context.get('currentUser');
 
     if (comment.props.authorId !== currentUser.props.id) {
       return left(new RemoveCommentErrors.OnlyCreatorCanRemoveError());

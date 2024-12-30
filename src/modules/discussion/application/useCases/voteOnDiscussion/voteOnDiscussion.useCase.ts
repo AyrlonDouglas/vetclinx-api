@@ -54,7 +54,7 @@ export class VoteOnDiscussion
         new VoteOnDiscussionError.DiscussionNotFoundError(input.discussionId),
       );
     }
-    const currentUser = this.context.currentUser;
+    const currentUser = this.context.get('currentUser');
 
     if (discussion.props.authorId === currentUser.props.id) {
       return left(new VoteOnDiscussionError.CreatorCannotVoteYourDiscussion());

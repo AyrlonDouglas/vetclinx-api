@@ -19,49 +19,30 @@ export class ContextStorageService {
     return this.als.getStore();
   }
 
-  private get(key: keyof ContextKeysProps) {
+  get<K extends keyof ContextStore>(key: K): ContextStore[K] | null {
     const store = this.getStore();
     return store.get(key) ?? null;
   }
 
-  private set(
-    key: keyof ContextKeysProps,
-    value: ContextKeysProps[keyof ContextKeysProps],
-  ) {
+  set<K extends keyof ContextStore>(key: K, value: ContextStore[K]) {
     const store = this.getStore();
-
     store.set(key, value);
-  }
-
-  set currentUser(user: User) {
-    this.set('currentUser', user);
-  }
-
-  get currentUser(): User {
-    return this.get('currentUser');
-  }
-
-  set session(session: ClientSession) {
-    this.set('session', session);
-  }
-
-  get session(): ClientSession {
-    return this.get('session');
-  }
-
-  set postgreQueryRunner(queryRunner: QueryRunner) {
-    this.set('postgreQueryRunner', queryRunner);
-  }
-
-  get postgreQueryRunner() {
-    return this.get('postgreQueryRunner');
   }
 }
 
-export type Context = Map<keyof ContextKeysProps, any>;
-
-export type ContextKeysProps = {
-  currentUser: User;
+type ContextStore = {
+  currentUser?: User;
   session?: ClientSession;
   postgreQueryRunner?: QueryRunner;
 };
+export class Context {
+  private store: ContextStore = {};
+
+  set<K extends keyof ContextStore>(key: K, value: ContextStore[K]) {
+    this.store[key] = value;
+  }
+
+  get<K extends keyof ContextStore>(key: K): ContextStore[K] | undefined {
+    return this.store[key];
+  }
+}

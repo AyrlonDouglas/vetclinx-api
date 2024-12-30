@@ -22,7 +22,7 @@ export class DiscussionMongooseRepository implements DiscussionRepository {
     const isValidId = Types.ObjectId.isValid(id);
     if (!isValidId) return 0;
 
-    const session = this.context.session;
+    const session = this.context.get('session');
 
     const discussionRemoved = await this.discussionModel.deleteOne(
       { _id: id },
@@ -41,7 +41,7 @@ export class DiscussionMongooseRepository implements DiscussionRepository {
   }
 
   async create(discussion: Discussion): Promise<string> {
-    const session = this.context.session;
+    const session = this.context.get('session');
 
     const [discussionCreated] = await this.discussionModel.create(
       [this.discussionMapper.toPersistense(discussion)],
@@ -55,7 +55,7 @@ export class DiscussionMongooseRepository implements DiscussionRepository {
     id: string,
     discussion: Discussion,
   ): Promise<string | null> {
-    const session = this.context.session;
+    const session = this.context.get('session');
 
     const updated = await this.discussionModel.findByIdAndUpdate(
       id,

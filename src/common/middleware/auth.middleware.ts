@@ -49,7 +49,7 @@ export class AuthMiddleware implements NestMiddleware {
       throw new UnauthorizedError();
     }
 
-    this.contextStorageService.currentUser = user;
+    this.contextStorageService.set('currentUser', user);
     next();
   }
 }

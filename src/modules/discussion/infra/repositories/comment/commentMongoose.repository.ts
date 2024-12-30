@@ -35,7 +35,7 @@ export class CommentMongooseRepository implements CommentRepository {
     const isValidId = Types.ObjectId.isValid(discussionId);
     if (!isValidId) return 0;
 
-    const session = this.context.session;
+    const session = this.context.get('session');
     const commentsRemoveds = await this.commentModel.deleteMany(
       {
         discussion: new Types.ObjectId(discussionId),
@@ -50,7 +50,7 @@ export class CommentMongooseRepository implements CommentRepository {
     const isValidId = Types.ObjectId.isValid(parentCommentId);
     if (!isValidId) return 0;
 
-    const session = this.context.session;
+    const session = this.context.get('session');
     const commentsRemoveds = await this.commentModel.deleteMany(
       {
         parentCommentId: new Types.ObjectId(parentCommentId),
@@ -78,7 +78,7 @@ export class CommentMongooseRepository implements CommentRepository {
     const isValidId = Types.ObjectId.isValid(id);
     if (!isValidId) return 0;
 
-    const session = this.context.session;
+    const session = this.context.get('session');
     const commentRemoved = await this.commentModel.deleteOne(
       { _id: id },
       { session },
@@ -97,7 +97,7 @@ export class CommentMongooseRepository implements CommentRepository {
   }
 
   async save(comment: Comment): Promise<string> {
-    const session = this.context.session;
+    const session = this.context.get('session');
 
     if (comment.props.id) {
       const commentUpdated = await this.commentModel.findByIdAndUpdate(

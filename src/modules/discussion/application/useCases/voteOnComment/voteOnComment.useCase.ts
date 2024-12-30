@@ -46,7 +46,7 @@ export class VoteOnComment
       return left(new VoteOnCommentError.CommentNotFoundError(input.commentId));
     }
 
-    const currentUser = this.context.currentUser;
+    const currentUser = this.context.get('currentUser');
 
     if (comment.props.authorId === currentUser.props.id) {
       return left(new VoteOnCommentError.CreatorCannotVoteYourComment());

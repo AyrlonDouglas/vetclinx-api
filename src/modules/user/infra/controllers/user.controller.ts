@@ -33,7 +33,7 @@ export class UserController {
 
   @Get('/me')
   async findOneByMe() {
-    const user = this.context.currentUser;
+    const user = this.context.get('currentUser');
 
     const result = await this.userUseCases.getUserById.perform({
       id: user.props.id,

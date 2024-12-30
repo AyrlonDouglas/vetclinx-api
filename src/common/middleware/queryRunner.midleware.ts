@@ -14,7 +14,7 @@ export class QueryRunnerMiddleware implements NestMiddleware {
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
-    this.contextStorageService.postgreQueryRunner = queryRunner;
+    this.contextStorageService.set('postgreQueryRunner', queryRunner);
 
     res.on('finish', async () => {
       await queryRunner.release();

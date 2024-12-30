@@ -8,7 +8,7 @@ export class PostgreTransactionService implements TransactionService {
   constructor(private readonly contextService: ContextStorageService) {}
 
   async startTransaction(): Promise<void> {
-    const queryRunner = this.contextService.postgreQueryRunner;
+    const queryRunner = this.contextService.get('postgreQueryRunner');
 
     if (queryRunner.isTransactionActive) {
       return;
@@ -18,7 +18,7 @@ export class PostgreTransactionService implements TransactionService {
   }
 
   async commitTransaction(): Promise<void> {
-    const queryRunner = this.contextService.postgreQueryRunner;
+    const queryRunner = this.contextService.get('postgreQueryRunner');
 
     if (!queryRunner.isTransactionActive) {
       return;
@@ -28,7 +28,7 @@ export class PostgreTransactionService implements TransactionService {
   }
 
   async abortTransaction(): Promise<void> {
-    const queryRunner = this.contextService.postgreQueryRunner;
+    const queryRunner = this.contextService.get('postgreQueryRunner');
 
     if (!queryRunner.isTransactionActive) {
       return;
@@ -42,7 +42,7 @@ export class PostgreTransactionService implements TransactionService {
   }
 
   getEntityManager(): EntityManager {
-    const queryRunner = this.contextService.postgreQueryRunner;
+    const queryRunner = this.contextService.get('postgreQueryRunner');
 
     return queryRunner.manager;
   }
