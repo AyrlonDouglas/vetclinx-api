@@ -8,36 +8,40 @@ import { Comment } from './entities/comment.db.entity';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { CommentVote } from './entities/commentVote.db.entity';
 import { DiscussionVote } from './entities/discussionVote.db';
+import { Module } from '@nestjs/common';
 
-export const postgreSQLModule = [
-  TypeOrmModule.forRootAsync({
-    imports: [ConfigsModule],
-    useFactory: (configService: Config) => {
-      const appConfig = configService.getAppConfig();
-      const dbConfig = configService.getDatabaseConfig();
-      const isDev = appConfig.env === Environment.dev;
+@Module({
+  imports: [
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigsModule],
+      useFactory: (configService: Config) => {
+        const appConfig = configService.getAppConfig();
+        const dbConfig = configService.getDatabaseConfig();
+        const isDev = appConfig.env === Environment.dev;
 
-      return {
-        type: 'postgres',
-        host: dbConfig.postgreSQL.host,
-        port: +dbConfig.postgreSQL.port,
-        username: dbConfig.postgreSQL.username,
-        password: dbConfig.postgreSQL.password,
-        database: dbConfig.postgreSQL.database,
-        synchronize: true,
-        autoLoadEntities: true,
-        logging: isDev,
-        namingStrategy: new SnakeNamingStrategy(),
-        useUTC: true,
-      };
-    },
-    inject: [Config],
-  }),
-  TypeOrmModule.forFeature([
-    User,
-    Discussion,
-    DiscussionVote,
-    Comment,
-    CommentVote,
-  ]),
-];
+        return {
+          type: 'postgres',
+          host: dbConfig.postgreSQL.host,
+          port: +dbConfig.postgreSQL.port,
+          username: dbConfig.postgreSQL.username,
+          password: dbConfig.postgreSQL.password,
+          database: dbConfig.postgreSQL.database,
+          synchronize: true,
+          autoLoadEntities: true,
+          logging: isDev,
+          namingStrategy: new SnakeNamingStrategy(),
+          useUTC: true,
+        };
+      },
+      inject: [Config],
+    }),
+    TypeOrmModule.forFeature([
+      User,
+      Discussion,
+      DiscussionVote,
+      Comment,
+      CommentVote,
+    ]),
+  ],
+})
+export class PostgreSQLModule {}

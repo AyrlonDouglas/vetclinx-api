@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { postgreSQLModule } from './posgreSQL/postgreSQL.module';
+import { PostgreSQLModule } from './posgreSQL/postgreSQL.module';
 import { UserRepository } from '@modules/user/application/repositories/user.repository';
 import { UserPostgreRepository } from '@modules/user/infra/repositories/userPostgre.repository';
 import { DiscussionRepository } from '@modules/discussion/application/repositories/discussion.repository';
@@ -12,7 +12,7 @@ import { CommentVoteRepository } from '@modules/discussion/application/repositor
 import { CommentVotePostgreRepository } from '@modules/discussion/infra/repositories/commentVote/commentVotePostgre.repository';
 
 @Module({
-  imports: [...postgreSQLModule],
+  imports: [PostgreSQLModule],
 
   providers: [
     { provide: UserRepository, useClass: UserPostgreRepository },
@@ -34,7 +34,7 @@ import { CommentVotePostgreRepository } from '@modules/discussion/infra/reposito
     },
   ],
   exports: [
-    ...postgreSQLModule,
+    PostgreSQLModule,
     UserRepository,
     DiscussionRepository,
     CommentRepository,
