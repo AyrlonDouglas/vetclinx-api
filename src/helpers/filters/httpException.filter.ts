@@ -54,7 +54,6 @@ export default class AllExceptionsFilter implements ExceptionFilter {
       if (showStack) {
         const copyResponse = { ...errorResponse };
         delete copyResponse.stack;
-        // console.log();
         console.error(copyResponse, '\n', stack);
       }
 
