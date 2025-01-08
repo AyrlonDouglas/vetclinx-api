@@ -10,11 +10,13 @@ import AuthModule from '@modules/auth/infra/auth.module';
 import { SharedModule } from '@modules/shared/infra/shared.module';
 import { DiscussionModule } from '@modules/discussion/infra/discussion.module';
 import { DatabaseModule } from '@modules/database/infra/database.module';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TransactionInterceptor } from '@common/interceptors/transaction.interceptor';
 import { InitContextStoreMiddleware } from '@common/middleware/initContextStore.middleware';
 import { AuthMiddleware } from '@common/middleware/auth.middleware';
 import { QueryRunnerMiddleware } from '@common/middleware/queryRunner.midleware';
+import { SecurityModule } from '@modules/security/infra/security.module';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -24,12 +26,18 @@ import { QueryRunnerMiddleware } from '@common/middleware/queryRunner.midleware'
     DiscussionModule,
     SharedModule,
     DatabaseModule,
+    SecurityModule,
   ],
   controllers: [],
   providers: [
     {
       provide: APP_INTERCEPTOR,
       useClass: TransactionInterceptor,
+    },
+
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
     },
   ],
 })
