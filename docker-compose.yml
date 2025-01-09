@@ -1,24 +1,39 @@
 version: '3.8'
 
 services:
-  db:
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+    image: vetclinix-api
+    container_name: vetclinix_api_container
+    environment:
+      - NODE_ENV=dev
+      - DATABASE_POSTGRE_HOST=db-postgres
+      - DATABASE_POSTGRE_PORT=5432
+    working_dir: /app
+    volumes:
+      - type: bind
+        source: ./
+        target: /app
+    ports:
+      - 5000:5000
+    depends_on:
+      - db-postgres
+    tty: true
+
+  db-postgres:
     image: postgres:17
-    container_name: vetclinx_postgres_container
+    container_name: vetclinix_postgres_container
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
-      - POSTGRES_DB=vetclinx-local
+      - POSTGRES_DB=vetclinix-local
     volumes:
-      - postgres_vetclinx_data:/var/lib/postgresql/data
+      - postgres_vetclinix_data:/var/lib/postgresql/data
     ports:
       - '5003:5432'
-    networks:
-      - db_network
     # restart: unless-stopped
-
+    
 volumes:
-  postgres_vetclinx_data:
-
-networks:
-  db_network:
-    driver: bridge
+  postgres_vetclinix_data:
