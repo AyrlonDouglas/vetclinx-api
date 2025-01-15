@@ -9,6 +9,8 @@ import { Discussion } from './discussion.db.entity';
 import { Comment } from './comment.db.entity';
 import { CommentVote } from './commentVote.db.entity';
 import { DiscussionVote } from './discussionVote.db';
+import BaseError from '@common/errors/baseError.error';
+import { HttpStatusCode } from '@common/http/httpStatusCode';
 
 @Entity()
 export class User extends BaseEntity {
@@ -67,13 +69,17 @@ export class User extends BaseEntity {
       this.userType === UserType.veterinarian &&
       !this.professionalRegistration
     ) {
-      throw new Error(
-        'Professional registration is required for veterinarians.',
+      throw new BaseError(
+        ['Professional registration is required for veterinarians.'],
+        HttpStatusCode.PRECONDITION_REQUIRED,
       );
     }
 
     if (!CountriesUtil.getInstance().getNameByAlpha3(this.country)) {
-      throw new Error('Country registration is invalid');
+      throw new BaseError(
+        ['Country registration is invalid'],
+        HttpStatusCode.BAD_REQUEST,
+      );
     }
   }
 }

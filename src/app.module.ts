@@ -17,6 +17,7 @@ import { AuthMiddleware } from '@common/middleware/auth.middleware';
 import { QueryRunnerMiddleware } from '@common/middleware/queryRunner.midleware';
 import { SecurityModule } from '@modules/security/infra/security.module';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import { ApiPresenterInterceptor } from '@common/interceptors/apiPresenter.interceptor';
 
 @Module({
   imports: [
@@ -34,7 +35,10 @@ import { ThrottlerGuard } from '@nestjs/throttler';
       provide: APP_INTERCEPTOR,
       useClass: TransactionInterceptor,
     },
-
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ApiPresenterInterceptor,
+    },
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,

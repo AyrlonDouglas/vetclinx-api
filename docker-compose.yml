@@ -1,26 +1,26 @@
 version: '3.8'
 
 services:
-  api:
-    build: 
-      context: .
-      dockerfile: Dockerfile.dev
-    image: vetclinix-api
-    container_name: vetclinix_api_container
-    environment:
-      - NODE_ENV=dev
-      - DATABASE_POSTGRE_HOST=db-postgres
-      - DATABASE_POSTGRE_PORT=5432
-    working_dir: /app
-    volumes:
-      - type: bind
-        source: ./
-        target: /app
-    ports:
-      - 5000:5000
-    depends_on:
-      - db-postgres
-    tty: true
+  # api:
+  #   build: 
+  #     context: .
+  #     dockerfile: Dockerfile.dev
+  #   image: vetclinix-api
+  #   container_name: vetclinix_api_container
+  #   environment:
+  #     - NODE_ENV=dev
+  #     - DATABASE_POSTGRE_HOST=db-postgres
+  #     - DATABASE_POSTGRE_PORT=5432
+  #   working_dir: /app
+  #   volumes:
+  #     - type: bind
+  #       source: ./
+  #       target: /app
+  #   ports:
+  #     - 5000:5000
+  #   depends_on:
+  #     - db-postgres
+  #   tty: true
 
   db-postgres:
     image: postgres:17
