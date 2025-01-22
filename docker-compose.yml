@@ -1,8 +1,6 @@
-version: '3.8'
-
 services:
   # api:
-  #   build: 
+  #   build:
   #     context: .
   #     dockerfile: Dockerfile.dev
   #   image: vetclinix-api
@@ -21,6 +19,8 @@ services:
   #   depends_on:
   #     - db-postgres
   #   tty: true
+  #   user: '${UID}:${GID}'
+  #   restart: unless-stopped
 
   db-postgres:
     image: postgres:17
@@ -34,6 +34,6 @@ services:
     ports:
       - '5003:5432'
     # restart: unless-stopped
-    
+
 volumes:
   postgres_vetclinix_data:
