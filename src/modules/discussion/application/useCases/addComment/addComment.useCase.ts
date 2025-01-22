@@ -8,11 +8,12 @@ import { Comment } from '@modules/discussion/domain/entities/comment/comment.ent
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
 import { CommentRepository } from '../../repositories/comment.repository';
 import { TransactionService } from '@modules/shared/domain/transaction.service';
+import DiscussionErrors from '../discussion.errors';
 // import { TransactionService } from '@modules/shared/domain/transaction.service';
 
 type Output = Either<
   | InspetorError
-  | InstanceType<(typeof AddCommentErrors)['DiscussionNotFoundError']>
+  | InstanceType<(typeof DiscussionErrors)['DiscussionNotFoundError']>
   | InstanceType<(typeof AddCommentErrors)['ParentCommentNotFoundError']>
   | InstanceType<(typeof AddCommentErrors)['ParentCommetMustBeRootError']>,
   { id: string }
@@ -43,9 +44,7 @@ export class AddCommentUseCase implements UseCase<AddCommentDTO, Output> {
       input.discussionId,
     );
     if (!discussion) {
-      return left(
-        new AddCommentErrors.DiscussionNotFoundError(input.discussionId),
-      );
+      return left(new DiscussionErrors.DiscussionNotFoundError());
     }
 
     let parentComment: Comment;

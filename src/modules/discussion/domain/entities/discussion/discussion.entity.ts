@@ -91,6 +91,22 @@ export class Discussion {
   exchangeVote(from: keyof typeof VoteTypes, to: keyof typeof VoteTypes) {
     this.voteManager.exchangeVote(from, to);
   }
+
+  toPlain(): DiscussionProps {
+    // Em algum momento o contrato de retorno pode mudar
+    return {
+      authorId: this.props.authorId,
+      commentCount: this.props.commentCount,
+      createdAt: this.props.createdAt,
+      description: this.props.description,
+      downvotes: this.props.downvotes,
+      title: this.props.title,
+      updatedAt: this.props.updatedAt,
+      upvotes: this.props.upvotes,
+      id: this.props.id,
+      resolution: this.props.resolution,
+    };
+  }
 }
 
 export type DiscussionProps = {

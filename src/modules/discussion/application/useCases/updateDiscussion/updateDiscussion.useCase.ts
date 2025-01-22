@@ -6,10 +6,11 @@ import { ContextStorageService } from '@modules/shared/domain/contextStorage.ser
 import { DiscussionRepository } from '../../repositories/discussion.repository';
 import UpdateDiscussionErrors from './updateDiscussion.errors';
 import { Discussion } from '@modules/discussion/domain/entities/discussion/discussion.entity';
+import DiscussionErrors from '../discussion.errors';
 
 type Response = Either<
   | InspetorError
-  | InstanceType<(typeof UpdateDiscussionErrors)['DiscussionNotFoundError']>,
+  | InstanceType<(typeof DiscussionErrors)['DiscussionNotFoundError']>,
   { id: string }
 >;
 
@@ -41,9 +42,7 @@ export class UpdateDiscussionUseCase
     const discussion = await this.discussionRepository.findById(request.id);
 
     if (!discussion) {
-      return left(
-        new UpdateDiscussionErrors.DiscussionNotFoundError(request.id),
-      );
+      return left(new DiscussionErrors.DiscussionNotFoundError());
     }
 
     const userId = this.context.get('currentUser').props.id;

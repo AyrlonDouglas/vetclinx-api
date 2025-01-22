@@ -12,6 +12,7 @@ import { ContextStorageService } from '@modules/shared/domain/contextStorage.ser
 import { TransactionService } from '@modules/shared/domain/transaction.service';
 import { DiscussionVoteRepository } from '../../repositories/discussionVote.repository';
 import { DiscussionVote } from '@modules/discussion/domain/entities/vote/discussionVote.entity';
+import DiscussionErrors from '../discussion.errors';
 
 export class VoteOnDiscussion
   implements UseCase<VoteTheDiscussionInput, VoteTheDiscussionOutput>
@@ -50,9 +51,7 @@ export class VoteOnDiscussion
     );
 
     if (!discussion) {
-      return left(
-        new VoteOnDiscussionError.DiscussionNotFoundError(input.discussionId),
-      );
+      return left(new DiscussionErrors.DiscussionNotFoundError());
     }
     const currentUser = this.context.get('currentUser');
 

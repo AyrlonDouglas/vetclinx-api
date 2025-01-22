@@ -18,8 +18,10 @@ export class ApiPresenterInterceptor implements NestInterceptor {
         if (result instanceof ApiPresenter) {
           const ctx = context.switchToHttp();
           const request = ctx.getRequest();
+          const response = ctx.getResponse();
           result.path = request.url;
           result.method = request.method;
+          result.status = result.status ?? response.statusCode;
         }
 
         return result;

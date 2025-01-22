@@ -12,6 +12,7 @@ import { ContextStorageService } from '@modules/shared/domain/contextStorage.ser
 import { TransactionService } from '@modules/shared/domain/transaction.service';
 import { CommentVoteRepository } from '../../repositories/commentVote.repository';
 import { DiscussionVoteRepository } from '../../repositories/discussionVote.repository';
+import DiscussionErrors from '../discussion.errors';
 
 export class RemoveDiscussion
   implements UseCase<RemoveDiscussionInput, RemoveDiscussionOutput>
@@ -42,9 +43,7 @@ export class RemoveDiscussion
     );
 
     if (!discussion) {
-      return left(
-        new RemoveDiscussionErrors.DiscussionNotFoundError(input.discussionId),
-      );
+      return left(new DiscussionErrors.DiscussionNotFoundError());
     }
 
     const currentUser = this.context.get('currentUser');

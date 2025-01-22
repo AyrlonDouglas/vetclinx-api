@@ -96,7 +96,7 @@ export class UserPostgreRepository implements UserRepository {
   }
 
   private toEntityPostgre(user: User): UserPostgre {
-    const userPlained = user.toPlain();
+    const userPlained = user.toPlain({ showPassword: true });
 
     const userToSave = new UserPostgre();
     userToSave.birthDate = userPlained.birthDate;

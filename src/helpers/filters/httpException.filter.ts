@@ -33,7 +33,8 @@ export default class AllExceptionsFilter implements ExceptionFilter {
       method: request.method,
       status,
       type: exception.name,
-      error: { message: exception.message, errorMessages: exception.messages },
+      message: exception.message,
+      error: { errorMessages: exception.messages },
       stack: isDev ? stack : undefined,
     });
 

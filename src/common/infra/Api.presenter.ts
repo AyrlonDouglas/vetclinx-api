@@ -1,16 +1,17 @@
 export class ApiPresenter {
-  status: number;
-  type: string;
-  path: string;
-  method: string;
   message: string;
-  description: string;
-  timestamp: number = new Date().getTime();
-  result?: ApiPresenterResult;
+  status?: number;
+  type?: string;
+  path?: string;
+  method?: string;
+  description?: string;
+  readonly timestamp: number = new Date().getTime();
+  result?: any;
   error?: ApiPresenterError;
-  stack?: string;
+  readonly stack?: string;
 
   constructor(props: ApiPresenterProps) {
+    this.message = props.message;
     this.status = props.status;
     this.type = props.type;
     this.path = props.path;
@@ -23,22 +24,17 @@ export class ApiPresenter {
 }
 
 interface ApiPresenterProps {
-  status: number;
-  type: string;
-  path: string;
-  method: string;
-  description: string;
-  result?: ApiPresenterResult;
+  message: string;
+  status?: number;
+  type?: string;
+  path?: string;
+  method?: string;
+  description?: string;
+  result?: any;
   error?: ApiPresenterError;
   stack?: string;
 }
 
-interface ApiPresenterResult {
-  message: string;
-  data: any;
-}
-
 interface ApiPresenterError {
-  message: string;
   errorMessages?: string[];
 }

@@ -1,59 +1,80 @@
 import { CreateUserDTO } from '@modules/user/application/useCases/createUser/createUser.dto';
 import UserUseCases from '@modules/user/application/useCases/user.useCases';
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { UserMapper } from '../mapper/user.mapper';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiPresenter } from '@common/infra/Api.presenter';
 
 @ApiBearerAuth()
 @Controller('user')
 export class UserController {
   constructor(
     private readonly userUseCases: UserUseCases,
-    private readonly userMapper: UserMapper,
     private readonly context: ContextStorageService,
   ) {}
 
   @Post()
-  async create(@Body() createUserDTO: CreateUserDTO) {
+  async create(@Body() createUserDTO: CreateUserDTO): Promise<ApiPresenter> {
     const result = await this.userUseCases.createUser.perform(createUserDTO);
+
     if (result.isLeft()) throw result.value;
-    return result.value;
+
+    return new ApiPresenter({
+      result: result.value,
+      message: 'Usuário criado com sucesso.',
+    });
   }
 
   @Get('username/:username')
-  async findOneByUsername(@Param('username') username: string) {
+  async findOneByUsername(
+    @Param('username') username: string,
+  ): Promise<ApiPresenter> {
     const result = await this.userUseCases.getUserByUsername.perform({
       username,
     });
 
     if (result.isLeft()) throw result.value;
-    return result.value ? this.userMapper.toDTO(result.value) : null;
+
+    return new ApiPresenter({
+      result: result.value?.toPlain(),
+      message: 'Usuário encontrado com sucesso.',
+    });
   }
 
   @Get('/me')
-  async findOneByMe() {
+  async findOneByMe(): Promise<ApiPresenter> {
     const user = this.context.get('currentUser');
-
     const result = await this.userUseCases.getUserById.perform({
       id: user.props.id,
     });
+
     if (result.isLeft()) throw result.value;
-    return result.value ? this.userMapper.toDTO(result.value) : null;
+
+    return new ApiPresenter({
+      result: result.value.toPlain(),
+      message: 'Usuário encontrado com sucesso',
+    });
   }
 
   @Get('/:id')
-  async findOneById(@Param('id') id: string) {
+  async findOneById(@Param('id') id: string): Promise<ApiPresenter> {
     const result = await this.userUseCases.getUserById.perform({ id });
     if (result.isLeft()) throw result.value;
-    return result.value ? this.userMapper.toDTO(result.value) : null;
+
+    return new ApiPresenter({
+      result: result.value.toPlain(),
+      message: 'Usuário encontrado com sucesso',
+    });
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string): Promise<ApiPresenter> {
     const result = await this.userUseCases.removeUserById.perform({ id });
     if (result.isLeft()) throw result.value;
-    return result.value;
+    return new ApiPresenter({
+      result: result.value,
+      message: 'Usuário Deletado com sucesso',
+    });
   }
 
   // @Patch(':id')

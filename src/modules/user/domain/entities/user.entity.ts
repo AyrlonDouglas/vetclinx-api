@@ -98,12 +98,12 @@ export default class User {
     return right(user);
   }
 
-  toPlain() {
+  toPlain(input?: { showPassword: boolean }) {
     return {
       name: this.name,
       username: this.username,
       email: this.email.value,
-      password: this.password.value,
+      password: input?.showPassword ? this.password.value : undefined,
       country: this.country,
       birthDate: this.birthDate,
       userType: this.userType,
