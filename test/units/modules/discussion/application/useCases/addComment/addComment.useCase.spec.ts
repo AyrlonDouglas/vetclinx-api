@@ -1,6 +1,7 @@
 import { left } from '@common/core/either';
 import { InspetorError } from '@common/core/inspetor';
 import AddCommentErrors from '@modules/discussion/application/useCases/addComment/addComment.errors';
+import DiscussionErrors from '@modules/discussion/application/useCases/discussion.errors';
 import { Comment } from '@modules/discussion/domain/entities/comment/comment.entity';
 import { DiscussionTestSetup } from '@modulesTest/discussion/test/DiscussionTest.setup';
 
@@ -55,7 +56,7 @@ describe('AddCommentUseCase', () => {
 
     expect(result.isLeft()).toBe(true);
     expect(result.value).toBeInstanceOf(
-      AddCommentErrors.DiscussionNotFoundError,
+      DiscussionErrors.DiscussionNotFoundError,
     );
   });
 

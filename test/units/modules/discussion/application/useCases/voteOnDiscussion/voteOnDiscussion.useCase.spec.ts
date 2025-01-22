@@ -1,5 +1,6 @@
 import { left } from '@common/core/either';
 import { InspetorError } from '@common/core/inspetor';
+import DiscussionErrors from '@modules/discussion/application/useCases/discussion.errors';
 import { VoteOnDiscussionError } from '@modules/discussion/application/useCases/voteOnDiscussion/voteOnDiscussion.errors';
 import { VoteTypes } from '@modules/discussion/domain/component/voteManager.component';
 import { DiscussionVote } from '@modules/discussion/domain/entities/vote/discussionVote.entity';
@@ -67,7 +68,7 @@ describe('VoteOnDiscussion', () => {
 
     expect(result.isLeft()).toBe(true);
     expect(result.value).toBeInstanceOf(
-      VoteOnDiscussionError.DiscussionNotFoundError,
+      DiscussionErrors.DiscussionNotFoundError,
     );
   });
 

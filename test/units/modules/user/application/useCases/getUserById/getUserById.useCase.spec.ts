@@ -1,4 +1,5 @@
 import { InspetorError } from '@common/core/inspetor';
+import UserErrors from '@modules/user/application/useCases/user.errors';
 import User from '@modules/user/domain/entities/user.entity';
 import { UserTestSetup } from '@modulesTest/user/test/userTest.setup';
 
@@ -20,13 +21,12 @@ describe('GetUserByIdUseCase', () => {
     }
   });
 
-  test('Should return null when not found user', async () => {
+  test('Should return UserNotFoundError when not found user', async () => {
     const { sut } = makeSut();
 
     const result = await sut.perform({ id: '698' });
-    expect(result.isRight()).toBe(true);
-    expect(result.value).not.toBeInstanceOf(User);
-    expect(result.value).toBe(null);
+    expect(result.isLeft()).toBe(true);
+    expect(result.value).toBeInstanceOf(UserErrors.UserNotFoundError);
   });
 
   test('Should get error when id is empty', async () => {

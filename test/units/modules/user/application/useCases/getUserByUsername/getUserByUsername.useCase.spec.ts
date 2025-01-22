@@ -7,6 +7,7 @@ import FakeUserRepository from '@modules/user/infra/repositories/fakeUser.reposi
 import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
 import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
 import GetUserByUsernameUseCase from '@modules/user/application/useCases/getUserByUsername/getUserByUsername.useCase';
+import UserErrors from '@modules/user/application/useCases/user.errors';
 
 describe('GetUserByUsernameUseCase', () => {
   const makeSut = () => {
@@ -42,13 +43,12 @@ describe('GetUserByUsernameUseCase', () => {
     }
   });
 
-  test('Should dont get error when not found user', async () => {
+  test('Should get error when not found user', async () => {
     const { sut } = makeSut();
 
     const result = await sut.perform({ username: 'ayrlon123' });
-    expect(result.isRight()).toBe(true);
-    expect(result.value).not.toBeInstanceOf(User);
-    expect(result.value).toBe(null);
+    expect(result.isLeft()).toBe(true);
+    expect(result.value).toBeInstanceOf(UserErrors.UserNotFoundError);
   });
 
   test('Should get error when username is empty', async () => {

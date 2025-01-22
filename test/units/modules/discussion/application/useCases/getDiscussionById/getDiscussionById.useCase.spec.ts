@@ -1,4 +1,5 @@
 import { InspetorError } from '@common/core/inspetor';
+import DiscussionErrors from '@modules/discussion/application/useCases/discussion.errors';
 import { Discussion } from '@modules/discussion/domain/entities/discussion/discussion.entity';
 import { DiscussionTestSetup } from '@modulesTest/discussion/test/DiscussionTest.setup';
 
@@ -24,13 +25,14 @@ describe('GetDiscussionByIdUseCase', () => {
     }
   });
 
-  test('Should return null when not found discussion', async () => {
+  test('Should return DiscussionNotFoundError when not found discussion', async () => {
     const { sut } = await makeSut();
 
     const result = await sut.perform({ id: '698' });
-    expect(result.isRight()).toBe(true);
-    expect(result.value).not.toBeInstanceOf(Discussion);
-    expect(result.value).toBe(null);
+    expect(result.isLeft()).toBe(true);
+    expect(result.value).toBeInstanceOf(
+      DiscussionErrors.DiscussionNotFoundError,
+    );
   });
 
   test('Should get error when id is empty', async () => {

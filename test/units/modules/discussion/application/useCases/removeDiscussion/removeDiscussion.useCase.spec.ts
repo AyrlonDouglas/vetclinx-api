@@ -1,4 +1,5 @@
 import { InspetorError } from '@common/core/inspetor';
+import DiscussionErrors from '@modules/discussion/application/useCases/discussion.errors';
 import { RemoveDiscussionErrors } from '@modules/discussion/application/useCases/removeDiscussion/removeDiscussion.errors';
 import { DiscussionTestSetup } from '@modulesTest/discussion/test/DiscussionTest.setup';
 
@@ -34,7 +35,7 @@ describe('RemoveDiscussion', () => {
 
     expect(result.isLeft()).toBe(true);
     expect(result.value).toBeInstanceOf(
-      RemoveDiscussionErrors.DiscussionNotFoundError,
+      DiscussionErrors.DiscussionNotFoundError,
     );
   });
 
