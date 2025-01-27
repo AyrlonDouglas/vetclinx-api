@@ -1,26 +1,25 @@
 services:
-  # api:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.dev
-  #   image: vetclinix-api
-  #   container_name: vetclinix_api_container
-  #   environment:
-  #     - NODE_ENV=dev
-  #     - DATABASE_POSTGRE_HOST=db-postgres
-  #     - DATABASE_POSTGRE_PORT=5432
-  #   working_dir: /app
-  #   volumes:
-  #     - type: bind
-  #       source: ./
-  #       target: /app
-  #   ports:
-  #     - 5000:5000
-  #   depends_on:
-  #     - db-postgres
-  #   tty: true
-  #   user: '${UID}:${GID}'
-  #   restart: unless-stopped
+  api:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.dev
+    image: vetclinix_api_dev
+    container_name: vetclinix_api_dev_container
+    environment:
+      - NODE_ENV=dev
+      - DATABASE_POSTGRE_HOST=db-postgres
+      - DATABASE_POSTGRE_PORT=5432
+    working_dir: /app
+    volumes:
+      - type: bind
+        source: ./
+        target: /app
+    ports:
+      - 5000:5000
+    depends_on:
+      - db-postgres
+    tty: true
+    command: npm run start:dev
 
   db-postgres:
     image: postgres:17
@@ -33,7 +32,6 @@ services:
       - postgres_vetclinix_data:/var/lib/postgresql/data
     ports:
       - '5003:5432'
-    # restart: unless-stopped
 
 volumes:
   postgres_vetclinix_data:

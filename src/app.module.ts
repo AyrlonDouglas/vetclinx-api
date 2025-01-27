@@ -18,6 +18,7 @@ import { QueryRunnerMiddleware } from '@common/middleware/queryRunner.midleware'
 import { SecurityModule } from '@modules/security/infra/security.module';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { ApiPresenterInterceptor } from '@common/interceptors/apiPresenter.interceptor';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -29,7 +30,7 @@ import { ApiPresenterInterceptor } from '@common/interceptors/apiPresenter.inter
     DatabaseModule,
     SecurityModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [
     {
       provide: APP_INTERCEPTOR,
@@ -53,6 +54,7 @@ export class AppModule implements NestModule {
       .apply(AuthMiddleware)
       .exclude({ path: '/auth', method: RequestMethod.POST })
       .exclude({ path: '/user', method: RequestMethod.POST })
+      .exclude({ path: '/app/health', method: RequestMethod.GET })
       .forRoutes('');
   }
 }

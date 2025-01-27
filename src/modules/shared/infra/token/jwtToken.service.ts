@@ -31,7 +31,7 @@ export default class JWTTokenService implements TokenService {
     }
 
     const tokenData = jwt.sign(input.payload, input.secretKey, {
-      expiresIn: input.config.expiresIn,
+      expiresIn: input.config.expiresIn as any,
     });
 
     const token = Token.create({

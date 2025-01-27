@@ -11,6 +11,7 @@ export class AuthController {
   async signIn(@Body() signInDTO: SignInDTO) {
     const result = await this.authUseCases.signIn.perform(signInDTO);
     if (result.isLeft()) throw result.value;
+
     return new ApiPresenter({
       result: { token: result.value.token.props.token },
       message: 'Acesso autorizado',
