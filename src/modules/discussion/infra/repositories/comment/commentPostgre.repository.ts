@@ -5,7 +5,7 @@ import {
 import { Comment } from '@modules/discussion/domain/entities/comment/comment.entity';
 import { TransactionService } from '@modules/shared/domain/transaction.service';
 import { EntityManager, In } from 'typeorm';
-import { Comment as CommentPostgre } from '@modules/database/infra/posgreSQL/entities/comment.db.entity';
+import { Comment as CommentPostgre } from '@modules/database/infra/postgreSQL/entities/comment.db.entity';
 import BaseError from '@common/errors/baseError.error';
 import { HttpStatusCode } from '@common/http/httpStatusCode';
 import { Injectable } from '@nestjs/common';

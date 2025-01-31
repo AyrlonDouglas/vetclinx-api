@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { PostgreSQLModule } from './posgreSQL/postgreSQL.module';
+import { PostgreSQLModule } from './postgreSQL/postgreSQL.module';
 import { UserRepository } from '@modules/user/application/repositories/user.repository';
 import { UserPostgreRepository } from '@modules/user/infra/repositories/userPostgre.repository';
 import { DiscussionRepository } from '@modules/discussion/application/repositories/discussion.repository';

@@ -17,6 +17,9 @@ export class DiscussionMongooseRepository implements DiscussionRepository {
     private readonly discussionModel: Model<DiscussionModel>,
     private readonly context: ContextStorageService,
   ) {}
+  findDiscussions(): Promise<Discussion[]> {
+    throw new Error('Method not implemented.');
+  }
 
   async deleteById(id: string): Promise<number> {
     const isValidId = Types.ObjectId.isValid(id);

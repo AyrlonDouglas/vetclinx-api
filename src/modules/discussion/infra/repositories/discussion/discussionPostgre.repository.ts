@@ -1,6 +1,6 @@
 import BaseError from '@common/errors/baseError.error';
 import { HttpStatusCode } from '@common/http/httpStatusCode';
-import { Discussion as DiscussionPostgre } from '@modules/database/infra/posgreSQL/entities/discussion.db.entity';
+import { Discussion as DiscussionPostgre } from '@modules/database/infra/postgreSQL/entities/discussion.db.entity';
 import { DiscussionRepository } from '@modules/discussion/application/repositories/discussion.repository';
 import { Discussion } from '@modules/discussion/domain/entities/discussion/discussion.entity';
 import { TransactionService } from '@modules/shared/domain/transaction.service';
@@ -10,6 +10,12 @@ import { EntityManager } from 'typeorm';
 @Injectable()
 export class DiscussionPostgreRepository implements DiscussionRepository {
   constructor(private readonly transactionService: TransactionService) {}
+
+  async findDiscussions(): Promise<Discussion[]> {
+    const repository = this.getRepository();
+    const [discussions] = await repository.findAndCount({});
+    return discussions.map((discussion) => this.toDomain(discussion));
+  }
 
   async save(discussion: Discussion): Promise<string> {
     const repository = this.getRepository();
@@ -66,6 +72,7 @@ export class DiscussionPostgreRepository implements DiscussionRepository {
     discussionPostgre.downvotes = discussion.props.downvotes;
     discussionPostgre.upvotes = discussion.props.upvotes;
     discussionPostgre.title = discussion.props.title;
+    discussionPostgre.voteGrade = discussion.props.voteGrade;
 
     if (discussion.props.id) {
       discussionPostgre.id = +discussion.props.id;

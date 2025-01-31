@@ -1,6 +1,6 @@
 import BaseError from '@common/errors/baseError.error';
 import { HttpStatusCode } from '@common/http/httpStatusCode';
-import { User as UserPostgre } from '@modules/database/infra/posgreSQL/entities/user.db.entity';
+import { User as UserPostgre } from '@modules/database/infra/postgreSQL/entities/user.db.entity';
 import { TransactionService } from '@modules/shared/domain/transaction.service';
 import { UserRepository } from '@modules/user/application/repositories/user.repository';
 import User from '@modules/user/domain/entities/user.entity';

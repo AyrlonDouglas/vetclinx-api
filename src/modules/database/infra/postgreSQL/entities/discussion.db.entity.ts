@@ -3,6 +3,7 @@ import { BaseEntity } from './baseEntity.db';
 import { User } from './user.db.entity';
 import { Comment } from './comment.db.entity';
 import { DiscussionVote } from './discussionVote.db';
+import { VoteGrade } from '@modules/discussion/domain/component/voteManager.component';
 
 @Entity()
 export class Discussion extends BaseEntity {
@@ -33,6 +34,9 @@ export class Discussion extends BaseEntity {
 
   @Column()
   downvotes: number;
+
+  @Column()
+  voteGrade: VoteGrade;
 
   @Column({ nullable: true })
   resolution?: string;

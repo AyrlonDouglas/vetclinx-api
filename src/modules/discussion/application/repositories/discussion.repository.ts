@@ -9,4 +9,5 @@ export abstract class DiscussionRepository {
     discussion: Discussion,
   ): Promise<string | null>;
   abstract deleteById(id: string): Promise<number>;
+  abstract findDiscussions(): Promise<Discussion[]>;
 }

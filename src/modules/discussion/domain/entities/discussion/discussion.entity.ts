@@ -1,6 +1,10 @@
 import { Either, left, right } from '@common/core/either';
 import Inspetor, { InspetorError } from '@common/core/inspetor';
-import { VoteManager, VoteTypes } from '../../component/voteManager.component';
+import {
+  VoteGrade,
+  VoteManager,
+  VoteTypes,
+} from '../../component/voteManager.component';
 import { DiscussionVote } from '../vote/discussionVote.entity';
 
 export class Discussion {
@@ -32,6 +36,7 @@ export class Discussion {
       downvotes: this.voteManager.props.downvotes,
       upvotes: this.voteManager.props.upvotes,
       resolution: this.resolution,
+      voteGrade: this.getVoteGrade(),
     };
   }
 
@@ -105,6 +110,7 @@ export class Discussion {
       upvotes: this.props.upvotes,
       id: this.props.id,
       resolution: this.props.resolution,
+      voteGrade: this.getVoteGrade(),
     };
   }
 }
@@ -118,6 +124,7 @@ export type DiscussionProps = {
   commentCount: number;
   upvotes: number;
   downvotes: number;
+  voteGrade: VoteGrade;
   resolution?: string;
   id?: string;
 };
