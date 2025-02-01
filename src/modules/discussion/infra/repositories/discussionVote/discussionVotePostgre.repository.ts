@@ -1,6 +1,6 @@
 import BaseError from '@common/errors/baseError.error';
 import { HttpStatusCode } from '@common/http/httpStatusCode';
-import { DiscussionVote as DiscussionVotePostgre } from '@modules/database/infra/postgreSQL/entities/discussionVote.db';
+import { DiscussionVote as DiscussionVotePostgre } from '@modules/database/infra/postgreSQL/entities/discussionVote.db.entity';
 import {
   DiscussionVoteRepository,
   findOneByFilterInput,

@@ -7,7 +7,7 @@ import { User } from './entities/user.db.entity';
 import { Comment } from './entities/comment.db.entity';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { CommentVote } from './entities/commentVote.db.entity';
-import { DiscussionVote } from './entities/discussionVote.db';
+import { DiscussionVote } from './entities/discussionVote.db.entity';
 import { Module } from '@nestjs/common';
 
 @Module({
@@ -26,11 +26,13 @@ import { Module } from '@nestjs/common';
           username: dbConfig.postgreSQL.username,
           password: dbConfig.postgreSQL.password,
           database: dbConfig.postgreSQL.database,
-          synchronize: true,
+          synchronize: false,
           autoLoadEntities: true,
           logging: isDev,
           namingStrategy: new SnakeNamingStrategy(),
           useUTC: true,
+          migrationsRun: true,
+          migrations: [__dirname + '/migrations/*.{ts,js}'],
         };
       },
       inject: [Config],

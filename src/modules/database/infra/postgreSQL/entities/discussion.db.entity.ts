@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { BaseEntity } from './baseEntity.db';
 import { User } from './user.db.entity';
 import { Comment } from './comment.db.entity';
-import { DiscussionVote } from './discussionVote.db';
+import { DiscussionVote } from './discussionVote.db.entity';
 import { VoteGrade } from '@modules/discussion/domain/component/voteManager.component';
 
 @Entity()
