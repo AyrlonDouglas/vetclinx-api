@@ -1,3 +1,4 @@
+import { PaginationParams } from '@common/core/pagination';
 import { Discussion } from '@modules/discussion/domain/entities/discussion/discussion.entity';
 
 export abstract class DiscussionRepository {
@@ -9,5 +10,10 @@ export abstract class DiscussionRepository {
     discussion: Discussion,
   ): Promise<string | null>;
   abstract deleteById(id: string): Promise<number>;
-  abstract findDiscussions(): Promise<Discussion[]>;
+  abstract findDiscussions(input: {
+    paginationParams: PaginationParams;
+  }): Promise<{
+    result: Discussion[];
+    count: number;
+  }>;
 }

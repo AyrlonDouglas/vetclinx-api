@@ -4,6 +4,7 @@ import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { ApiPresenter } from '@common/infra/Api.presenter';
+import { PresenterService } from '@modules/shared/domain/presenter.service';
 
 @ApiBearerAuth()
 @Controller('user')
@@ -11,6 +12,7 @@ export class UserController {
   constructor(
     private readonly userUseCases: UserUseCases,
     private readonly context: ContextStorageService,
+    private readonly presenterService: PresenterService,
   ) {}
 
   @Post()
@@ -19,9 +21,9 @@ export class UserController {
 
     if (result.isLeft()) throw result.value;
 
-    return new ApiPresenter({
-      result: result.value,
+    return this.presenterService.present({
       message: 'Usuário criado com sucesso.',
+      result: result.value,
     });
   }
 
@@ -35,9 +37,9 @@ export class UserController {
 
     if (result.isLeft()) throw result.value;
 
-    return new ApiPresenter({
-      result: result.value?.toPlain(),
+    return this.presenterService.present({
       message: 'Usuário encontrado com sucesso.',
+      result: result.value?.toPlain(),
     });
   }
 
@@ -50,30 +52,33 @@ export class UserController {
 
     if (result.isLeft()) throw result.value;
 
-    return new ApiPresenter({
-      result: result.value.toPlain(),
+    return this.presenterService.present({
       message: 'Usuário encontrado com sucesso',
+      result: result.value?.toPlain(),
     });
   }
 
   @Get('/:id')
   async findOneById(@Param('id') id: string): Promise<ApiPresenter> {
     const result = await this.userUseCases.getUserById.perform({ id });
+
     if (result.isLeft()) throw result.value;
 
-    return new ApiPresenter({
-      result: result.value.toPlain(),
+    return this.presenterService.present({
       message: 'Usuário encontrado com sucesso',
+      result: result.value?.toPlain(),
     });
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<ApiPresenter> {
     const result = await this.userUseCases.removeUserById.perform({ id });
+
     if (result.isLeft()) throw result.value;
-    return new ApiPresenter({
-      result: result.value,
+
+    return this.presenterService.present({
       message: 'Usuário Deletado com sucesso',
+      result: result.value,
     });
   }
 

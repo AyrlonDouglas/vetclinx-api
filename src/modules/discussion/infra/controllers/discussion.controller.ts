@@ -10,25 +10,53 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { UpdateCommentInput } from '@modules/discussion/application/useCases/updateComment/updateComment.dto';
 import { VoteTypes } from '@modules/discussion/domain/component/voteManager.component';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { ApiPresenter } from '@common/infra/Api.presenter';
+import { Pagination, PaginationParams } from '@common/core/pagination';
+import { PresenterService } from '@modules/shared/domain/presenter.service';
+import { DiscussionProps } from '@modules/discussion/domain/entities/discussion/discussion.entity';
 
 @ApiBearerAuth()
 @Controller('discussion')
 export class DiscussionController {
-  constructor(private readonly discussionUseCases: DiscussionUseCases) {}
+  constructor(
+    private readonly discussionUseCases: DiscussionUseCases,
+    private readonly presenterService: PresenterService,
+  ) {}
 
-  @Get('/:id')
+  @Get()
+  async find(
+    @Query('page') page: number,
+    @Query('pageSize') pageSize?: number,
+  ): Promise<ApiPresenter<Pagination<DiscussionProps>>> {
+    const paginationParams = new PaginationParams(page, pageSize);
+    const result = await this.discussionUseCases.getDiscussions.perform({
+      paginationParams,
+    });
+
+    if (result.isLeft()) throw result.value;
+
+    return this.presenterService.paginate({
+      message: 'Discussões encontradas com sucesso',
+      data: result.value.result.map((discussion) => discussion.toPlain()),
+      params: paginationParams,
+      total: result.value.count,
+    });
+  }
+
+  @Get(':id')
   async findOneById(@Param('id') id: string): Promise<ApiPresenter> {
     const result = await this.discussionUseCases.getDiscussionById.perform({
       id,
     });
+
     if (result.isLeft()) throw result.value;
 
-    return new ApiPresenter({
+    return this.presenterService.present({
       message: 'Discussão encontrada com sucesso',
       result: result.value.toPlain(),
     });
@@ -42,9 +70,10 @@ export class DiscussionController {
       await this.discussionUseCases.createDiscussion.perform(
         createDiscussionDTO,
       );
+
     if (result.isLeft()) throw result.value;
 
-    return new ApiPresenter({
+    return this.presenterService.present({
       message: 'Discussão criada com sucesso',
       result: result.value,
     });
@@ -59,8 +88,10 @@ export class DiscussionController {
       ...updateDiscussionDTO,
       id,
     });
+
     if (result.isLeft()) throw result.value;
-    return new ApiPresenter({
+
+    return this.presenterService.present({
       message: 'Discussão atualizada com sucesso',
       result: result.value,
     });
@@ -72,8 +103,10 @@ export class DiscussionController {
       discussionId: id,
       voteType: VoteTypes.up,
     });
+
     if (result.isLeft()) throw result.value;
-    return new ApiPresenter({
+
+    return this.presenterService.present({
       message: 'Discussão votada com sucesso',
       result: result.value,
     });
@@ -85,8 +118,10 @@ export class DiscussionController {
       discussionId: id,
       voteType: VoteTypes.down,
     });
+
     if (result.isLeft()) throw result.value;
-    return new ApiPresenter({
+
+    return this.presenterService.present({
       message: 'Discussão votada com sucesso',
       result: result.value,
     });
@@ -97,10 +132,10 @@ export class DiscussionController {
     const result = await this.discussionUseCases.removeDiscussion.perform({
       discussionId: id,
     });
-    if (result.isLeft()) {
-      throw result.value;
-    }
-    return new ApiPresenter({
+
+    if (result.isLeft()) throw result.value;
+
+    return this.presenterService.present({
       message: 'Discussão deletada com sucesso',
       result: result.value,
     });
@@ -117,11 +152,13 @@ export class DiscussionController {
     });
 
     if (result.isLeft()) throw result.value;
-    return new ApiPresenter({
+
+    return this.presenterService.present({
       message: 'Comentário criado com sucesso',
       result: result.value,
     });
   }
+
   @Post(':id/comment/:commentId/upvote')
   async upvoteOnComment(
     @Param('commentId') commentId: string,
@@ -132,7 +169,8 @@ export class DiscussionController {
     });
 
     if (result.isLeft()) throw result.value;
-    return new ApiPresenter({
+
+    return this.presenterService.present({
       message: 'Comentário votado com sucesso',
       result: result.value,
     });
@@ -148,8 +186,9 @@ export class DiscussionController {
     });
 
     if (result.isLeft()) throw result.value;
-    return new ApiPresenter({
-      message: 'Comentário votadp com sucesso',
+
+    return this.presenterService.present({
+      message: 'Comentário votado com sucesso',
       result: result.value,
     });
   }
@@ -165,7 +204,8 @@ export class DiscussionController {
     });
 
     if (result.isLeft()) throw result.value;
-    return new ApiPresenter({
+
+    return this.presenterService.present({
       message: 'Comentário atualizado com sucesso',
       result: result.value,
     });
@@ -181,7 +221,8 @@ export class DiscussionController {
     });
 
     if (result.isLeft()) throw result.value;
-    return new ApiPresenter({
+
+    return this.presenterService.present({
       message: 'Comentário deletado com sucesso',
       result: result.value,
     });

@@ -7,6 +7,7 @@ import { DiscussionMapper } from '../../mapper/discussion.mapper';
 import { CommentMapper } from '../../mapper/comment.mapper';
 import { Injectable } from '@nestjs/common';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
+import { PaginationParams } from '@common/core/pagination';
 @Injectable()
 export class DiscussionMongooseRepository implements DiscussionRepository {
   discussionMapper = new DiscussionMapper();
@@ -17,7 +18,10 @@ export class DiscussionMongooseRepository implements DiscussionRepository {
     private readonly discussionModel: Model<DiscussionModel>,
     private readonly context: ContextStorageService,
   ) {}
-  findDiscussions(): Promise<Discussion[]> {
+  findDiscussions(input: {
+    paginationParams: PaginationParams;
+  }): Promise<{ result: Discussion[]; count: number }> {
+    input;
     throw new Error('Method not implemented.');
   }
 

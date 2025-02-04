@@ -19,6 +19,7 @@ import { VoteOnComment } from '../application/useCases/voteOnComment/voteOnComme
 import { TransactionService } from '@modules/shared/domain/transaction.service';
 import { CommentVoteRepository } from '../application/repositories/commentVote.repository';
 import { DiscussionVoteRepository } from '../application/repositories/discussionVote.repository';
+import { GetDiscussionUseCase } from '../application/useCases/getDiscussions/getDiscussions.useCase';
 
 @Module({
   controllers: [DiscussionController],
@@ -161,13 +162,21 @@ import { DiscussionVoteRepository } from '../application/repositories/discussion
         commentvoteRepository: CommentVoteRepository,
         context: ContextStorageService,
         transactionService: TransactionService,
-      ) =>
-        new VoteOnComment(
+      ) => {
+        return new VoteOnComment(
           commentRepository,
           commentvoteRepository,
           context,
           transactionService,
-        ),
+        );
+      },
+    },
+    {
+      provide: GetDiscussionUseCase,
+      inject: [DiscussionRepository],
+      useFactory(discussionRepository: DiscussionRepository) {
+        return new GetDiscussionUseCase(discussionRepository);
+      },
     },
     {
       provide: DiscussionUseCases,
@@ -181,6 +190,7 @@ import { DiscussionVoteRepository } from '../application/repositories/discussion
         RemoveDiscussion,
         VoteOnDiscussion,
         VoteOnComment,
+        GetDiscussionUseCase,
       ],
       useFactory: (
         createDiscussionUseCase: CreateDiscussionUseCase,
@@ -192,6 +202,7 @@ import { DiscussionVoteRepository } from '../application/repositories/discussion
         removeDiscussion: RemoveDiscussion,
         voteOnDiscussion: VoteOnDiscussion,
         voteOnComment: VoteOnComment,
+        getDiscussionUseCase: GetDiscussionUseCase,
       ) =>
         new DiscussionUseCases(
           createDiscussionUseCase,
@@ -203,6 +214,7 @@ import { DiscussionVoteRepository } from '../application/repositories/discussion
           removeDiscussion,
           voteOnDiscussion,
           voteOnComment,
+          getDiscussionUseCase,
         ),
     },
   ],

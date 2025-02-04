@@ -1,10 +1,14 @@
+import { PaginationParams } from '@common/core/pagination';
 import { DiscussionRepository } from '@modules/discussion/application/repositories/discussion.repository';
 import { Discussion } from '@modules/discussion/domain/entities/discussion/discussion.entity';
 import { randomUUID } from 'crypto';
 
 export class DiscussionFakeRepository implements DiscussionRepository {
   constructor(private list: Discussion[]) {}
-  findDiscussions(): Promise<Discussion[]> {
+  findDiscussions(input: {
+    paginationParams: PaginationParams;
+  }): Promise<{ result: Discussion[]; count: number }> {
+    input;
     throw new Error('Method not implemented.');
   }
 

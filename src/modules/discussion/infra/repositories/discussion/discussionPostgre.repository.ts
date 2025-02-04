@@ -1,3 +1,4 @@
+import { PaginationParams } from '@common/core/pagination';
 import BaseError from '@common/errors/baseError.error';
 import { HttpStatusCode } from '@common/http/httpStatusCode';
 import { Discussion as DiscussionPostgre } from '@modules/database/infra/postgreSQL/entities/discussion.db.entity';
@@ -11,10 +12,19 @@ import { EntityManager } from 'typeorm';
 export class DiscussionPostgreRepository implements DiscussionRepository {
   constructor(private readonly transactionService: TransactionService) {}
 
-  async findDiscussions(): Promise<Discussion[]> {
+  async findDiscussions(input: {
+    paginationParams: PaginationParams;
+  }): Promise<{ result: Discussion[]; count: number }> {
+    const { paginationParams } = input;
     const repository = this.getRepository();
-    const [discussions] = await repository.findAndCount({});
-    return discussions.map((discussion) => this.toDomain(discussion));
+    const [discussions, count] = await repository.findAndCount({
+      take: paginationParams.pageSize,
+      skip: (paginationParams.page - 1) * paginationParams.pageSize,
+    });
+    return {
+      result: discussions.map((discussion) => this.toDomain(discussion)),
+      count,
+    };
   }
 
   async save(discussion: Discussion): Promise<string> {

@@ -11,6 +11,7 @@ import { AsyncLocalStorage } from 'async_hooks';
 import { TransactionService } from '../domain/transaction.service';
 import { DatabaseModule } from '@modules/database/infra/database.module';
 import { PostgreTransactionService } from './transaction/postgreTransaction.service';
+import { PresenterService } from '../domain/presenter.service';
 
 @Global()
 @Module({
@@ -29,12 +30,14 @@ import { PostgreTransactionService } from './transaction/postgreTransaction.serv
       provide: TransactionService,
       useClass: PostgreTransactionService,
     },
+    PresenterService,
   ],
   exports: [
     HashService,
     TokenService,
     ContextStorageService,
     TransactionService,
+    PresenterService,
   ],
   imports: [DatabaseModule],
 })

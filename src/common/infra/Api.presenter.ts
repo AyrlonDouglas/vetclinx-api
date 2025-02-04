@@ -1,4 +1,4 @@
-export class ApiPresenter {
+export class ApiPresenter<T = unknown> {
   message: string;
   status?: number;
   type?: string;
@@ -6,7 +6,7 @@ export class ApiPresenter {
   method?: string;
   description?: string;
   readonly timestamp: number = new Date().getTime();
-  result?: any;
+  result?: T;
   error?: ApiPresenterError;
   readonly stack?: string;
 
