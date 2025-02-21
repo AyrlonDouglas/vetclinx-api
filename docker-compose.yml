@@ -1,10 +1,10 @@
 services:
   api:
     build:
-      context: ./
-      dockerfile: ./Dockerfile.dev
-    image: vetclinix_api_dev
-    container_name: vetclinix_api_dev_container
+      context: .
+      dockerfile: Dockerfile.dev
+    image: vetclinix-api
+    container_name: vetclinix_api_container
     environment:
       - NODE_ENV=dev
       - DATABASE_POSTGRE_HOST=db-postgres
@@ -19,7 +19,8 @@ services:
     depends_on:
       - db-postgres
     tty: true
-    command: npm run start:dev
+    user: '${UID}:${GID}'
+    restart: unless-stopped
 
   db-postgres:
     image: postgres:17
