@@ -1,7 +1,7 @@
 import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
 import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
 import { Either, left, right } from '@common/core/either';
-import Inspetor from '@common/core/inspetor';
+import Inspector from '@common/core/inspector';
 import ValueObject from '@common/core/valueObject';
 
 export class CredentialError extends Error {
@@ -26,7 +26,7 @@ export default class Credential extends ValueObject<CredentialProps> {
   static create(
     input: CredentialCreateInput,
   ): Either<CredentialError, Credential> {
-    const inputOrFail = Inspetor.againstFalsyBulk([
+    const inputOrFail = Inspector.againstFalsyBulk([
       { argument: input.email.value, argumentName: 'email' },
       { argument: input.password.value, argumentName: 'password' },
     ]);

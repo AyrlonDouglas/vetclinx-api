@@ -4,7 +4,7 @@ import User, {
 } from '@modules/user/domain/entities/user.entity';
 import Email from '@modules/user/domain/valueObjects/email/email.valueObject';
 import FakeUserRepository from '@modules/user/infra/repositories/fakeUser.repository';
-import { InspetorError } from '@common/core/inspetor';
+import { InspectorError } from '@common/core/inspector';
 import Password from '@modules/user/domain/valueObjects/password/password.valueObject';
 import RemoveUserByIdUseCase from '@modules/user/application/useCases/removeUserById/removeUserById.useCase';
 
@@ -58,6 +58,6 @@ describe('RemoveUserByUsernameUseCase', () => {
 
     const result = await sut.perform({ id: '' });
     expect(result.isLeft()).toBe(true);
-    expect(result.value).toBeInstanceOf(InspetorError);
+    expect(result.value).toBeInstanceOf(InspectorError);
   });
 });

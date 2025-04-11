@@ -1,4 +1,4 @@
-import { InspetorError } from '@common/core/inspetor';
+import { InspectorError } from '@common/core/inspector';
 import DiscussionErrors from '@modules/discussion/application/useCases/discussion.errors';
 import { RemoveDiscussionErrors } from '@modules/discussion/application/useCases/removeDiscussion/removeDiscussion.errors';
 import { DiscussionTestSetup } from '@modulesTest/discussion/test/DiscussionTest.setup';
@@ -19,13 +19,13 @@ describe('RemoveDiscussion', () => {
     };
   };
 
-  test('Should return left containing InspetorError when input is invalid', async () => {
+  test('Should return left containing InspectorError when input is invalid', async () => {
     const { sut } = await makeSut();
 
     const result = await sut.perform({ discussionId: '' });
 
     expect(result.isLeft()).toBe(true);
-    expect(result.value).toBeInstanceOf(InspetorError);
+    expect(result.value).toBeInstanceOf(InspectorError);
   });
 
   test('Should return left containing DiscussionNotFoundError when the discussion not found', async () => {

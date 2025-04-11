@@ -7,11 +7,11 @@ import Email, {
 } from '@modules/user/domain/valueObjects/email/email.valueObject';
 import CreateUserErrors from './createUser.errors';
 import { Either, left, right } from '@common/core/either';
-import { InspetorError } from '@common/core/inspetor';
+import { InspectorError } from '@common/core/inspector';
 import PasswordFactory from '@modules/user/domain/valueObjects/password/password.factory';
 
 type Response = Either<
-  | InspetorError
+  | InspectorError
   | EmailError
   | InstanceType<(typeof CreateUserErrors)['EmailAlreadyExistsError']>
   | InstanceType<(typeof CreateUserErrors)['UsernameTakenError']>,

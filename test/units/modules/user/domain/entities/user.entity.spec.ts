@@ -1,4 +1,4 @@
-import { InspetorError } from '@common/core/inspetor';
+import { InspectorError } from '@common/core/inspector';
 import User, {
   UserCreateInput,
   UserStatus,
@@ -64,7 +64,7 @@ describe('User', () => {
       const result = sut({ ...inputCreate, email: null });
 
       expect(result.isLeft()).toBe(true);
-      expect(result.value).toBeInstanceOf(InspetorError);
+      expect(result.value).toBeInstanceOf(InspectorError);
     });
 
     test('Should return left when userType not to be some UserType valid', () => {
@@ -76,7 +76,7 @@ describe('User', () => {
       });
 
       expect(result.isLeft()).toBe(true);
-      expect(result.value).toBeInstanceOf(InspetorError);
+      expect(result.value).toBeInstanceOf(InspectorError);
     });
 
     test('Should return left when status not to be some userStatus valid', () => {
@@ -88,7 +88,7 @@ describe('User', () => {
       });
 
       expect(result.isLeft()).toBe(true);
-      expect(result.value).toBeInstanceOf(InspetorError);
+      expect(result.value).toBeInstanceOf(InspectorError);
     });
   });
 });

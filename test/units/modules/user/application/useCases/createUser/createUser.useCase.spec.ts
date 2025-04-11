@@ -6,7 +6,7 @@ import User, {
   UserStatus,
   UserType,
 } from '@modules/user/domain/entities/user.entity';
-import { InspetorError } from '@common/core/inspetor';
+import { InspectorError } from '@common/core/inspector';
 import CreateUserErrors from '@modules/user/application/useCases/createUser/createUser.errors';
 import { UserTestSetup } from '@modulesTest/user/test/userTest.setup';
 import { CreateUserDTO } from '@modules/user/application/useCases/createUser/createUser.dto';
@@ -106,11 +106,13 @@ describe('CreateUserUseCase', () => {
   test('Should reuturn left when passwordFactory.create fail', async () => {
     const { sut, input } = makeSut();
 
-    jest.spyOn(User, 'create').mockReturnValueOnce(left(new InspetorError('')));
+    jest
+      .spyOn(User, 'create')
+      .mockReturnValueOnce(left(new InspectorError('')));
 
     const result = await sut.perform(input);
 
     expect(result.isLeft()).toBe(true);
-    expect(result.value).toBeInstanceOf(InspetorError);
+    expect(result.value).toBeInstanceOf(InspectorError);
   });
 });

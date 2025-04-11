@@ -1,9 +1,9 @@
 import { Left, left, Right, right } from '@common/core/either';
-import Inspetor, { InspetorError } from '@common/core/inspetor';
+import Inspector, { InspectorError } from '@common/core/inspector';
 
-describe('Inspetor', () => {
+describe('Inspector', () => {
   const makeSut = () => {
-    const sut = Inspetor;
+    const sut = Inspector;
 
     return { sut };
   };
@@ -35,7 +35,7 @@ describe('Inspetor', () => {
 
       expect(result.isLeft()).toBe(true);
       expect(result).toBeInstanceOf(Left);
-      expect(result.value).toBeInstanceOf(InspetorError);
+      expect(result.value).toBeInstanceOf(InspectorError);
     });
 
     test('SHould return rigth when value is greater then minValue', () => {
@@ -56,7 +56,7 @@ describe('Inspetor', () => {
 
       expect(result.isLeft()).toBe(true);
       expect(result).toBeInstanceOf(Left);
-      expect(result.value).toBeInstanceOf(InspetorError);
+      expect(result.value).toBeInstanceOf(InspectorError);
     });
 
     test('SHould return rigth when string is at least numChars', () => {
@@ -80,7 +80,7 @@ describe('Inspetor', () => {
 
       expect(result.isLeft()).toBe(true);
       expect(result).toBeInstanceOf(Left);
-      expect(result.value).toBeInstanceOf(InspetorError);
+      expect(result.value).toBeInstanceOf(InspectorError);
     });
 
     test('SHould return rigth when string is not greater then numChar', () => {
@@ -107,8 +107,8 @@ describe('Inspetor', () => {
       expect(result2.isLeft()).toBe(true);
       expect(result1).toBeInstanceOf(Left);
       expect(result2).toBeInstanceOf(Left);
-      expect(result1.value).toBeInstanceOf(InspetorError);
-      expect(result2.value).toBeInstanceOf(InspetorError);
+      expect(result1.value).toBeInstanceOf(InspectorError);
+      expect(result2.value).toBeInstanceOf(InspectorError);
     });
     test('Should return rigth when argument is not null or undefined', () => {
       const { sut } = makeSut();
@@ -144,10 +144,10 @@ describe('Inspetor', () => {
 
       expect(result1).toBeInstanceOf(Left);
       expect(result1.isLeft()).toBe(true);
-      expect(result1.value).toBeInstanceOf(InspetorError);
+      expect(result1.value).toBeInstanceOf(InspectorError);
       expect(result2).toBeInstanceOf(Left);
       expect(result2.isLeft()).toBe(true);
-      expect(result2.value).toBeInstanceOf(InspetorError);
+      expect(result2.value).toBeInstanceOf(InspectorError);
     });
     test('Should return rigth when all arguments is not null or undefined', () => {
       const { sut } = makeSut();
@@ -181,7 +181,7 @@ describe('Inspetor', () => {
 
       expect(result.isLeft()).toBe(true);
       expect(result).toBeInstanceOf(Left);
-      expect(result.value).toBeInstanceOf(InspetorError);
+      expect(result.value).toBeInstanceOf(InspectorError);
     });
   });
 

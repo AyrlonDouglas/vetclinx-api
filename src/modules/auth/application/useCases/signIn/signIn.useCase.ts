@@ -4,7 +4,7 @@ import Credential from '@modules/auth/domain/valueObjects/credential/credential.
 import Email, {
   EmailError,
 } from '@modules/user/domain/valueObjects/email/email.valueObject';
-import { InspetorError } from '@common/core/inspetor';
+import { InspectorError } from '@common/core/inspector';
 import { Either, left, right } from '@common/core/either';
 import AuthenticationService from '@modules/auth/domain/services/authentication/authentication.service';
 import { SignInDTO } from './signIn.dto';
@@ -14,7 +14,7 @@ import Password from '@modules/user/domain/valueObjects/password/password.valueO
 import User from '@modules/user/domain/entities/user.entity';
 
 type Response = Either<
-  | InspetorError
+  | InspectorError
   | EmailError
   | InstanceType<(typeof PasswordErrors)['InvalidPasswordError']>,
   { token: Token; user: User }

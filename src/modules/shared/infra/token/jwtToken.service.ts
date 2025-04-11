@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 import { Either, left, right } from '@common/core/either';
-import Inspetor from '@common/core/inspetor';
+import Inspector from '@common/core/inspector';
 import TokenService, {
   PayloadToken,
   TokenServiceCreateInput,
@@ -18,7 +18,7 @@ export default class JWTTokenService implements TokenService {
   async create(
     input: TokenServiceCreateInput,
   ): Promise<Either<TokenError, Token>> {
-    const inputOrError = Inspetor.againstFalsyBulk([
+    const inputOrError = Inspector.againstFalsyBulk([
       { argument: input.payload, argumentName: 'payload' },
       { argument: input.payload.userId, argumentName: 'payload-user' },
       { argument: input.secretKey, argumentName: 'secretKey' },

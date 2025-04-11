@@ -1,12 +1,12 @@
 import { Either } from '@common/core/either';
-import { InspetorError } from '@common/core/inspetor';
+import { InspectorError } from '@common/core/inspector';
 import { RemoveDiscussionErrors } from './removeDiscussion.errors';
 import DiscussionErrors from '../discussion.errors';
 
 export type RemoveDiscussionInput = { discussionId: string };
 
 export type RemoveDiscussionOutput = Either<
-  | InspetorError
+  | InspectorError
   | InstanceType<(typeof DiscussionErrors)['DiscussionNotFoundError']>
   | InstanceType<(typeof RemoveDiscussionErrors)['OnlyCreatorCanDeleteError']>,
   {

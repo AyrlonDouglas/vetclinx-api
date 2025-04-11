@@ -1,4 +1,4 @@
-import { InspetorError } from '@common/core/inspetor';
+import { InspectorError } from '@common/core/inspector';
 import {
   voteGradeScale,
   VoteTypes,
@@ -79,11 +79,11 @@ describe('Comment', () => {
       });
 
       expect(result1.isLeft()).toBe(true);
-      expect(result1.value).toBeInstanceOf(InspetorError);
+      expect(result1.value).toBeInstanceOf(InspectorError);
       expect(result2.isLeft()).toBe(true);
-      expect(result1.value).toBeInstanceOf(InspetorError);
+      expect(result1.value).toBeInstanceOf(InspectorError);
       expect(result3.isLeft()).toBe(true);
-      expect(result1.value).toBeInstanceOf(InspetorError);
+      expect(result1.value).toBeInstanceOf(InspectorError);
     });
 
     test('Should return right containing Comment instance when input success', () => {

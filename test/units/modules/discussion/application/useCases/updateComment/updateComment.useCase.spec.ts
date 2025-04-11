@@ -1,4 +1,4 @@
-import { InspetorError } from '@common/core/inspetor';
+import { InspectorError } from '@common/core/inspector';
 import { UpdateCommentErrors } from '@modules/discussion/application/useCases/updateComment/updateComment.errors';
 import { DiscussionTestSetup } from '@modulesTest/discussion/test/DiscussionTest.setup';
 
@@ -28,7 +28,7 @@ describe('UpdateComment', () => {
     };
   };
 
-  test('Should return left containing InspetorError when input is invalid', async () => {
+  test('Should return left containing InspectorError when input is invalid', async () => {
     const { sut } = await makeSut();
 
     const result = await sut.perform({
@@ -37,7 +37,7 @@ describe('UpdateComment', () => {
     });
 
     expect(result.isLeft()).toBe(true);
-    expect(result.value).toBeInstanceOf(InspetorError);
+    expect(result.value).toBeInstanceOf(InspectorError);
   });
 
   test('Should return left containing CommentNotFoundError when comment not found', async () => {
@@ -80,7 +80,7 @@ describe('UpdateComment', () => {
     });
 
     expect(result.isLeft()).toBeTruthy();
-    expect(result.value).toBeInstanceOf(InspetorError);
+    expect(result.value).toBeInstanceOf(InspectorError);
   });
 
   test('Should return right containing commentId when update sucessful', async () => {

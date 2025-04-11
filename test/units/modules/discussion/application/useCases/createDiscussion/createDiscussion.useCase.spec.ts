@@ -1,4 +1,4 @@
-import { InspetorError } from '@common/core/inspetor';
+import { InspectorError } from '@common/core/inspector';
 import { DiscussionTestSetup } from '@modulesTest/discussion/test/DiscussionTest.setup';
 
 describe('CreateDiscussionUseCase', () => {
@@ -24,7 +24,7 @@ describe('CreateDiscussionUseCase', () => {
     const result = await sut.perform({ description: '', title: '' });
 
     expect(result.isLeft()).toBe(true);
-    expect(result.value).toBeInstanceOf(InspetorError);
+    expect(result.value).toBeInstanceOf(InspectorError);
   });
 
   test('should return new discussion`s id when CreateDiscussionUseCaseDTO was valid', async () => {

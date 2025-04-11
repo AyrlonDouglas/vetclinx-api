@@ -1,6 +1,6 @@
 import { UseCase } from '@common/core/useCase';
 import { UpdateCommentInput, UpdateCommentOutput } from './updateComment.dto';
-import Inspetor from '@common/core/inspetor';
+import Inspector from '@common/core/inspector';
 import { left, right } from '@common/core/either';
 import { CommentRepository } from '../../repositories/comment.repository';
 import { UpdateCommentErrors } from './updateComment.errors';
@@ -16,7 +16,7 @@ export class UpdateComment
   ) {}
 
   async perform(input: UpdateCommentInput): Promise<UpdateCommentOutput> {
-    const inputOrFail = Inspetor.againstFalsyBulk([
+    const inputOrFail = Inspector.againstFalsyBulk([
       { argument: input.commentId, argumentName: 'commentId' },
       { argument: input.content, argumentName: 'content' },
     ]);

@@ -1,5 +1,5 @@
 import { left } from '@common/core/either';
-import { InspetorError } from '@common/core/inspetor';
+import { InspectorError } from '@common/core/inspector';
 import AddCommentErrors from '@modules/discussion/application/useCases/addComment/addComment.errors';
 import DiscussionErrors from '@modules/discussion/application/useCases/discussion.errors';
 import { Comment } from '@modules/discussion/domain/entities/comment/comment.entity';
@@ -42,8 +42,8 @@ describe('AddCommentUseCase', () => {
 
     expect(result1.isLeft()).toBe(true);
     expect(result2.isLeft()).toBe(true);
-    expect(result1.value).toBeInstanceOf(InspetorError);
-    expect(result2.value).toBeInstanceOf(InspetorError);
+    expect(result1.value).toBeInstanceOf(InspectorError);
+    expect(result2.value).toBeInstanceOf(InspectorError);
   });
 
   test('Should return DiscussionNotFoundError when discussion dont exists', async () => {
@@ -60,12 +60,12 @@ describe('AddCommentUseCase', () => {
     );
   });
 
-  test('Should return InspetorError when create comment fails', async () => {
+  test('Should return InspectorError when create comment fails', async () => {
     const { sut, discusssionMock } = await makeSut();
 
     jest
       .spyOn(Comment, 'create')
-      .mockReturnValueOnce(left(new InspetorError('')));
+      .mockReturnValueOnce(left(new InspectorError('')));
 
     const result = await sut.perform({
       content: 'content',
@@ -73,7 +73,7 @@ describe('AddCommentUseCase', () => {
     });
 
     expect(result.isLeft()).toBe(true);
-    expect(result.value).toBeInstanceOf(InspetorError);
+    expect(result.value).toBeInstanceOf(InspectorError);
   });
 
   test('Should return new comment id when comment was add in discussion', async () => {

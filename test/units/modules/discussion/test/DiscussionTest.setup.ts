@@ -31,6 +31,7 @@ import { CommentVote } from '@modules/discussion/domain/entities/vote/commentVot
 import { DiscussionVote } from '@modules/discussion/domain/entities/vote/discussionVote.entity';
 import { CommentVoteFakeRepository } from '@modules/discussion/infra/repositories/commentVote/commentVoteFake.repository';
 import { DiscussionVoteFakeRepository } from '@modules/discussion/infra/repositories/discussionVote/discussionVoteFake.repository';
+import { GetDiscussionsUseCase } from '@modules/discussion/application/useCases/getDiscussions/getDiscussions.useCase';
 
 export class DiscussionTestSetup {
   asyncLocalStorage: AsyncLocalStorage<Context>;
@@ -54,6 +55,7 @@ export class DiscussionTestSetup {
   removeDiscussionUseCase: RemoveDiscussion;
   voteOnCommentUseCase: VoteOnComment;
   voteOnDiscussionUseCase: VoteOnDiscussion;
+  getDiscussionUserCase: GetDiscussionsUseCase;
   discussionUseCases: DiscussionUseCases;
 
   constructor() {}
@@ -202,6 +204,10 @@ export class DiscussionTestSetup {
       this.transactionService,
     );
 
+    this.getDiscussionUserCase = new GetDiscussionsUseCase(
+      this.discussionRepository,
+    );
+
     this.discussionUseCases = new DiscussionUseCases(
       this.createDiscussionUseCase,
       this.updateDiscussionUseCase,
@@ -212,6 +218,7 @@ export class DiscussionTestSetup {
       this.removeDiscussionUseCase,
       this.voteOnDiscussionUseCase,
       this.voteOnCommentUseCase,
+      this.getDiscussionUserCase,
     );
 
     return this;

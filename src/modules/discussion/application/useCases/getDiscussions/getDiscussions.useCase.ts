@@ -4,7 +4,7 @@ import { Either, left, right } from '@common/core/either';
 import BaseError from '@common/errors/baseError.error';
 import { Discussion } from '@modules/discussion/domain/entities/discussion/discussion.entity';
 import { PaginationParams } from '@common/core/pagination';
-import Inspetor from '@common/core/inspetor';
+import Inspector from '@common/core/inspector';
 
 type GetDiscussionInput = {
   paginationParams: PaginationParams;
@@ -13,7 +13,7 @@ type GetDiscussionOutput = Promise<
   Either<BaseError, { result: Discussion[]; count: number }>
 >;
 
-export class GetDiscussionUseCase
+export class GetDiscussionsUseCase
   implements UseCase<GetDiscussionInput, GetDiscussionOutput>
 {
   constructor(private readonly discussionRepository: DiscussionRepository) {}
@@ -21,7 +21,7 @@ export class GetDiscussionUseCase
   async perform(input?: {
     paginationParams: PaginationParams;
   }): Promise<GetDiscussionOutput> {
-    const inputOrFail = Inspetor.againstFalsyBulk([
+    const inputOrFail = Inspector.againstFalsyBulk([
       {
         argument: input.paginationParams.page,
         argumentName: 'paginationParams.page',

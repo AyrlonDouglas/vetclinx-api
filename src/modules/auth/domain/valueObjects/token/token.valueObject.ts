@@ -1,5 +1,5 @@
 import { Either, left, right } from '@common/core/either';
-import Inspetor from '@common/core/inspetor';
+import Inspector from '@common/core/inspector';
 
 // TODO: criar testes
 // TODO: criar error
@@ -22,7 +22,7 @@ export default class Token {
   }
 
   static create(input: TokenCreateInput): Either<TokenError, Token> {
-    const inputOrFail = Inspetor.againstFalsyBulk([
+    const inputOrFail = Inspector.againstFalsyBulk([
       { argument: input.token, argumentName: 'token' },
       { argument: input.expiresIn, argumentName: 'expiresIn' },
     ]);

@@ -1,5 +1,5 @@
 import { Either, left, right } from '@common/core/either';
-import Inspetor, { InspetorError } from '@common/core/inspetor';
+import Inspector, { InspectorError } from '@common/core/inspector';
 import { VoteManager, VoteTypes } from '../../component/voteManager.component';
 import { CommentVote } from '../vote/commentVote.entity';
 
@@ -36,8 +36,8 @@ export class Comment {
     };
   }
 
-  static create(input: CommentCreateInput): Either<InspetorError, Comment> {
-    const inputOrFail = Inspetor.againstFalsyBulk([
+  static create(input: CommentCreateInput): Either<InspectorError, Comment> {
+    const inputOrFail = Inspector.againstFalsyBulk([
       { argument: input.discussionId, argumentName: 'discussionId' },
       { argument: input.content, argumentName: 'content' },
       { argument: input.authorId, argumentName: 'authorId' },

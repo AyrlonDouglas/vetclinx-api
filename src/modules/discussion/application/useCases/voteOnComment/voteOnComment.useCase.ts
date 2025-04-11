@@ -1,6 +1,6 @@
 import { UseCase } from '@common/core/useCase';
 import { VoteOnCommentInput, VoteOnCommentOutput } from './voteOnComment.dto';
-import Inspetor from '@common/core/inspetor';
+import Inspector from '@common/core/inspector';
 import { left, right } from '@common/core/either';
 import { VoteTypes } from '@modules/discussion/domain/component/voteManager.component';
 import { CommentRepository } from '../../repositories/comment.repository';
@@ -21,7 +21,7 @@ export class VoteOnComment
   ) {}
 
   async perform(input?: VoteOnCommentInput): Promise<VoteOnCommentOutput> {
-    const inputOrFail = Inspetor.againstFalsyBulk([
+    const inputOrFail = Inspector.againstFalsyBulk([
       { argument: input.commentId, argumentName: 'commentId' },
       { argument: input.voteType, argumentName: 'voteType' },
     ]);
@@ -30,7 +30,7 @@ export class VoteOnComment
       return left(inputOrFail.value);
     }
 
-    const isOneOfOrFail = Inspetor.isOneOf(
+    const isOneOfOrFail = Inspector.isOneOf(
       input.voteType,
       Object.values(VoteTypes),
       'voteType',

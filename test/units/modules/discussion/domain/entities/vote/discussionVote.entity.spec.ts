@@ -1,4 +1,4 @@
-import { InspetorError } from '@common/core/inspetor';
+import { InspectorError } from '@common/core/inspector';
 import { VoteTypes } from '@modules/discussion/domain/component/voteManager.component';
 import { DiscussionVote } from '@modules/discussion/domain/entities/vote/discussionVote.entity';
 
@@ -38,7 +38,7 @@ describe('DiscussionVote', () => {
       });
 
       expect(result.isLeft()).toBe(true);
-      expect(result.value).toBeInstanceOf(InspetorError);
+      expect(result.value).toBeInstanceOf(InspectorError);
     });
 
     test('Should return left containing InspectorError when voteType is invalid', () => {
@@ -50,7 +50,7 @@ describe('DiscussionVote', () => {
       });
 
       expect(result.isLeft()).toBe(true);
-      expect(result.value).toBeInstanceOf(InspetorError);
+      expect(result.value).toBeInstanceOf(InspectorError);
     });
   });
 

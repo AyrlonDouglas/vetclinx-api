@@ -1,5 +1,5 @@
 import { left } from '@common/core/either';
-import { InspetorError } from '@common/core/inspetor';
+import { InspectorError } from '@common/core/inspector';
 import DiscussionErrors from '@modules/discussion/application/useCases/discussion.errors';
 import UpdateDiscussionErrors from '@modules/discussion/application/useCases/updateDiscussion/updateDiscussion.errors';
 import { Discussion } from '@modules/discussion/domain/entities/discussion/discussion.entity';
@@ -24,7 +24,7 @@ describe('UpdateDiscussionUseCase', () => {
     };
   };
 
-  test('Should return left containing InspetorError when request fail', async () => {
+  test('Should return left containing InspectorError when request fail', async () => {
     const { sut, contextStorageService, userMock, discusssionMock } =
       await makeSut();
     jest.spyOn(contextStorageService, 'get').mockReturnValueOnce(userMock);
@@ -39,8 +39,8 @@ describe('UpdateDiscussionUseCase', () => {
 
     expect(result1.isLeft()).toBe(true);
     expect(result2.isLeft()).toBe(true);
-    expect(result1.value).toBeInstanceOf(InspetorError);
-    expect(result2.value).toBeInstanceOf(InspetorError);
+    expect(result1.value).toBeInstanceOf(InspectorError);
+    expect(result2.value).toBeInstanceOf(InspectorError);
   });
 
   test('Should return left containing DiscussionNotFoundError when discussion dont exists', async () => {
@@ -82,7 +82,7 @@ describe('UpdateDiscussionUseCase', () => {
 
     jest
       .spyOn(Discussion, 'create')
-      .mockReturnValueOnce(left(new InspetorError('')));
+      .mockReturnValueOnce(left(new InspectorError('')));
 
     const result = await sut.perform({
       id: discusssionMock.props.id,
@@ -90,7 +90,7 @@ describe('UpdateDiscussionUseCase', () => {
     });
 
     expect(result.isLeft()).toBe(true);
-    expect(result.value).toBeInstanceOf(InspetorError);
+    expect(result.value).toBeInstanceOf(InspectorError);
   });
 
   test('Should return rigth containing discussion id when update', async () => {

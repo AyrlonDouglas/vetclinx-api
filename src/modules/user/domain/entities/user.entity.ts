@@ -1,5 +1,5 @@
 import { Either, left, right } from '@common/core/either';
-import Inspetor, { InspetorError } from '@common/core/inspetor';
+import Inspector, { InspectorError } from '@common/core/inspector';
 import Email from '../valueObjects/email/email.valueObject';
 import Password from '../valueObjects/password/password.valueObject';
 import { countries } from '@common/constants/countries';
@@ -40,8 +40,8 @@ export default class User {
     };
   }
 
-  static create(input: UserCreateInput): Either<InspetorError, User> {
-    const inputOrFail = Inspetor.againstFalsyBulk([
+  static create(input: UserCreateInput): Either<InspectorError, User> {
+    const inputOrFail = Inspector.againstFalsyBulk([
       { argument: input.email, argumentName: 'email' },
       { argument: input.name, argumentName: 'name' },
       { argument: input.username, argumentName: 'username' },
@@ -58,7 +58,7 @@ export default class User {
       return left(inputOrFail.value);
     }
 
-    const userTypeOrFail = Inspetor.isOneOf(
+    const userTypeOrFail = Inspector.isOneOf(
       input.userType,
       Object.values(UserType),
       'userType',
@@ -68,7 +68,7 @@ export default class User {
       return left(userTypeOrFail.value);
     }
 
-    const userStatusOrFail = Inspetor.isOneOf(
+    const userStatusOrFail = Inspector.isOneOf(
       input.status,
       Object.values(UserStatus),
       'status',

@@ -1,4 +1,4 @@
-import { InspetorError } from '@common/core/inspetor';
+import { InspectorError } from '@common/core/inspector';
 import User, {
   UserStatus,
   UserType,
@@ -56,6 +56,6 @@ describe('GetUserByUsernameUseCase', () => {
 
     const result = await sut.perform({ username: '' });
     expect(result.isLeft()).toBe(true);
-    expect(result.value).toBeInstanceOf(InspetorError);
+    expect(result.value).toBeInstanceOf(InspectorError);
   });
 });

@@ -1,5 +1,5 @@
 import { left } from '@common/core/either';
-import { InspetorError } from '@common/core/inspetor';
+import { InspectorError } from '@common/core/inspector';
 import DiscussionErrors from '@modules/discussion/application/useCases/discussion.errors';
 import { VoteOnDiscussionError } from '@modules/discussion/application/useCases/voteOnDiscussion/voteOnDiscussion.errors';
 import { VoteTypes } from '@modules/discussion/domain/component/voteManager.component';
@@ -42,8 +42,8 @@ describe('VoteOnDiscussion', () => {
 
     expect(result1.isLeft()).toBe(true);
     expect(result1.isLeft()).toBe(true);
-    expect(result2.value).toBeInstanceOf(InspetorError);
-    expect(result2.value).toBeInstanceOf(InspetorError);
+    expect(result2.value).toBeInstanceOf(InspectorError);
+    expect(result2.value).toBeInstanceOf(InspectorError);
   });
 
   test('Should return left containg InspetorErroe when voteType is not some type of VoteTypes', async () => {
@@ -55,7 +55,7 @@ describe('VoteOnDiscussion', () => {
     });
 
     expect(result.isLeft()).toBe(true);
-    expect(result.value).toBeInstanceOf(InspetorError);
+    expect(result.value).toBeInstanceOf(InspectorError);
   });
 
   test('Should return left containing DiscussionNotFoundError when discussion not found', async () => {
@@ -135,7 +135,7 @@ describe('VoteOnDiscussion', () => {
       .mockReturnValueOnce(undefined);
     jest
       .spyOn(DiscussionVote, 'create')
-      .mockReturnValueOnce(left(new InspetorError('some error')));
+      .mockReturnValueOnce(left(new InspectorError('some error')));
 
     const result = await sut.perform({
       discussionId: discusssionMock.props.id,
@@ -143,7 +143,7 @@ describe('VoteOnDiscussion', () => {
     });
 
     expect(result.isLeft()).toBe(true);
-    expect(result.value).toBeInstanceOf(InspetorError);
+    expect(result.value).toBeInstanceOf(InspectorError);
   });
 
   test('Should create upvote when vote not exists', async () => {

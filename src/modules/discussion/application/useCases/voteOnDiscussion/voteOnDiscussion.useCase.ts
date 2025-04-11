@@ -3,7 +3,7 @@ import {
   VoteTheDiscussionInput,
   VoteTheDiscussionOutput,
 } from './voteOnDiscussion.dto';
-import Inspetor from '@common/core/inspetor';
+import Inspector from '@common/core/inspector';
 import { left, right } from '@common/core/either';
 import { DiscussionRepository } from '../../repositories/discussion.repository';
 import { VoteOnDiscussionError } from './voteOnDiscussion.errors';
@@ -27,7 +27,7 @@ export class VoteOnDiscussion
   async perform(
     input: VoteTheDiscussionInput,
   ): Promise<VoteTheDiscussionOutput> {
-    const inputOrFail = Inspetor.againstFalsyBulk([
+    const inputOrFail = Inspector.againstFalsyBulk([
       { argument: input.discussionId, argumentName: 'discussionId' },
       { argument: input.voteType, argumentName: 'voteType' },
     ]);
@@ -36,7 +36,7 @@ export class VoteOnDiscussion
       return left(inputOrFail.value);
     }
 
-    const isOneOfOrFail = Inspetor.isOneOf(
+    const isOneOfOrFail = Inspector.isOneOf(
       input.voteType,
       Object.values(VoteTypes),
       'voteType',

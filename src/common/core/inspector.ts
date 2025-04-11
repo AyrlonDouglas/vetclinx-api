@@ -2,7 +2,7 @@ import BaseError from '@common/errors/baseError.error';
 import { Either, left, right } from './either';
 import { HttpStatusCode } from '@common/http/httpStatusCode';
 
-export type InspetorResponse = string;
+export type InspectorResponse = string;
 
 export interface IInspectorArgument {
   argument: any;
@@ -11,32 +11,32 @@ export interface IInspectorArgument {
 
 export type InspectorArgumentCollection = IInspectorArgument[];
 
-const INSPETOR_RIGHT_VALUE = 'ok';
+export const INSPECTOR_RIGHT_VALUE = 'ok';
 
-export class InspetorError extends BaseError {
+export class InspectorError extends BaseError {
   constructor(message: string | string[]) {
     super(
       [...(Array.isArray(message) ? message : [message])],
       HttpStatusCode.NOT_ACCEPTABLE,
     );
-    this.name = 'InspetorError';
+    this.name = 'InspectorError';
   }
 }
 
-export default class Inspetor {
+export default class Inspector {
   public static combine(eitherResults: Either<any, any>[]) {
     const leftFound = eitherResults.find((result) => result.isLeft());
-    return leftFound ? leftFound : right(INSPETOR_RIGHT_VALUE);
+    return leftFound ? leftFound : right(INSPECTOR_RIGHT_VALUE);
   }
 
   public static greaterThan(
     minValue: number,
     actualValue: number,
-  ): Either<InspetorError, InspetorResponse> {
+  ): Either<InspectorError, InspectorResponse> {
     return actualValue > minValue
-      ? right(INSPETOR_RIGHT_VALUE)
+      ? right(INSPECTOR_RIGHT_VALUE)
       : left(
-          new InspetorError(
+          new InspectorError(
             `Number given {${actualValue}} is not greater than {${minValue}}`,
           ),
         );
@@ -45,35 +45,35 @@ export default class Inspetor {
   public static againstAtLeast(
     numChars: number,
     text: string,
-  ): Either<InspetorError, InspetorResponse> {
+  ): Either<InspectorError, InspectorResponse> {
     return text.length >= numChars
-      ? right(INSPETOR_RIGHT_VALUE)
-      : left(new InspetorError(`Text is not at least ${numChars} chars.`));
+      ? right(INSPECTOR_RIGHT_VALUE)
+      : left(new InspectorError(`Text is not at least ${numChars} chars.`));
   }
 
   public static againstAtMost(
     numChars: number,
     text: string,
-  ): Either<InspetorError, InspetorResponse> {
+  ): Either<InspectorError, InspectorResponse> {
     return text.length <= numChars
-      ? right(INSPETOR_RIGHT_VALUE)
-      : left(new InspetorError(`Text is greater than ${numChars} chars.`));
+      ? right(INSPECTOR_RIGHT_VALUE)
+      : left(new InspectorError(`Text is greater than ${numChars} chars.`));
   }
 
   public static againstNullOrUndefined(
     argument: any,
     argumentName: string,
-  ): Either<InspetorError, InspetorResponse> {
+  ): Either<InspectorError, InspectorResponse> {
     if (argument === null || argument === undefined) {
-      return left(new InspetorError(`${argumentName} is null or undefined`));
+      return left(new InspectorError(`${argumentName} is null or undefined`));
     } else {
-      return right(INSPETOR_RIGHT_VALUE);
+      return right(INSPECTOR_RIGHT_VALUE);
     }
   }
 
   public static againstNullOrUndefinedBulk(
     args: InspectorArgumentCollection,
-  ): Either<InspetorError, InspetorResponse> {
+  ): Either<InspectorError, InspectorResponse> {
     for (const arg of args) {
       const result = this.againstNullOrUndefined(
         arg.argument,
@@ -82,36 +82,36 @@ export default class Inspetor {
       if (result.isLeft()) return result;
     }
 
-    return right(INSPETOR_RIGHT_VALUE);
+    return right(INSPECTOR_RIGHT_VALUE);
   }
 
   public static againstFalsy(
     argument: any,
     argumentName: string,
-  ): Either<InspetorError, InspetorResponse> {
+  ): Either<InspectorError, InspectorResponse> {
     if (!!argument === false) {
-      return left(new InspetorError(`${argumentName} is falsy`));
+      return left(new InspectorError(`${argumentName} is falsy`));
     } else {
-      return right(INSPETOR_RIGHT_VALUE);
+      return right(INSPECTOR_RIGHT_VALUE);
     }
   }
 
   public static againstFalsyBulk(
     args: InspectorArgumentCollection,
-  ): Either<InspetorError, InspetorResponse> {
+  ): Either<InspectorError, InspectorResponse> {
     for (const arg of args) {
       const result = this.againstFalsy(arg.argument, arg.argumentName);
       if (result.isLeft()) return result;
     }
 
-    return right(INSPETOR_RIGHT_VALUE);
+    return right(INSPECTOR_RIGHT_VALUE);
   }
 
   public static isOneOf(
     value: any,
     validValues: any[],
     argumentName: string,
-  ): Either<InspetorError, InspetorResponse> {
+  ): Either<InspectorError, InspectorResponse> {
     let isValid = false;
     for (const validValue of validValues) {
       if (value === validValue) {
@@ -120,10 +120,10 @@ export default class Inspetor {
     }
 
     if (isValid) {
-      return right(INSPETOR_RIGHT_VALUE);
+      return right(INSPECTOR_RIGHT_VALUE);
     } else {
       return left(
-        new InspetorError(
+        new InspectorError(
           `${argumentName} isn't oneOf the correct types in ${JSON.stringify(validValues)}. Got "${value}".`,
         ),
       );
@@ -132,17 +132,17 @@ export default class Inspetor {
 
   public static atLeastOneTruthy(
     args: InspectorArgumentCollection,
-  ): Either<InspetorError, InspetorResponse> {
+  ): Either<InspectorError, InspectorResponse> {
     const allFalsy = args.every((arg) => !arg.argument);
 
     if (allFalsy) {
       return left(
-        new InspetorError(
+        new InspectorError(
           `All arguments ${args.map((e) => e.argumentName).join(', ')} are falsy.`,
         ),
       );
     } else {
-      return right(INSPETOR_RIGHT_VALUE);
+      return right(INSPECTOR_RIGHT_VALUE);
     }
   }
 
@@ -151,14 +151,14 @@ export default class Inspetor {
   //   min: number,
   //   max: number,
   //   argumentName: string,
-  // ): Result<InspetorResponse> {
+  // ): Result<InspectorResponse> {
   //   const isInRange = num >= min && num <= max;
   //   if (!isInRange) {
-  //     return Result.fail<InspetorResponse>(
+  //     return Result.fail<InspectorResponse>(
   //       `${argumentName} is not within range ${min} to ${max}.`,
   //     );
   //   } else {
-  //     return Result.ok<InspetorResponse>();
+  //     return Result.ok<InspectorResponse>();
   //   }
   // }
 
@@ -167,8 +167,8 @@ export default class Inspetor {
   //   min: number,
   //   max: number,
   //   argumentName: string,
-  // ): Result<InspetorResponse> {
-  //   let failingResult: Result<InspetorResponse> = null;
+  // ): Result<InspectorResponse> {
+  //   let failingResult: Result<InspectorResponse> = null;
 
   //   for (const num of numbers) {
   //     const numIsInRangeResult = this.inRange(num, min, max, argumentName);
@@ -176,11 +176,11 @@ export default class Inspetor {
   //   }
 
   //   if (failingResult) {
-  //     return Result.fail<InspetorResponse>(
+  //     return Result.fail<InspectorResponse>(
   //       `${argumentName} is not within the range.`,
   //     );
   //   } else {
-  //     return Result.ok<InspetorResponse>();
+  //     return Result.ok<InspectorResponse>();
   //   }
   // }
 }

@@ -1,6 +1,6 @@
 import { Either, left, right } from '@common/core/either';
 import { VoteTypes } from '../../component/voteManager.component';
-import Inspetor, { InspetorError } from '@common/core/inspetor';
+import Inspector, { InspectorError } from '@common/core/inspector';
 
 export class CommentVote {
   private constructor(
@@ -25,8 +25,8 @@ export class CommentVote {
 
   static create(
     input: CommentVoteCreateInput,
-  ): Either<InspetorError, CommentVote> {
-    const inputOrFail = Inspetor.againstFalsyBulk([
+  ): Either<InspectorError, CommentVote> {
+    const inputOrFail = Inspector.againstFalsyBulk([
       { argument: input.authorId, argumentName: 'authorId' },
       { argument: input.voteType, argumentName: 'voteType' },
       { argument: input.commentId, argumentName: 'commentId' },
@@ -36,7 +36,7 @@ export class CommentVote {
       return left(inputOrFail.value);
     }
 
-    const isOneOfVoteTypesOrFail = Inspetor.isOneOf(
+    const isOneOfVoteTypesOrFail = Inspector.isOneOf(
       input.voteType,
       Object.values(VoteTypes),
       'voteType',
@@ -59,7 +59,7 @@ export class CommentVote {
   }
 
   setVoteType(voteType: keyof typeof VoteTypes) {
-    const isOneOfVoteTypesOrCancel = Inspetor.isOneOf(
+    const isOneOfVoteTypesOrCancel = Inspector.isOneOf(
       voteType,
       [VoteTypes.down, VoteTypes.up],
       'voteType',

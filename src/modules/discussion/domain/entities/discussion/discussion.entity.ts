@@ -1,5 +1,5 @@
 import { Either, left, right } from '@common/core/either';
-import Inspetor, { InspetorError } from '@common/core/inspetor';
+import Inspector, { InspectorError } from '@common/core/inspector';
 import {
   VoteGrade,
   VoteManager,
@@ -42,8 +42,8 @@ export class Discussion {
 
   static create(
     input: DiscussionCreateInput,
-  ): Either<InspetorError, Discussion> {
-    const inputOrFail = Inspetor.againstFalsyBulk([
+  ): Either<InspectorError, Discussion> {
+    const inputOrFail = Inspector.againstFalsyBulk([
       { argument: input.authorId, argumentName: 'authorId' },
       { argument: input.description, argumentName: 'description' },
       { argument: input.title, argumentName: 'title' },

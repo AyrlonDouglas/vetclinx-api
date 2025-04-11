@@ -1,4 +1,4 @@
-import { InspetorError } from '@common/core/inspetor';
+import { InspectorError } from '@common/core/inspector';
 import DiscussionErrors from '@modules/discussion/application/useCases/discussion.errors';
 import { Discussion } from '@modules/discussion/domain/entities/discussion/discussion.entity';
 import { DiscussionTestSetup } from '@modulesTest/discussion/test/DiscussionTest.setup';
@@ -39,6 +39,6 @@ describe('GetDiscussionByIdUseCase', () => {
     const { sut } = await makeSut();
     const result = await sut.perform({ id: null });
     expect(result.isLeft()).toBe(true);
-    expect(result.value).toBeInstanceOf(InspetorError);
+    expect(result.value).toBeInstanceOf(InspectorError);
   });
 });

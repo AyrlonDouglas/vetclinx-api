@@ -1,5 +1,5 @@
 import { Either, left, right } from '@common/core/either';
-import Inspetor, { InspetorError } from '@common/core/inspetor';
+import Inspector, { InspectorError } from '@common/core/inspector';
 import { UseCase } from '@common/core/useCase';
 import { UpdateDiscussionDTO } from './updateDiscussion.dto';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
@@ -9,7 +9,7 @@ import { Discussion } from '@modules/discussion/domain/entities/discussion/discu
 import DiscussionErrors from '../discussion.errors';
 
 type Response = Either<
-  | InspetorError
+  | InspectorError
   | InstanceType<(typeof DiscussionErrors)['DiscussionNotFoundError']>,
   { id: string }
 >;
@@ -23,13 +23,13 @@ export class UpdateDiscussionUseCase
   ) {}
 
   async perform(request: UpdateDiscussionDTO): Promise<Response> {
-    const idOrFail = Inspetor.againstFalsy(request.id, 'id');
+    const idOrFail = Inspector.againstFalsy(request.id, 'id');
 
     if (idOrFail.isLeft()) {
       return left(idOrFail.value);
     }
 
-    const requestOrFail = Inspetor.atLeastOneTruthy([
+    const requestOrFail = Inspector.atLeastOneTruthy([
       { argument: request.description, argumentName: 'description' },
       { argument: request.resolution, argumentName: 'resolution' },
       { argument: request.title, argumentName: 'title' },

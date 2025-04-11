@@ -1,5 +1,5 @@
 import { left } from '@common/core/either';
-import { InspetorError } from '@common/core/inspetor';
+import { InspectorError } from '@common/core/inspector';
 import { VoteOnCommentError } from '@modules/discussion/application/useCases/voteOnComment/voteOnComment.errors';
 import { VoteTypes } from '@modules/discussion/domain/component/voteManager.component';
 import { CommentVote } from '@modules/discussion/domain/entities/vote/commentVote.entity';
@@ -44,9 +44,9 @@ describe('VoteOnComment', () => {
     });
 
     expect(result1.isLeft()).toBe(true);
-    expect(result1.value).toBeInstanceOf(InspetorError);
+    expect(result1.value).toBeInstanceOf(InspectorError);
     expect(result2.isLeft()).toBe(true);
-    expect(result2.value).toBeInstanceOf(InspetorError);
+    expect(result2.value).toBeInstanceOf(InspectorError);
   });
 
   test('Should return left containing CommentNotFoundError when the comment is not found', async () => {
@@ -123,7 +123,7 @@ describe('VoteOnComment', () => {
       .mockReturnValueOnce(undefined);
     jest
       .spyOn(CommentVote, 'create')
-      .mockReturnValueOnce(left(new InspetorError('some error')));
+      .mockReturnValueOnce(left(new InspectorError('some error')));
 
     const result = await sut.perform({
       commentId: commentMock.props.id,
@@ -131,7 +131,7 @@ describe('VoteOnComment', () => {
     });
 
     expect(result.isLeft()).toBe(true);
-    expect(result.value).toBeInstanceOf(InspetorError);
+    expect(result.value).toBeInstanceOf(InspectorError);
   });
 
   test('Should create upvote when vote not exists', async () => {

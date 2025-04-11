@@ -1,6 +1,6 @@
 import { UseCase } from '@common/core/useCase';
 import { RemoveCommentInput, RemoveCommentOutput } from './removeComment.dto';
-import Inspetor from '@common/core/inspetor';
+import Inspector from '@common/core/inspector';
 import { left, right } from '@common/core/either';
 import { CommentRepository } from '../../repositories/comment.repository';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
@@ -21,7 +21,7 @@ export class RemoveComment
   ) {}
 
   async perform(input?: RemoveCommentInput): Promise<RemoveCommentOutput> {
-    const inputOrFail = Inspetor.againstFalsyBulk([
+    const inputOrFail = Inspector.againstFalsyBulk([
       { argument: input.commentId, argumentName: 'commentId' },
     ]);
 

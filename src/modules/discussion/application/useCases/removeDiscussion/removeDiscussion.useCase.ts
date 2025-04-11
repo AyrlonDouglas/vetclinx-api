@@ -3,7 +3,7 @@ import {
   RemoveDiscussionInput,
   RemoveDiscussionOutput,
 } from './removeDiscussion.dto';
-import Inspetor from '@common/core/inspetor';
+import Inspector from '@common/core/inspector';
 import { left, right } from '@common/core/either';
 import { DiscussionRepository } from '../../repositories/discussion.repository';
 import { CommentRepository } from '../../repositories/comment.repository';
@@ -29,7 +29,7 @@ export class RemoveDiscussion
   async perform(
     input?: RemoveDiscussionInput,
   ): Promise<RemoveDiscussionOutput> {
-    const inputOrFail = Inspetor.againstFalsy(
+    const inputOrFail = Inspector.againstFalsy(
       input.discussionId,
       'discussionId',
     );

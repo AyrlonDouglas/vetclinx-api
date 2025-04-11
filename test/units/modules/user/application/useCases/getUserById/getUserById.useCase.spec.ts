@@ -1,4 +1,4 @@
-import { InspetorError } from '@common/core/inspetor';
+import { InspectorError } from '@common/core/inspector';
 import UserErrors from '@modules/user/application/useCases/user.errors';
 import User from '@modules/user/domain/entities/user.entity';
 import { UserTestSetup } from '@modulesTest/user/test/userTest.setup';
@@ -34,6 +34,6 @@ describe('GetUserByIdUseCase', () => {
 
     const result = await sut.perform({ id: null });
     expect(result.isLeft()).toBe(true);
-    expect(result.value).toBeInstanceOf(InspetorError);
+    expect(result.value).toBeInstanceOf(InspectorError);
   });
 });

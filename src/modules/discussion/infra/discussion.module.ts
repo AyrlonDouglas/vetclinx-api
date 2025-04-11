@@ -19,7 +19,7 @@ import { VoteOnComment } from '../application/useCases/voteOnComment/voteOnComme
 import { TransactionService } from '@modules/shared/domain/transaction.service';
 import { CommentVoteRepository } from '../application/repositories/commentVote.repository';
 import { DiscussionVoteRepository } from '../application/repositories/discussionVote.repository';
-import { GetDiscussionUseCase } from '../application/useCases/getDiscussions/getDiscussions.useCase';
+import { GetDiscussionsUseCase } from '../application/useCases/getDiscussions/getDiscussions.useCase';
 
 @Module({
   controllers: [DiscussionController],
@@ -172,10 +172,10 @@ import { GetDiscussionUseCase } from '../application/useCases/getDiscussions/get
       },
     },
     {
-      provide: GetDiscussionUseCase,
+      provide: GetDiscussionsUseCase,
       inject: [DiscussionRepository],
       useFactory(discussionRepository: DiscussionRepository) {
-        return new GetDiscussionUseCase(discussionRepository);
+        return new GetDiscussionsUseCase(discussionRepository);
       },
     },
     {
@@ -190,7 +190,7 @@ import { GetDiscussionUseCase } from '../application/useCases/getDiscussions/get
         RemoveDiscussion,
         VoteOnDiscussion,
         VoteOnComment,
-        GetDiscussionUseCase,
+        GetDiscussionsUseCase,
       ],
       useFactory: (
         createDiscussionUseCase: CreateDiscussionUseCase,
@@ -202,7 +202,7 @@ import { GetDiscussionUseCase } from '../application/useCases/getDiscussions/get
         removeDiscussion: RemoveDiscussion,
         voteOnDiscussion: VoteOnDiscussion,
         voteOnComment: VoteOnComment,
-        getDiscussionUseCase: GetDiscussionUseCase,
+        GetDiscussionsUseCase: GetDiscussionsUseCase,
       ) =>
         new DiscussionUseCases(
           createDiscussionUseCase,
@@ -214,7 +214,7 @@ import { GetDiscussionUseCase } from '../application/useCases/getDiscussions/get
           removeDiscussion,
           voteOnDiscussion,
           voteOnComment,
-          getDiscussionUseCase,
+          GetDiscussionsUseCase,
         ),
     },
   ],

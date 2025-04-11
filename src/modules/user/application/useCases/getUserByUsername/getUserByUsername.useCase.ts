@@ -3,11 +3,11 @@ import User from '@modules/user/domain/entities/user.entity';
 import { UserRepository } from '../../repositories/user.repository';
 import { GetUserByUsernameDTO } from './getUserByUsername.dto';
 import { Either, left, right } from '@common/core/either';
-import Inspetor, { InspetorError } from '@common/core/inspetor';
+import Inspector, { InspectorError } from '@common/core/inspector';
 import UserErrors from '../user.errors';
 
 type Response = Either<
-  InspetorError | InstanceType<(typeof UserErrors)['UserNotFoundError']>,
+  InspectorError | InstanceType<(typeof UserErrors)['UserNotFoundError']>,
   User
 >;
 
@@ -19,7 +19,7 @@ export default class GetUserByUsernameUseCase
   async perform(request?: GetUserByUsernameDTO): Promise<Response> {
     const { username } = request;
 
-    const usernameValidate = Inspetor.againstFalsy(username, 'username');
+    const usernameValidate = Inspector.againstFalsy(username, 'username');
     if (usernameValidate.isLeft()) {
       return left(usernameValidate.value);
     }

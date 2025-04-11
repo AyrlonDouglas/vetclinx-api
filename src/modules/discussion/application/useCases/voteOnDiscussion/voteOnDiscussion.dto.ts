@@ -1,5 +1,5 @@
 import { Either } from '@common/core/either';
-import { InspetorError } from '@common/core/inspetor';
+import { InspectorError } from '@common/core/inspector';
 import { VoteTypes } from '@modules/discussion/domain/component/voteManager.component';
 import { VoteOnDiscussionError } from './voteOnDiscussion.errors';
 import DiscussionErrors from '../discussion.errors';
@@ -10,7 +10,7 @@ export type VoteTheDiscussionInput = {
 };
 
 export type VoteTheDiscussionOutput = Either<
-  | InspetorError
+  | InspectorError
   | InstanceType<
       (typeof VoteOnDiscussionError)['CreatorCannotVoteYourDiscussion']
     >

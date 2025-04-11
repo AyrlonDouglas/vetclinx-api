@@ -3,10 +3,10 @@ import { CreateDiscussionDTO } from './createDiscussion.dto';
 import { Discussion } from '@modules/discussion/domain/entities/discussion/discussion.entity';
 import { ContextStorageService } from '@modules/shared/domain/contextStorage.service';
 import { Either, left, right } from '@common/core/either';
-import { InspetorError } from '@common/core/inspetor';
+import { InspectorError } from '@common/core/inspector';
 import { DiscussionRepository } from '../../repositories/discussion.repository';
 
-type Response = Either<InspetorError, { id: string }>;
+type Response = Either<InspectorError, { id: string }>;
 export class CreateDiscussionUseCase
   implements UseCase<CreateDiscussionDTO, Response>
 {

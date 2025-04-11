@@ -1,7 +1,7 @@
 import { UseCase } from '@common/core/useCase';
 import { AddCommentDTO } from './addComment.dto';
 import { DiscussionRepository } from '../../repositories/discussion.repository';
-import Inspetor, { InspetorError } from '@common/core/inspetor';
+import Inspector, { InspectorError } from '@common/core/inspector';
 import { Either, left, right } from '@common/core/either';
 import AddCommentErrors from './addComment.errors';
 import { Comment } from '@modules/discussion/domain/entities/comment/comment.entity';
@@ -12,7 +12,7 @@ import DiscussionErrors from '../discussion.errors';
 // import { TransactionService } from '@modules/shared/domain/transaction.service';
 
 type Output = Either<
-  | InspetorError
+  | InspectorError
   | InstanceType<(typeof DiscussionErrors)['DiscussionNotFoundError']>
   | InstanceType<(typeof AddCommentErrors)['ParentCommentNotFoundError']>
   | InstanceType<(typeof AddCommentErrors)['ParentCommetMustBeRootError']>,
@@ -30,7 +30,7 @@ export class AddCommentUseCase implements UseCase<AddCommentDTO, Output> {
   async perform(input?: AddCommentDTO): Promise<Output> {
     const author = this.contextStorageService.get('currentUser');
 
-    const inputOrFail = Inspetor.againstFalsyBulk([
+    const inputOrFail = Inspector.againstFalsyBulk([
       { argument: author, argumentName: 'author' },
       { argument: input.content, argumentName: 'content' },
       { argument: input.discussionId, argumentName: 'discussionId' },

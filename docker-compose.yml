@@ -19,7 +19,6 @@ services:
     depends_on:
       - db-postgres
     tty: true
-    user: '${UID}:${GID}'
     restart: unless-stopped
 
   db-postgres:

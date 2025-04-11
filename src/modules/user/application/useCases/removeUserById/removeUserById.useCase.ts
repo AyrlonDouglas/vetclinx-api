@@ -1,10 +1,10 @@
 import { UseCase } from '@common/core/useCase';
 import { RemoveUserByIdDTO } from './removeUserById.dto';
 import { UserRepository } from '../../repositories/user.repository';
-import Inspetor, { InspetorError } from '@common/core/inspetor';
+import Inspector, { InspectorError } from '@common/core/inspector';
 import { Either, left, right } from '@common/core/either';
 
-type Response = Either<InspetorError, string>;
+type Response = Either<InspectorError, string>;
 
 export default class RemoveUserByIdUseCase
   implements UseCase<RemoveUserByIdDTO, Response>
@@ -13,7 +13,7 @@ export default class RemoveUserByIdUseCase
   async perform(request?: RemoveUserByIdDTO): Promise<Response> {
     const { id } = request;
 
-    const idValidate = Inspetor.againstFalsy(id, 'id');
+    const idValidate = Inspector.againstFalsy(id, 'id');
 
     if (idValidate.isLeft()) {
       return left(idValidate.value);

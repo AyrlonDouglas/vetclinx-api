@@ -1,5 +1,5 @@
 import { Right } from '@common/core/either';
-import { InspetorError } from '@common/core/inspetor';
+import { InspectorError } from '@common/core/inspector';
 import { RemoveCommentErrors } from '@modules/discussion/application/useCases/removeComment/removeComment.errors';
 import { DiscussionTestSetup } from '@modulesTest/discussion/test/DiscussionTest.setup';
 
@@ -32,7 +32,7 @@ describe('RemoveComment', () => {
     const result = await sut.perform({ commentId: undefined });
 
     expect(result.isLeft()).toBe(true);
-    expect(result.value).toBeInstanceOf(InspetorError);
+    expect(result.value).toBeInstanceOf(InspectorError);
   });
 
   test('Should return left containing CommentNorFOundError when comment not found', async () => {
